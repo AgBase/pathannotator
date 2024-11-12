@@ -1,3 +1,4 @@
+
 #! /usr/bin/env/python
 
 #module load python miniconda3
@@ -7,35 +8,43 @@
 #conda activate venv-pandas
 
 import pandas as pd
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('species')
+args = parser.parse_args()
+species = args.species
 
 #READ API TABLES INTO PANDAS DATAFRAMES
-ncbi_ame = pd.read_table('conv_ncbi-proteinid_ame.tsv', dtype=str)
-ame_ko = pd.read_table('link_ame_ko.tsv', dtype=str)
+#infile1 = f"conv_ncbi-proteinid_{species}.tsv"
+ncbi_spec = pd.read_table(f"conv_ncbi-proteinid_{species}.tsv", dtype=str)
+
+spec_ko = pd.read_table(f"link_{species}_ko.tsv", dtype=str)
 ko_pathway = pd.read_table('link_ko_pathway.tsv', dtype=str)
 pathway = pd.read_table('list_pathway.tsv', dtype=str)
-ame_pathway = pd.read_table('link_pathway_ame.tsv', dtype=str)
-list_pathway_ame = pd.read_table('list_pathway_ame.tsv', dtype=str)
+spec_pathway = pd.read_table(f"link_pathway_{species}.tsv", dtype=str)
+list_pathway_spec = pd.read_table(f"list_pathway_{species}.tsv", dtype=str)
 
 #ADD HEADERS TO DATAFRAME COLUMNS
-ncbi_ame.columns = ['ame', 'ncbi']
-ame_ko.columns = ['ko', 'ame']
+ncbi_spec.columns = [species, 'ncbi']
+spec_ko.columns = ['ko', species]
 ko_pathway.columns = ['pathway', 'ko']
 pathway.columns = ['pathway', 'pathname']
-ame_pathway.columns = ['ame', 'amepathway']
-list_pathway_ame.columns = ['amepathway', 'amepathname']
+spec_pathway.columns = [species, f"{species}pathway"]
+list_pathway_spec.columns = [f"{species}pathway", f"{species}pathname"]
 
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
-ncbi_ame_ko = pd.merge(ncbi_ame, ame_ko, on='ame', how='left')
+ncbi_spec_ko = pd.merge(ncbi_spec, spec_ko, on=species, how='left')
 
-ncbi_ame_ko_pathway = pd.merge(ncbi_ame_ko, ko_pathway, on='ko', how='left')
+ncbi_spec_ko_pathway = pd.merge(ncbi_spec_ko, ko_pathway, on='ko', how='left')
 
-ncbi_ame_ko_pathway_pathname = pd.merge(ncbi_ame_ko_pathway, pathway, on='pathway', how='left')
+ncbi_spec_ko_pathway_pathname = pd.merge(ncbi_spec_ko_pathway, pathway, on='pathway', how='left')
 
-ncbi_ame_ko_pathway_pathname.to_csv('ame_direct_KEGG_ref.tsv', sep='\t', index=False)
+ncbi_spec_ko_pathway_pathname.to_csv(f"{species}_direct_KEGG_ref.tsv", sep='\t', index=False)
 
-#MERGE DATAFRAMES INTO ONE FOR ame PATHWAYS
-ncbi_ame_ko_amepath = pd.merge(ncbi_ame_ko, ame_pathway, on='ame', how='left')
+#MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
+ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on=species, how='left')
 
-ncbi_ame_ko_amepath_amepathname = pd.merge(ncbi_ame_ko_amepath, list_pathway_ame, on='amepathway', how='left')
+ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"{species}pathway", how='left')
 
-ncbi_ame_ko_amepath_amepathname.to_csv('ame_direct_KEGG_ame.tsv', sep='\t', index=False)
+ncbi_spec_ko_specpath_specpathname.to_csv(f"{species}_direct_KEGG_{species}.tsv", sep='\t', index=False)
