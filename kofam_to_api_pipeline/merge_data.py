@@ -86,4 +86,4 @@ elif kofam == "yes" and species != "NA":
     ncbi_spec_ko_specpath_specpathname = ncbi_spec_ko_specpath_specpathname[["species","ncbi","ko",f"{species}pathway",f"{species}pathname"]]
     ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_direct_KEGG_{species}.tsv", sep='\t', index=False)
 else:
-    "Not an acceptable combination of arguments."
+    print("Not an acceptable combination of arguments.")
