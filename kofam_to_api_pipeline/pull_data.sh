@@ -18,6 +18,7 @@ else
 fi
 
 
+
 #THESE HAVE TO BE PULLED FOR ALL SPECIES
 wget https://rest.kegg.jp/link/ko/pathway -O $3/link_ko_pathway.tsv
 sed -i 's/ko\://g' $3/link_ko_pathway.tsv
@@ -40,3 +41,16 @@ then
 	sed -i 's/ko\://g' $3/link_"$1"_ko.tsv
 	sed -i "s/$1\://g" $3/link_"$1"_ko.tsv
 fi
+
+if [ "$1" == "dme" ];
+then
+	#THIS PULLS THE FLYBASE ANNOTATIONS
+	wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/pathway_group_data_fb_2024_05.tsv.gz -O $3/pathway_group_data_fb_2024_05.tsv.gz
+	gunzip $3/pathway_group_data_fb_2024_05.tsv.gz
+	grep -v ^\## pathway_group_data_fb_2024_05.tsv | cut -f 1,3,6 > $3/Fbgn_groupid.tsv
+
+	wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/fbgn_annotation_ID_fb_2024_05.tsv.gz -O $3/fbgn_annotation_ID_fb_2024_05.tsv.gz
+	gunzip $3/fbgn_annotation_ID_fb_2024_05.tsv.gz
+	grep -v ^\## fbgn_annotation_ID_fb_2024_05.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
+fi
+

@@ -87,3 +87,12 @@ elif kofam == "yes" and species != "NA":
     ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_direct_KEGG_{species}.tsv", sep='\t', index=False)
 else:
     print("Not an acceptable combination of arguments.")
+
+#ADD FLYBASE ANNOTATIONS
+if species == "dme":
+    fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
+    fbgn_CG.columns = ['fbgn', 'CG']
+    fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
+    fbgn_path.columns = ['pathid', 'pathname', 'fbgn']
+    fbgn_CG_path = pd.merge(fbgn_CG, fbgn_path, on='fbgn', how='inner')
+    fbgn_CG_path.to_csv(f"{outdir}/{outdir}_{species}_flybase.tsv", sep='\t', index=False)
