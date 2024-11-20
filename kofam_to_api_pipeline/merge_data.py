@@ -31,21 +31,33 @@ if kofam == "no" and species != "NA":
     ko_pathway = pd.read_table(f"{indir}/link_ko_pathway.tsv", dtype=str)
     pathway = pd.read_table(f"{indir}/list_pathway.tsv", dtype=str)
 #ADD HEADERS TO DATAFRAME COLUMNS
-    ncbi_spec.columns = ['species', 'ncbi']
-    spec_ko.columns = ['ko', 'species']
+    ncbi_spec.columns = ['spec', 'ncbi']
+    spec_ko.columns = ['ko', 'spec']
     ko_pathway.columns = ['pathway', 'ko']
     pathway.columns = ['pathway', 'pathname']
-    spec_pathway.columns = ['species', f"{species}pathway"]
+    spec_pathway.columns = ['spec', f"{species}pathway"]
     list_pathway_spec.columns = [f"{species}pathway", f"{species}pathname"]
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
-    ncbi_spec_ko = pd.merge(ncbi_spec, spec_ko, on='species', how='inner')
+    ncbi_spec_ko = pd.merge(ncbi_spec, spec_ko, on='spec', how='inner')
     ncbi_spec_ko_pathway = pd.merge(ncbi_spec_ko, ko_pathway, on='ko', how='inner')
     ncbi_spec_ko_pathway_pathname = pd.merge(ncbi_spec_ko_pathway, pathway, on='pathway', how='left')
     ncbi_spec_ko_pathway_pathname.to_csv(f"{outdir}/{species}_direct_KEGG_ref.tsv", sep='\t', index=False)
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
-    ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on='species', how='inner')
+    ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on='spec', how='inner')
     ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"{species}pathway", how='left')
     ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_direct_KEGG_{species}.tsv", sep='\t', index=False)
+    #ADD FLYBASE ANNOTATIONS WHEN DME IS THE SPECIFIED SPECIES
+    if species == "dme":
+        #READ INTO DATAFRAMES
+        fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
+        fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
+        #ADD HEADERS
+        fbgn_CG.columns = ['fbgn', 'spec']
+        fbgn_path.columns = ['pathid', 'pathname', 'fbgn']
+        #MERGE AND OUTPUT TO FILE
+        fbgn_CG_path = pd.merge(fbgn_CG, fbgn_path, on='fbgn', how='inner')
+        fbgn_CG_path_ncbi_spec_ko = pd.merge(ncbi_spec_ko, fbgn_CG_path, on='spec', how='inner')
+        fbgn_CG_path_ncbi_spec_ko.to_csv(f"{outdir}/{outdir}_{species}_flybase.tsv", sep='\t', index=False)
 elif kofam == "yes" and species == "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
     ncbi_ko = pd.read_table(f"{indir}/ko_ncbi.tsv", dtype=str)
@@ -69,10 +81,10 @@ elif kofam == "yes" and species != "NA":
     list_pathway_spec = pd.read_table(f"{indir}/list_pathway_{species}.tsv", dtype=str)
 #ADD HEADERS TO DATAFRAME COLUMNS
     ncbi_ko.columns = ['ko', 'ncbi']
-    spec_ko.columns = ['ko', 'species']
+    spec_ko.columns = ['ko', 'spec']
     ko_pathway.columns = ['pathway', 'ko']
     pathway.columns = ['pathway', 'pathname']
-    spec_pathway.columns = ['species', f"{species}pathway"]
+    spec_pathway.columns = ['spec', f"{species}pathway"]
     list_pathway_spec.columns = [f"{species}pathway", f"{species}pathname"]
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
     ncbi_ko_pathway = pd.merge(ncbi_ko, ko_pathway, on='ko', how='inner')
@@ -81,18 +93,22 @@ elif kofam == "yes" and species != "NA":
     ncbi_ko_pathway_pathname.to_csv(f"{outdir}/{species}_direct_KEGG_ref.tsv", sep='\t', index=False)
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
     ncbi_spec_ko = pd.merge(ncbi_ko, spec_ko, on='ko', how='inner')
-    ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on='species', how='inner')
+    ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on='spec', how='inner')
     ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"{species}pathway", how='left')
-    ncbi_spec_ko_specpath_specpathname = ncbi_spec_ko_specpath_specpathname[["species","ncbi","ko",f"{species}pathway",f"{species}pathname"]]
+    ncbi_spec_ko_specpath_specpathname = ncbi_spec_ko_specpath_specpathname[["spec","ncbi","ko",f"{species}pathway",f"{species}pathname"]]
     ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_direct_KEGG_{species}.tsv", sep='\t', index=False)
+    #ADD FLYBASE ANNOTATIONS
+    if species == "dme":
+        #READ INTO DATAFRAMES
+        fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
+        fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
+        #ADD HEADERS
+        fbgn_CG.columns = ['fbgn', 'spec']
+        fbgn_path.columns = ['pathid', 'pathname', 'fbgn']
+        #MERGE AND OUTPUT TO FILE
+        fbgn_CG_path = pd.merge(fbgn_CG, fbgn_path, on='fbgn', how='inner')
+        fbgn_CG_path_ncbi_spec_ko = pd.merge(ncbi_spec_ko, fbgn_CG_path, on='spec', how='inner')
+        fbgn_CG_path_ncbi_spec_ko.to_csv(f"{outdir}/{outdir}_{species}_flybase.tsv", sep='\t', index=False)
 else:
     print("Not an acceptable combination of arguments.")
 
-#ADD FLYBASE ANNOTATIONS
-if species == "dme":
-    fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
-    fbgn_CG.columns = ['fbgn', 'CG']
-    fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
-    fbgn_path.columns = ['pathid', 'pathname', 'fbgn']
-    fbgn_CG_path = pd.merge(fbgn_CG, fbgn_path, on='fbgn', how='inner')
-    fbgn_CG_path.to_csv(f"{outdir}/{outdir}_{species}_flybase.tsv", sep='\t', index=False)
