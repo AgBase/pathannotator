@@ -2,7 +2,6 @@
 
 #NEED TO ADD CPU OPTION FOR CMDLINE
 #NEED TO ADD CHECK FOR KOFAM DB AND PULL IF NOT THERE (TOO BIG FOR CONTAINER)
-#NEED TO REMOVE TMP DIRECTORY AFTER KOFAM RUNS?
 
 # $1 KEGG species code (NA or related species code if species not in KEGG)
 # $2 input file (protein FASTA without header lines)
@@ -43,6 +42,7 @@ then
 		echo "This is not a KEGG species code. Running KofamScan now."
 		#WORKS--RUN KOFAM HERE--MAY NEED TO PROVIDE A PATH FOR PROFILES ETC IN CONTAINER
 #		../exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu 480 -p ../profiles/eukaryote.hal $2
+		rm -r ./tmp
 
 		#WORKS-FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
@@ -63,6 +63,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	echo "These are NOT NCBI protein IDs. Proceeding with KofamScan."
 	#RUN KOFAM HERE
 #	../exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu 480 -p ../profiles/eukaryote.hal $2
+	rm -r ./tmp
 
 	#FILTER KOFAM HERE
 	echo "Filtering KofamScan results"
@@ -70,7 +71,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 	if grep -q $1 kegg_org_codes.txt;
 	then
-		echo "This is a KEGG species". 
+		echo "This is a KEGG species".
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
@@ -102,7 +103,7 @@ if [ -f "$3"/list_pathway_"$1".tsv ]; then rm "$3"/list_pathway_"$1".tsv; fi
 if [ -f "$3"/deflines.tmp ]; then rm "$3"/deflines.tmp; fi
 if [ -f "$3"/ko_ncbi.tsv ]; then rm "$3"/ko_ncbi.tsv; fi
 if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
-if [ -f "$3"/Fbgn_groupid.tsv ]; then "$3"/Fbgn_groupid.tsv; fi # CAN'T RM, PERMISSION DENIED--MAY NEED TO SET PERMISSIONS WHEN CREATING THE FILE
+if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
 if [ -f "$3"/pathway_group_data_fb_2024_05.tsv ]; then 	rm "$3"/pathway_group_data_fb_2024_05.tsv; fi
 if [ -f "$3"/pathway_group_data_fb_2024_05.tsv.gz ]; then rm "$3"/pathway_group_data_fb_2024_05.tsv.gz; fi
 if [ -f "$3"/fbgn_annotation_ID_fb_2024_05.tsv ]; then 	rm "$3"/fbgn_annotation_ID_fb_2024_05.tsv; fi

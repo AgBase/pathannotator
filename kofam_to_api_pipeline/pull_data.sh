@@ -17,8 +17,6 @@ then
 	wget https://rest.kegg.jp/conv/ncbi-proteinid/"$1" -O $3/conv_ncbi-proteinid_"$1".tsv
 	sed -i 's/ncbi-proteinid\://g' $3/conv_ncbi-proteinid_"$1".tsv
 	sed -i "s/$1\://g" $3/conv_ncbi-proteinid_"$1".tsv
-	#THIS WILL HAVE TO BE MORE GENERIC--PERHAPS LEAVE Dmel_ EXCEPT TO FLYBASE ANNOTATIONS
-	sed -i 's/Dmel_//g' $3/conv_ncbi-proteinid_"$1".tsv
 else
 	#INSTEAD FOR NON-KEGG SPECIES USE THE KOFAM OUTPUT FILTERED FOR ASTERISK AND LIMITED TO TWO COLUMNS (WITHOUT NCBI VERSION)
 	awk '{ print $3"\t"$2 }' $2 > $3/ko_ncbi.tsv
@@ -42,16 +40,12 @@ then
 	wget https://rest.kegg.jp/link/pathway/"$1" -O  $3/link_pathway_"$1".tsv
 	sed -i "s/$1\://g" $3/link_pathway_"$1".tsv
 	sed -i 's/path\://g' $3/link_pathway_"$1".tsv
-	#THIS WILL HAVE TO BE MORE GENERIC--PERHAPS LEAVE Dmel_ EXCEPT TO FLYBASE ANNOTATIONS
-	sed -i 's/Dmel_//g' $3/link_pathway_"$1".tsv
 
 	wget https://rest.kegg.jp/list/pathway/"$1" -O $3/list_pathway_"$1".tsv
 
 	wget https://rest.kegg.jp/link/"$1"/ko -O $3/link_"$1"_ko.tsv
 	sed -i 's/ko\://g' $3/link_"$1"_ko.tsv
 	sed -i "s/$1\://g" $3/link_"$1"_ko.tsv
-	#THIS WILL HAVE TO BE MORE GENERIC--PERHAPS LEAVE Dmel_ EXCEPT TO FLYBASE ANNOTATIONS
-	sed -i 's/Dmel_//g' $3/link_"$1"_ko.tsv
 fi
 
 if [ "$1" == "dme" ];
@@ -65,5 +59,7 @@ then
 	wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/fbgn_annotation_ID_fb_2024_05.tsv.gz -O $3/fbgn_annotation_ID_fb_2024_05.tsv.gz
 	gunzip $3/fbgn_annotation_ID_fb_2024_05.tsv.gz
 	grep -v ^\## $3/fbgn_annotation_ID_fb_2024_05.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
+	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 fi
+
 
