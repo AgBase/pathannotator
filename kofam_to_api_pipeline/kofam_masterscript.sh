@@ -42,7 +42,7 @@ then
 		echo "This is not a KEGG species code. Running KofamScan now."
 		#WORKS--RUN KOFAM HERE--MAY NEED TO PROVIDE A PATH FOR PROFILES ETC IN CONTAINER
 		avail=$(nproc)
-		/usr/bin/exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu $avail -p /usr/bin/profiles/eukaryote.hal $2
+		/usr/bin/kofam_scan/exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu $avail -p /usr/bin/kofam_scan/profiles/eukaryote.hal $2
 		rm -r ./$3/tmp
 
 		#WORKS-FILTER KOFAM HERE
@@ -63,7 +63,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 	echo "These are NOT NCBI protein IDs. Proceeding with KofamScan."
 	#RUN KOFAM HERE
-	/usr/bin/exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu 480 -p /usr/bin/profiles/eukaryote.hal $2
+	/usr/bin/kofam_scan/exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu 480 -p /usr/bin/kofam_scan/profiles/eukaryote.hal $2
 	rm -r ./$3/tmp
 
 	#FILTER KOFAM HERE
