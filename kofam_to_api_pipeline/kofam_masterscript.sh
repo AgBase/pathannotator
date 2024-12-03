@@ -80,7 +80,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 
 		#MERGE DATA
-		python usr/bin/merge_data.py $1 yes $3 $3
+		python /usr/bin/merge_data.py $1 yes $3 $3
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
