@@ -21,6 +21,19 @@ else
 	#INSTEAD FOR NON-KEGG SPECIES USE THE KOFAM OUTPUT FILTERED FOR ASTERISK AND LIMITED TO TWO COLUMNS (WITHOUT NCBI VERSION)
 	awk '{ print $3"\t"$2 }' $2 > $3/ko_ncbi.tsv
 	sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
+
+	#THIS PULLS THE DATABASE FILES FOR KOFAMSCAN
+	if ( ! -f /workdir/ko_list );
+	then
+		wget https://www.genome.jp/ftp/db/kofam/ko_list.gz -O ko_list.gz
+		gunzip /workdir/ko_list.gz
+	fi
+
+	if ( ! -d /workdir/profiles );
+	then
+		wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz -O profiles.tar.gz
+		tar -xzf /workdir/profiles.tar.gz
+	fi
 fi
 
 
@@ -62,16 +75,3 @@ then
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 fi
 
-#THIS PULLS THE DATABASE FILES FOR KOFAMSCAN
-#WILL NEED TO UPDATE PATH TO MATCH CONTAINER KOFAM INSTALLATION PATH
-if ( ! -f /workdir/ko_list );
-then
-	wget https://www.genome.jp/ftp/db/kofam/ko_list.gz -O ko_list.gz
-	gunzip /workdir/ko_list.gz
-fi
-
-if ( ! -d /workdir/profiles );
-then
-	wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz -O profiles.tar.gz
-	tar -xzf /workdir/profiles.tar.gz
-fi
