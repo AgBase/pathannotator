@@ -1,7 +1,7 @@
 #! /bin/bash
 
-#NEED TO ADD CPU OPTION FOR CMDLINE
-#NEED TO ADD CHECK FOR KOFAM DB AND PULL IF NOT THERE (TOO BIG FOR CONTAINER)
+#ADDED, STILL TESTING--NEED TO ADD CPU OPTION FOR CMDLINE
+#ADDED, NEED TO TEST--ADD CHECK FOR KOFAM DB AND PULL IF NOT THERE (TOO BIG FOR CONTAINER)
 
 # $1 KEGG species code (NA or related species code if species not in KEGG)
 # $2 input file (protein FASTA without header lines)
@@ -31,18 +31,19 @@ then
 	then
 		#WORKS-PULL DATA
 		echo "This is a KEGG species code. Pulling KEGG API DATA NOW."
-		bash pull_data.sh $1 NA $3 ncbi
+		bash /usr/bin/pull_data.sh $1 NA $3 ncbi
 
 		#WORKS-MERGE DATA HERE
 		echo "Creating annotations output."
-		python merge_data.py "$1" no "$3" "$3" #need to remove indir from merge or add a variable for it here.
+		python /usr/bin/merge_data.py "$1" no "$3" "$3"
 
 	else # ELSE MEANS THE THE CODE IS NOT A KEGG SPECIES CODE
 
 		echo "This is not a KEGG species code. Running KofamScan now."
 		#WORKS--RUN KOFAM HERE--MAY NEED TO PROVIDE A PATH FOR PROFILES ETC IN CONTAINER
-#		../exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu 480 -p ../profiles/eukaryote.hal $2
-		rm -r ./tmp
+		avail=$(nproc)
+		/usr/bin/kofam_scan/exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu $avail -p /usr/bin/kofam_scan/profiles/eukaryote.hal $2
+		rm -r ./$3/tmp
 
 		#WORKS-FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
@@ -50,11 +51,11 @@ then
 
 		#WORKS-PULL DATA
 		echo "Pulling KEGG API data."
-		bash pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 ncbi
+		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 ncbi
 
 		#WORKS-MERGE DATA
 		echo "Creating annotations output."
-		python merge_data.py $1 yes $3 $3 #NEED TO REMOVE INDIR FROM MERGE_DATA OR ADD VARIABLE FOR IT HERE.
+		python /usr/bin/merge_data.py $1 yes $3 $3 
 	fi
 
 else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
@@ -62,24 +63,24 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 	echo "These are NOT NCBI protein IDs. Proceeding with KofamScan."
 	#RUN KOFAM HERE
-#	../exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu 480 -p ../profiles/eukaryote.hal $2
-	rm -r ./tmp
+	/usr/bin/kofam_scan/exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu 480 -p /usr/bin/kofam_scan/profiles/eukaryote.hal $2
+	rm -r ./$3/tmp
 
 	#FILTER KOFAM HERE
 	echo "Filtering KofamScan results"
 	grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
 
-	if grep -q $1 kegg_org_codes.txt;
+	if grep -q $1 /usr/bin/kegg_org_codes.txt;
 	then
 		echo "This is a KEGG species".
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi
+		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi
 
 
 		#MERGE DATA
-		python merge_data.py $1 yes $3 $3
+		python usr/bin/merge_data.py $1 yes $3 $3
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -87,10 +88,10 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3
+		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3
 
 		#MERGE DATA
-		python merge_data.py $1 yes $3 $3
+		python /usr/bin/merge_data.py $1 yes $3 $3
 	fi
 fi
 
