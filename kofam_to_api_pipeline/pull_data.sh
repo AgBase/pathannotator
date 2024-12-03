@@ -62,4 +62,16 @@ then
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 fi
 
+#THIS PULLS THE DATABASE FILES FOR KOFAMSCAN
+#WILL NEED TO UPDATE PATH TO MATCH CONTAINER KOFAM INSTALLATION PATH
+if ( ! -f /workdir/ko_list );
+then
+	wget https://www.genome.jp/ftp/db/kofam/ko_list.gz -O ko_list.gz
+	gunzip /workdir/ko_list.gz
+fi
 
+if ( ! -d /workdir/profiles );
+then
+	wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz -O profiles.tar.gz
+	tar -xzf /workdir/profiles.tar.gz
+fi
