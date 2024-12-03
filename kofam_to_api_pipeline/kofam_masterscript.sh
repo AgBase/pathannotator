@@ -31,11 +31,11 @@ then
 	then
 		#WORKS-PULL DATA
 		echo "This is a KEGG species code. Pulling KEGG API DATA NOW."
-		bash pull_data.sh $1 NA $3 ncbi
+		bash /usr/bin/pull_data.sh $1 NA $3 ncbi
 
 		#WORKS-MERGE DATA HERE
 		echo "Creating annotations output."
-		python merge_data.py "$1" no "$3" "$3"
+		python /usr/bin/merge_data.py "$1" no "$3" "$3"
 
 	else # ELSE MEANS THE THE CODE IS NOT A KEGG SPECIES CODE
 
@@ -51,11 +51,11 @@ then
 
 		#WORKS-PULL DATA
 		echo "Pulling KEGG API data."
-		bash pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 ncbi
+		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 ncbi
 
 		#WORKS-MERGE DATA
 		echo "Creating annotations output."
-		python merge_data.py $1 yes $3 $3 
+		python /usr/bin/merge_data.py $1 yes $3 $3 
 	fi
 
 else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
@@ -70,17 +70,17 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	echo "Filtering KofamScan results"
 	grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
 
-	if grep -q $1 kegg_org_codes.txt;
+	if grep -q $1 /usr/bin/kegg_org_codes.txt;
 	then
 		echo "This is a KEGG species".
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi
+		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi
 
 
 		#MERGE DATA
-		python merge_data.py $1 yes $3 $3
+		python usr/bin/merge_data.py $1 yes $3 $3
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -88,10 +88,10 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3
+		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3
 
 		#MERGE DATA
-		python merge_data.py $1 yes $3 $3
+		python /usr/bin/merge_data.py $1 yes $3 $3
 	fi
 fi
 
