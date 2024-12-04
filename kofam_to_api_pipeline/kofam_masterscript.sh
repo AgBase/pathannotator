@@ -85,7 +85,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 #IF DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 #HMMBUILD PROFILE OF FLYBASE SEQS--NEED TO PULL SEQS FROM SOMEWHERE
-		if ( $1 == 'dme' );
+		if [ "$1" == dme ];
 		then
 			hmmbuild -o $3/hmmprofile $2
 		fi
