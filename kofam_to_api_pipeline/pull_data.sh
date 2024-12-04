@@ -36,7 +36,7 @@ else
 	then
 		wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz -O /data/profiles.tar.gz
 		tar -xzf /data/profiles.tar.gz
-	elif
+	elif ( -f /data/profiles.tar.gz );
 	then
 		tar -xzf /data/profiles.tar.gz
 	fi
