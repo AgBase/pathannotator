@@ -23,16 +23,22 @@ else
 	sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
 	#THIS PULLS THE DATABASE FILES FOR KOFAMSCAN
-	if ( ! -f /workdir/ko_list );
+	if [ ! -f /data/ko_list ] && [ ! -f /data/ko_list.gz ];
 	then
-		wget https://www.genome.jp/ftp/db/kofam/ko_list.gz -O ko_list.gz
-		gunzip /workdir/ko_list.gz
+		wget https://www.genome.jp/ftp/db/kofam/ko_list.gz -O /data/ko_list.gz
+		gunzip /data/ko_list.gz
+	elif ( -f /data/ko_list.gz );
+	then
+		gunzip /data/ko_list.gz
 	fi
 
-	if ( ! -d /workdir/profiles );
+	if [ ! -d /data/profiles ] && [ ! -f /data/profiles ];
 	then
-		wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz -O profiles.tar.gz
-		tar -xzf /workdir/profiles.tar.gz
+		wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz -O /data/profiles.tar.gz
+		tar -xzf /data/profiles.tar.gz
+	elif ( -f /data/profiles.tar.gz );
+	then
+		tar -xzf /data/profiles.tar.gz
 	fi
 fi
 
