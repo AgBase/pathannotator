@@ -83,6 +83,11 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		echo "Pulling KEGG API data."
 		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi
 
+#IF DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
+#HMMBUILD PROFILE OF FLYBASE SEQS--NEED TO PULL SEQS FROM SOMEWHERE
+		hmmbuild -o $3/hmmprofile $2
+#HMMALIGN PROTEIN FASTA TO FB PROFILE
+#CREATE FB OUTPUT (IN MERGE DATA)
 
 		#MERGE DATA
 		python /usr/bin/merge_data.py $1 yes $3 $3
