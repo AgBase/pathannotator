@@ -27,7 +27,7 @@ then
 	sed -i 's/\s.*$//' $3/deflines.tmp
 
 
-	if grep -q $1 kegg_org_codes.txt;
+	if grep -q $1 /usr/bin/kegg_org_codes.txt;
 	then
 		#WORKS-PULL DATA
 		echo "This is a KEGG species code. Pulling KEGG API DATA NOW."
