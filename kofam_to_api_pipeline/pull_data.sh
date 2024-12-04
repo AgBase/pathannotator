@@ -9,7 +9,7 @@
 #THIS WILL HAVE TO CHANGE BECAUSE SOME INPUTS WILL NOT BE NCBI ORIGIN
 #RIGHT NOW I HAVE TO USE 'NA' HERE BUT 'DME' IN MERGE SCRIPT AND I NEED DME HERE TO PULL FLYBASE
 
-kegg=$(grep $1 kegg_org_codes.txt)
+kegg=$(grep $1 /usr/bin/kegg_org_codes.txt)
 
 if [ ! -z "${kegg}" ] && [ $4 == "ncbi" ];
 then
