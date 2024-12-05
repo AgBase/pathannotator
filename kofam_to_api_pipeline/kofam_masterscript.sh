@@ -89,7 +89,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		then
 			wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/dmel_unique_protein_isoforms_fb_2024_05.tsv.gz
 			fb=$(gunzip dmel_unique_protein_isoforms_fb_2024_05.tsv.gz)
-			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null $2 $fb
+			echo "phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null $2 $fb"
 			#PULL MATCHES FROM OUTPUT
 			#PULL CORRESPONDING PATHWAYS FROM FB DATAFRAME
 		fi
