@@ -103,15 +103,15 @@ elif kofam == "yes" and species != "NA":
     if species == "dme":
         #READ INTO DATAFRAMES
         fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
-	fbgn_phmm = pd.read_table(f"{indir}/phmm_matches.txt", dtype=str)
-	fbgn_fbpp = pd.read_table(f"{indir}/Fbgn_fbpp.tsv", dtype=str)
+        fbgn_phmm = pd.read_table(f"{indir}/phmm_matches.txt", dtype=str)
+        fbgn_fbpp = pd.read_table(f"{indir}/Fbgn_fbpp.tsv", dtype=str)
         #ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
-	fbgn_phmm.columns = ['Flybase_protein', 'Input_ID']
-	fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein']
+        fbgn_phmm.columns = ['Flybase_protein', 'Input_ID']
+        fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein']
         #MERGE AND OUTPUT TO FILE
-	fbgn_fbpp_phmm = pd.merge(fgbn_fbpp, fbgn_phmm, on='Flybase_protein', how='inner')
-	fbgn_fbpp_phmm_path = pd.merge(fbn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
+        fbgn_fbpp_phmm = pd.merge(fgbn_fbpp, fbgn_phmm, on='Flybase_protein', how='inner')
+        fbgn_fbpp_phmm_path = pd.merge(fbn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
         fbgn_fbpp_phmm_path.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
 
 else:
