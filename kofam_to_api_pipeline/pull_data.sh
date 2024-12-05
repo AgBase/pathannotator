@@ -87,5 +87,5 @@ then
 	#PULL FBGN TO FBPP FILES
 	wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz -O $3/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz
 	gunzip $3/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz
-	grep -v ^\## $3/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz | cut -f 1,3 > $3/Fbgn_fbpp.tsv
+	grep -v ^\## $3/fbgn_fbtr_fbpp_fb_2024_05.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 fi
