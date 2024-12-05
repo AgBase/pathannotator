@@ -87,9 +87,10 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 #NEED TO PULL SEQS FROM SOMEWHERE
 		if [ "$1" == dme ];
 		then
-			wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/dmel_unique_protein_isoforms_fb_2024_05.tsv.gz
-			fb=$(gunzip dmel_unique_protein_isoforms_fb_2024_05.tsv.gz)
-			echo "phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null $2 $fb"
+			wget https://ftp.flybase.net/releases/current/dmel_r6.60/fasta/dmel-all-translation-r6.60.fasta.gz
+			gunzip dmel-all-translation-r6.60.fasta.gz
+			fb=dmel-all-translation-r6.60.fasta
+			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null $2 $fb
 			#PULL MATCHES FROM OUTPUT
 			#PULL CORRESPONDING PATHWAYS FROM FB DATAFRAME
 		fi
