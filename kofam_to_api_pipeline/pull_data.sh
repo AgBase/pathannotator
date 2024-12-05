@@ -27,7 +27,7 @@ else
 	then
 		wget https://www.genome.jp/ftp/db/kofam/ko_list.gz -O /data/ko_list.gz
 		gunzip /data/ko_list.gz
-	elif ( -f /data/ko_list.gz );
+	elif [ -f /data/ko_list.gz ];
 	then
 		gunzip /data/ko_list.gz
 	fi
@@ -36,7 +36,7 @@ else
 	then
 		wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz -O /data/profiles.tar.gz
 		tar -xzf /data/profiles.tar.gz
-	elif ( -f /data/profiles.tar.gz );
+	elif [ -f /data/profiles.tar.gz ];
 	then
 		tar -xzf /data/profiles.tar.gz
 	fi
