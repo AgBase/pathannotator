@@ -79,5 +79,13 @@ then
 	gunzip $3/fbgn_annotation_ID_fb_2024_05.tsv.gz
 	grep -v ^\## $3/fbgn_annotation_ID_fb_2024_05.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
-fi
 
+	#PULL FB PROTEIN FASTA
+        wget https://ftp.flybase.net/releases/current/dmel_r6.60/fasta/dmel-all-translation-r6.60.fasta.gz -O $3/dmel-all-translation-r6.60.fasta.gz
+        gunzip $3/dmel-all-translation-r6.60.fasta.gz
+
+	#PULL FBGN TO FBPP FILES
+	wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz -O $3/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz
+	gunzip $3/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz
+	grep -v ^\## $3/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz | cut -f 1,3 > $3/Fbgn_fbpp.tsv
+fi
