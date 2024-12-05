@@ -84,10 +84,14 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi
 
 #IF DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
-#HMMBUILD PROFILE OF FLYBASE SEQS--NEED TO PULL SEQS FROM SOMEWHERE
+#NEED TO PULL SEQS FROM SOMEWHERE
 		if [ "$1" == dme ];
 		then
-			hmmbuild $3/dmeprofile $2
+			wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/dmel_unique_protein_isoforms_fb_2024_05.tsv.gz
+			fb=$(gunzip dmel_unique_protein_isoforms_fb_2024_05.tsv.gz)
+			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null $2 $fb
+			#PULL MATCHES FROM OUTPUT
+			#PULL CORRESPONDING PATHWAYS FROM FB DATAFRAME
 		fi
 #HMMALIGN PROTEIN FASTA TO FB PROFILE
 #CREATE FB OUTPUT (IN MERGE DATA)
