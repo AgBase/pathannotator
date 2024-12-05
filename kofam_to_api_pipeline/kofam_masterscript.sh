@@ -83,19 +83,19 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		echo "Pulling KEGG API data."
 		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi
 
-#IF DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
-#NEED TO PULL SEQS FROM SOMEWHERE
+		#IF DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$1" == dme ];
 		then
-			wget https://ftp.flybase.net/releases/current/dmel_r6.60/fasta/dmel-all-translation-r6.60.fasta.gz
-			gunzip dmel-all-translation-r6.60.fasta.gz
-			fb=dmel-all-translation-r6.60.fasta
-			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $fb
-			#PULL MATCHES FROM OUTPUT
-			#PULL CORRESPONDING PATHWAYS FROM FB DATAFRAME
+			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
+ 			#PULL MATCHES FROM OUTPUT
+			cut -d ' ' -f 3 | sort | uniq > $3/phmmacc.txt
+			readarray -t phmmarray < $3/phmmacc.txt
+			for each in "${phmmarray[@]}"
+        		do
+				grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
+				cut -d ' ' -f 1,3 $3/phmm_tophits.txt > $3/phmm_matches.txt
+			done
 		fi
-#HMMALIGN PROTEIN FASTA TO FB PROFILE
-#CREATE FB OUTPUT (IN MERGE DATA)
 
 		#MERGE DATA
 		python /usr/bin/merge_data.py $1 yes $3 $3
