@@ -90,7 +90,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			wget https://ftp.flybase.net/releases/current/dmel_r6.60/fasta/dmel-all-translation-r6.60.fasta.gz
 			gunzip dmel-all-translation-r6.60.fasta.gz
 			fb=dmel-all-translation-r6.60.fasta
-			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null $2 $fb
+			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $fb
 			#PULL MATCHES FROM OUTPUT
 			#PULL CORRESPONDING PATHWAYS FROM FB DATAFRAME
 		fi
