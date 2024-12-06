@@ -50,6 +50,8 @@ then
 		#WORKS-FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
 		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
+	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
+	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
 		#WORKS-MERGE DATA
 		echo "Creating annotations output."
@@ -64,11 +66,13 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	cpus=$(( $avail - 1 ))
 	#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF EUKARYOTE.HAL??
 	/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
-	rm -r ./$3/tmp
+	rm -r $3/tmp
 
 	#FILTER KOFAM HERE
 	echo "Filtering KofamScan results"
 	grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
+        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
+        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
 	if grep -q $1 /usr/bin/kegg_org_codes.txt;
 	then
