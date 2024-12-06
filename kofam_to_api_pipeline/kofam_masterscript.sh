@@ -58,13 +58,12 @@ then
 	fi
 
 else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
-#FOR NON-NCBI ACCESSIONS WE WILL WILL NEED TO ADD STEP TO ID ORTHOLOGS/HOMOLOGS IF WE WANT TO ADD FLYBASE ANNOTATIONS (SEE MERGE DATA.PY).
 
 	echo "These are NOT NCBI protein IDs. Proceeding with KofamScan."
 	#RUN KOFAM HERE
 	avail=$(nproc)
 	cpus=$(( $avail - 1 ))
-	#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF PROKARYOTE.HAL??
+	#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF EUKARYOTE.HAL??
 	/usr/bin/kofam_scan/exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 	rm -r ./$3/tmp
 
@@ -127,10 +126,10 @@ if [ -f "$3"/pathway_group_data_fb_2024_05.tsv ]; then 	rm "$3"/pathway_group_da
 if [ -f "$3"/pathway_group_data_fb_2024_05.tsv.gz ]; then rm "$3"/pathway_group_data_fb_2024_05.tsv.gz; fi
 if [ -f "$3"/fbgn_annotation_ID_fb_2024_05.tsv ]; then 	rm "$3"/fbgn_annotation_ID_fb_2024_05.tsv; fi
 if [ -f "$3"/fbgn_annotation_ID_fb_2024_05.tsv.gz ]; then  rm "$3"/fbgn_annotation_ID_fb_2024_05.tsv.gz; fi
-if [ -f "$3"/dmel-all-translation-*.fasta]; then  rm "$3"/dmel-all-translation-*.fasta; fi
-if [ -f "$3"/dmel-all-translation-*.fasta.gz ]; then  rm "$3"/dmel-all-translation-*.fasta.gz; fi
-if [ -f "$3"/phmmacc.txt ]; then  rm "$3"/phmmacc.txt; fi
-if [ -f "$3"/phmm_tophits.txt ]; then  rm "$3"/phmm_tophits.txt; fi
-if [ -f "$3"/phmm_matches.txt ]; then  rm "$3"/phmm_matches.txt; fi
-if [ -f "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz ]; then  rm "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz; fi
-if [ -f "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv ]; then  rm "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv; fi
+#if [ -f "$3"/dmel-all-translation-*.fasta]; then  rm "$3"/dmel-all-translation-*.fasta; fi
+#if [ -f "$3"/dmel-all-translation-*.fasta.gz ]; then  rm "$3"/dmel-all-translation-*.fasta.gz; fi
+#if [ -f "$3"/phmmacc.txt ]; then  rm "$3"/phmmacc.txt; fi
+#if [ -f "$3"/phmm_tophits.txt ]; then  rm "$3"/phmm_tophits.txt; fi
+#if [ -f "$3"/phmm_matches.txt ]; then  rm "$3"/phmm_matches.txt; fi
+#if [ -f "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz ]; then  rm "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz; fi
+#if [ -f "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv ]; then  rm "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv; fi
