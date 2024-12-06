@@ -110,8 +110,8 @@ elif kofam == "yes" and species != "NA":
         fbgn_phmm.columns = ['Flybase_protein', 'Input_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein']
         #MERGE AND OUTPUT TO FILE
-        fbgn_fbpp_phmm = pd.merge(fgbn_fbpp, fbgn_phmm, on='Flybase_protein', how='inner')
-        fbgn_fbpp_phmm_path = pd.merge(fbn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
+        fbgn_fbpp_phmm = pd.merge(fbgn_fbpp, fbgn_phmm, on='Flybase_protein', how='inner')
+        fbgn_fbpp_phmm_path = pd.merge(fbgn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
         fbgn_fbpp_phmm_path.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
 
 else:
