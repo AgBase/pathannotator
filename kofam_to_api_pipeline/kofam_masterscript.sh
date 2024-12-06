@@ -93,7 +93,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			for each in "${phmmarray[@]}"
         		do
 				grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt > $3/phmm_matches.txt
+				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
 			done
 		fi
 
