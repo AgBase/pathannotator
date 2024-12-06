@@ -6,8 +6,6 @@
 #$3 output directory
 #$4 ncbi status of input FASTA accessions ('ncbi' or 'non-ncbi')
 
-#THIS WILL HAVE TO CHANGE BECAUSE SOME INPUTS WILL NOT BE NCBI ORIGIN
-#RIGHT NOW I HAVE TO USE 'NA' HERE BUT 'DME' IN MERGE SCRIPT AND I NEED DME HERE TO PULL FLYBASE
 
 kegg=$(grep $1 /usr/bin/kegg_org_codes.txt)
 

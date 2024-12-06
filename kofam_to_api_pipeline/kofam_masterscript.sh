@@ -83,6 +83,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#IF DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$1" == dme ];
 		then
+			echo "The specified species code is 'dme'. Performing Flybase annotation".
 			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
  			#PULL MATCHES FROM OUTPUT
 			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
@@ -95,6 +96,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		fi
 
 		#MERGE DATA
+		echo "Creating annotation outputs."
 		python /usr/bin/merge_data.py $1 yes $3 $3
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
@@ -106,6 +108,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3
 
 		#MERGE DATA
+		echo "Creating annotation outputs."
 		python /usr/bin/merge_data.py $1 yes $3 $3
 	fi
 fi
@@ -124,3 +127,10 @@ if [ -f "$3"/pathway_group_data_fb_2024_05.tsv ]; then 	rm "$3"/pathway_group_da
 if [ -f "$3"/pathway_group_data_fb_2024_05.tsv.gz ]; then rm "$3"/pathway_group_data_fb_2024_05.tsv.gz; fi
 if [ -f "$3"/fbgn_annotation_ID_fb_2024_05.tsv ]; then 	rm "$3"/fbgn_annotation_ID_fb_2024_05.tsv; fi
 if [ -f "$3"/fbgn_annotation_ID_fb_2024_05.tsv.gz ]; then  rm "$3"/fbgn_annotation_ID_fb_2024_05.tsv.gz; fi
+if [ -f "$3"/dmel-all-translation-*.fasta]; then  rm "$3"/dmel-all-translation-*.fasta; fi
+if [ -f "$3"/dmel-all-translation-*.fasta.gz ]; then  rm "$3"/dmel-all-translation-*.fasta.gz; fi
+if [ -f "$3"/phmmacc.txt ]; then  rm "$3"/phmmacc.txt; fi
+if [ -f "$3"/phmm_tophits.txt ]; then  rm "$3"/phmm_tophits.txt; fi
+if [ -f "$3"/phmm_matches.txt ]; then  rm "$3"/phmm_matches.txt; fi
+if [ -f "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz ]; then  rm "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz; fi
+if [ -f "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv ]; then  rm "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv; fi

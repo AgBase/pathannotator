@@ -113,7 +113,6 @@ elif kofam == "yes" and species != "NA":
         fbgn_fbpp_phmm = pd.merge(fbgn_fbpp, fbgn_phmm, on='Flybase_protein', how='inner')
         fbgn_fbpp_phmm_path = pd.merge(fbgn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
         fbgn_fbpp_phmm_path.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
-
 else:
     print("Not an acceptable combination of arguments.")
 
