@@ -1,8 +1,5 @@
 #! /bin/bash
 
-#ADDED, STILL TESTING--NEED TO ADD CPU OPTION FOR CMDLINE
-#ADDED, NEED TO TEST--ADD CHECK FOR KOFAM DB AND PULL IF NOT THERE (TOO BIG FOR CONTAINER)
-
 # $1 KEGG species code (NA or related species code if species not in KEGG)
 # $2 input file (protein FASTA without header lines)
 # $3 output directory (must be existing directory at the moment)
@@ -68,12 +65,12 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	avail=$(nproc)
 	cpus=$(( $avail - 1 ))
 	#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF PROKARYOTE.HAL??
-#	/usr/bin/kofam_scan/exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
-#	rm -r ./$3/tmp
+	/usr/bin/kofam_scan/exec_annotation -o ./$3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+	rm -r ./$3/tmp
 
 	#FILTER KOFAM HERE
-#	echo "Filtering KofamScan results"
-#	grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
+	echo "Filtering KofamScan results"
+	grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
 
 	if grep -q $1 /usr/bin/kegg_org_codes.txt;
 	then
@@ -86,7 +83,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#IF DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$1" == dme ];
 		then
-#			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
+			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
  			#PULL MATCHES FROM OUTPUT
 			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 			readarray -t phmmarray < $3/phmmacc.txt
