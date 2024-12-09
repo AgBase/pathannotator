@@ -92,6 +92,7 @@ elif kofam == "yes" and species != "NA":
     ncbi_ko_pathway = pd.merge(ncbi_ko, ko_pathway, on='KEGG_KO', how='inner')
     ncbi_ko_pathway_pathname = pd.merge(ncbi_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
     ncbi_ko_pathway_pathname = ncbi_ko_pathway_pathname[["input_species_ID","KEGG_KO","KEGG_ref_pathway","KEGG_ref_pathway_name"]]
+    ncbi_ko_pathway_pathname.insert(0, 'KEGG_species_ID','NA',allow_duplicates=True)
     ncbi_ko_pathway_pathname.to_csv(f"{outdir}/{species}_direct_KEGG_ref.tsv", sep='\t', index=False)
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
     ncbi_spec_ko = pd.merge(ncbi_ko, spec_ko, on='KEGG_KO', how='inner')
