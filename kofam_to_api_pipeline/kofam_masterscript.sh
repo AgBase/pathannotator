@@ -60,17 +60,6 @@ then
 else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 	echo "These are NOT NCBI protein IDs. Proceeding with KofamScan."
-	#RUN KOFAM HERE
-	avail=$(nproc)
-	cpus=$(( $avail - 1 ))
-	#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF EUKARYOTE.HAL??
-	/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
-
-	#FILTER KOFAM HERE
-	echo "Filtering KofamScan results"
-	grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
-        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
-        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
 	if grep -q $1 /usr/bin/kegg_org_codes.txt;
 	then
@@ -79,6 +68,18 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#PULL DATA
 		echo "Pulling KEGG API data."
 		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi
+
+		#RUN KOFAM HERE
+		avail=$(nproc)
+		cpus=$(( $avail - 1 ))
+		#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF EUKARYOTE.HAL??
+		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+
+		#FILTER KOFAM HERE
+		echo "Filtering KofamScan results"
+		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
+	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
+	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
 		#IF DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$1" == dme ];
@@ -106,6 +107,18 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#PULL DATA
 		echo "Pulling KEGG API data."
 		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3
+
+		#RUN KOFAM HERE
+		avail=$(nproc)
+		cpus=$(( $avail - 1 ))
+		#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF EUKARYOTE.HAL??
+		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+
+		#FILTER KOFAM HERE
+		echo "Filtering KofamScan results"
+		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
+	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
+	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
