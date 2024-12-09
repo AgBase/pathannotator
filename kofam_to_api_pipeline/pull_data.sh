@@ -16,17 +16,19 @@ then
 	sed -i 's/ncbi-proteinid\://g' $3/conv_ncbi-proteinid_"$1".tsv
 	sed -i "s/$1\://g" $3/conv_ncbi-proteinid_"$1".tsv
 else
-	#INSTEAD FOR NON-KEGG SPECIES USE THE KOFAM OUTPUT FILTERED FOR ASTERISK AND LIMITED TO TWO COLUMNS (WITHOUT NCBI VERSION)
-	awk '{ print $3"\t"$2 }' $2 > $3/ko_ncbi.tsv
-	sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
+#	#INSTEAD FOR NON-KEGG SPECIES USE THE KOFAM OUTPUT FILTERED FOR ASTERISK AND LIMITED TO TWO COLUMNS (WITHOUT NCBI VERSION)
+#	awk '{ print $3"\t"$2 }' $2 > $3/ko_ncbi.tsv
+#	sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
 	#THIS PULLS THE DATABASE FILES FOR KOFAMSCAN
 	if [ ! -f /data/ko_list ] && [ ! -f /data/ko_list.gz ];
 	then
+		echo "Getting Kofam ko_list."
 		wget https://www.genome.jp/ftp/db/kofam/ko_list.gz -O /data/ko_list.gz
 		gunzip /data/ko_list.gz
 	elif [ -f /data/ko_list.gz ];
 	then
+		echo "Decompressing ko_list."
 		gunzip /data/ko_list.gz
 	else
 		echo "ko_list is already present."
@@ -34,10 +36,12 @@ else
 
 	if [ ! -d /data/profiles ] && [ ! -f /data/profiles.tar.gz ];
 	then
+		echo "Getting Kofam profiles."
 		wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz -O /data/profiles.tar.gz
 		tar -xzf /data/profiles.tar.gz
 	elif [ -f /data/profiles.tar.gz ];
 	then
+		echo "profiles.tar.gz present; decompressing."
 		tar -xzf /data/profiles.tar.gz
 	else
 		echo "profiles are already present."
