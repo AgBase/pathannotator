@@ -54,7 +54,7 @@ then
 
 		#WORKS-MERGE DATA
 		echo "Creating annotations output."
-		python /usr/bin/merge_data.py $1 yes $3 $3 
+		python /usr/bin/merge_data.py $1 yes $3 $3
 	fi
 
 else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
@@ -140,8 +140,8 @@ if [ -f "$3"/pathway_group_data_fb_2024_05.tsv ]; then 	rm "$3"/pathway_group_da
 if [ -f "$3"/pathway_group_data_fb_2024_05.tsv.gz ]; then rm "$3"/pathway_group_data_fb_2024_05.tsv.gz; fi
 if [ -f "$3"/fbgn_annotation_ID_fb_2024_05.tsv ]; then 	rm "$3"/fbgn_annotation_ID_fb_2024_05.tsv; fi
 if [ -f "$3"/fbgn_annotation_ID_fb_2024_05.tsv.gz ]; then  rm "$3"/fbgn_annotation_ID_fb_2024_05.tsv.gz; fi
-if [ -f "$3"/dmel-all-translation-*.fasta]; then  rm "$3"/dmel-all-translation-*.fasta; fi
-if [ -f "$3"/dmel-all-translation-*.fasta.gz ]; then  rm "$3"/dmel-all-translation-*.fasta.gz; fi
+if [ -f "$3"/dmel-all-translation-r6.60.fasta ]; then  rm "$3"/dmel-all-translation-*.fasta; fi
+if [ -f "$3"/dmel-all-translation-r6.60.fasta.gz ]; then  rm "$3"/dmel-all-translation-*.fasta.gz; fi
 if [ -f "$3"/phmmacc.txt ]; then  rm "$3"/phmmacc.txt; fi
 if [ -f "$3"/phmm_tophits.txt ]; then  rm "$3"/phmm_tophits.txt; fi
 if [ -f "$3"/phmm_matches.txt ]; then  rm "$3"/phmm_matches.txt; fi
