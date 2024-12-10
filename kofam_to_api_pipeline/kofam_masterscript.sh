@@ -44,7 +44,7 @@ then
 		echo "This is not a KEGG species code. Running KofamScan now."
 		avail=$(nproc)
 		cpus=$(( $avail - 1 ))
-		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#WORKS-FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
@@ -73,7 +73,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		avail=$(nproc)
 		cpus=$(( $avail - 1 ))
 		#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF EUKARYOTE.HAL??
-		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
@@ -112,7 +112,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		avail=$(nproc)
 		cpus=$(( $avail - 1 ))
 		#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF EUKARYOTE.HAL??
-		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
