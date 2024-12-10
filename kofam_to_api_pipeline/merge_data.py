@@ -68,7 +68,7 @@ elif kofam == "yes" and species == "NA":
 #ADD HEADERS TO DATAFRAME COLUMNS
     ncbi_ko.columns = ['KEGG_KO', 'input_species_ID']
     ko_pathway.columns = ['KEGG_ref_pathway', 'KEGG_KO']
-    pathway.columns = ['KEGG_ref_pathway', 'KEG_ref_pathway_name']
+    pathway.columns = ['KEGG_ref_pathway', 'KEGG_ref_pathway_name']
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
     ncbi_ko_pathway = pd.merge(ncbi_ko, ko_pathway, on='KEGG_KO', how='inner')
     ncbi_ko_pathway_pathname = pd.merge(ncbi_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
