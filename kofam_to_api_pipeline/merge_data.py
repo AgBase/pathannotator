@@ -58,6 +58,7 @@ if kofam == "no" and species != "NA":
         fbgn_CG_path = pd.merge(fbgn_CG, fbgn_path, on='Flybase_gene', how='inner')
         ncbi_spec_ko['KEGG_species_ID'] = ncbi_spec_ko['KEGG_species_ID'].str.replace('Dmel_', '')
         fbgn_CG_path_ncbi_spec_ko = pd.merge(ncbi_spec_ko, fbgn_CG_path, on='KEGG_species_ID', how='inner')
+        fbgn_CG_path_ncbi_spec_ko.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_CG_path_ncbi_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
 elif kofam == "yes" and species == "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
@@ -113,6 +114,7 @@ elif kofam == "yes" and species != "NA":
         #MERGE AND OUTPUT TO FILE
         fbgn_fbpp_phmm = pd.merge(fbgn_fbpp, fbgn_phmm, on='Flybase_protein', how='inner')
         fbgn_fbpp_phmm_path = pd.merge(fbgn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
+        fbgn_fbpp_phmm_path.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_phmm_path.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
 else:
     print("Not an acceptable combination of arguments.")
