@@ -150,3 +150,4 @@ if [ -f "$3"/fbgn_fbtr_fbpp_fb_2024_05.tsv ]; then  rm "$3"/fbgn_fbtr_fbpp_fb_20
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -f "$3"/HMM_flybase.tsv ]; then rm "$3"/HMM_flybase.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
+if [ -d "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi

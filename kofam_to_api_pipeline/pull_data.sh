@@ -56,8 +56,8 @@ fi
 wget https://rest.kegg.jp/link/ko/pathway -O $3/link_ko_pathway.tsv
 sed -i 's/ko\://g' $3/link_ko_pathway.tsv
 sed -i 's/path\://g' $3/link_ko_pathway.tsv
-grep -v ko $3/link_ko_pathway.tsv > $3/tmp
-mv $3/tmp $3/link_ko_pathway.tsv
+grep -v ko $3/link_ko_pathway.tsv > $3/tmp.txt
+mv $3/tmp.txt $3/link_ko_pathway.tsv
 
 wget https://rest.kegg.jp/list/pathway -O $3/list_pathway.tsv
 
