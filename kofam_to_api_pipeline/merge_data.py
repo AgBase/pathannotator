@@ -41,11 +41,11 @@ if kofam == "no" and species != "NA":
     ncbi_spec_ko = pd.merge(ncbi_spec, spec_ko, on='KEGG_species_ID', how='inner')
     ncbi_spec_ko_pathway = pd.merge(ncbi_spec_ko, ko_pathway, on='KEGG_KO', how='inner')
     ncbi_spec_ko_pathway_pathname = pd.merge(ncbi_spec_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
-    ncbi_spec_ko_pathway_pathname.to_csv(f"{outdir}/{species}_direct_KEGG_ref.tsv", sep='\t', index=False)
+    ncbi_spec_ko_pathway_pathname.to_csv(f"{outdir}/{species}_KEGG_ref.tsv", sep='\t', index=False)
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
     ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on='KEGG_species_ID', how='inner')
     ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
-    ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_direct_KEGG_{species}.tsv", sep='\t', index=False)
+    ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_KEGG_species.tsv", sep='\t', index=False)
     #ADD FLYBASE ANNOTATIONS WHEN DME IS THE SPECIFIED SPECIES
     if species == "dme":
         #READ INTO DATAFRAMES
@@ -74,7 +74,7 @@ elif kofam == "yes" and species == "NA":
     ncbi_ko_pathway_pathname = pd.merge(ncbi_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
     ncbi_ko_pathway_pathname.insert(0, 'KEGG_species_ID','NA',allow_duplicates=True)
     ncbi_ko_pathway_pathname = ncbi_ko_pathway_pathname[['KEGG_species_ID', 'input_species_ID','KEGG_KO', 'KEGG_ref_pathway', 'KEGG_ref_pathway_name']]
-    ncbi_ko_pathway_pathname.to_csv(f"{outdir}/NA_direct_KEGG_ref.tsv", sep='\t', index=False)
+    ncbi_ko_pathway_pathname.to_csv(f"{outdir}/NA_KEGG_ref.tsv", sep='\t', index=False)
 elif kofam == "yes" and species != "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
     ncbi_ko = pd.read_table(f"{indir}/ko_ncbi.tsv", dtype=str)
@@ -95,13 +95,13 @@ elif kofam == "yes" and species != "NA":
     ncbi_ko_pathway_pathname = pd.merge(ncbi_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
     ncbi_ko_pathway_pathname = ncbi_ko_pathway_pathname[["input_species_ID","KEGG_KO","KEGG_ref_pathway","KEGG_ref_pathway_name"]]
     ncbi_ko_pathway_pathname.insert(0, 'KEGG_species_ID','NA',allow_duplicates=True)
-    ncbi_ko_pathway_pathname.to_csv(f"{outdir}/{species}_direct_KEGG_ref.tsv", sep='\t', index=False)
+    ncbi_ko_pathway_pathname.to_csv(f"{outdir}/{species}_KEGG_ref.tsv", sep='\t', index=False)
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
     ncbi_spec_ko = pd.merge(ncbi_ko, spec_ko, on='KEGG_KO', how='inner')
     ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on='KEGG_species_ID', how='inner')
     ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
     ncbi_spec_ko_specpath_specpathname = ncbi_spec_ko_specpath_specpathname[["KEGG_species_ID","input_species_ID","KEGG_KO",f"KEGG_{species}_pathway",f"KEGG_{species}_pathway_name"]]
-    ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_direct_KEGG_{species}.tsv", sep='\t', index=False)
+    ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_KEGG_species.tsv", sep='\t', index=False)
     #ADD FLYBASE ANNOTATIONS
     if species == "dme":
         #READ INTO DATAFRAMES
@@ -110,12 +110,12 @@ elif kofam == "yes" and species != "NA":
         fbgn_fbpp = pd.read_table(f"{indir}/Fbgn_fbpp.tsv", dtype=str)
         #ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
-        fbgn_phmm.columns = ['Flybase_protein', 'Input_ID']
+        fbgn_phmm.columns = ['Flybase_protein', 'Input_species_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein']
         #MERGE AND OUTPUT TO FILE
         fbgn_fbpp_phmm = pd.merge(fbgn_fbpp, fbgn_phmm, on='Flybase_protein', how='inner')
         fbgn_fbpp_phmm_path = pd.merge(fbgn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
-        fbgn_fbpp_phmm_path.drop('Flybase_gene', axis=1, inplace=True)
+#        fbgn_fbpp_phmm_path.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_phmm_path.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
 else:
     print("Not an acceptable combination of arguments.")
