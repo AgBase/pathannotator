@@ -94,7 +94,7 @@ then
         gunzip $3/dmel-all-translation-latest.fasta.gz
 
 	#PULL FBGN TO FBPP FILES
-	wget -r -l1 --no-parent -A fbgn_fbtr_fbpp* -O $3/fbgn_fbtr_fbpp_latest.tsv.gz http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/
-	gunzip $3/fbgn_fbtr_fbpp_latest.tsv.gz
-	grep -v ^\## $3/fbgn_fbtr_fbpp_latest.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
+	wget -r -l1 --no-parent -A fbgn_fbtr_fbpp_fb* -O $3/fbgn_fbtr_fbpp_fb_latest.tsv.gz https://ftp.flybase.net/releases/current/precomputed_files/genes/
+	gunzip $3/fbgn_fbtr_fbpp_fb_latest.tsv.gz
+	grep -v ^\## $3/fbgn_fbtr_fbpp_fb_latest.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 fi
