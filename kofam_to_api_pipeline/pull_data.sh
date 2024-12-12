@@ -84,7 +84,7 @@ then
 	grep -v ^\## $3/metabolic_pathway_group_data_fb_2024_05.tsv >> pathway_group_data_latest.tsv
 	cut -f 1,3,6 pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
 
-	wget -r -l1 --no-parent -A fbgn_annotation_ID_* -O fbgn_annotation_ID_latest.tsv.gz http://ftp.flybase.org/releases/current/precomputed_files/genes/
+	wget -r -l1 --no-parent -A fbgn_annotation_ID_* -O $3/fbgn_annotation_ID_latest.tsv.gz http://ftp.flybase.org/releases/current/precomputed_files/genes/
 	gunzip $3/fbgn_annotation_ID_latest.tsv.gz
 	grep -v ^\## $3/fbgn_annotation_ID_latest.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
