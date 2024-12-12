@@ -76,21 +76,25 @@ if [ "$1" == "dme" ];
 then
 	echo "Species code is 'dme'; pulling Flybase data now."
 	#THIS PULLS THE FLYBASE ANNOTATIONS
-	wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/pathway_group_data_fb_2024_05.tsv.gz -O $3/pathway_group_data_fb_2024_05.tsv.gz
-	gunzip $3/pathway_group_data_fb_2024_05.tsv.gz
-	grep -v ^\## $3/pathway_group_data_fb_2024_05.tsv | cut -f 1,3,6 > $3/Fbgn_groupid.tsv
+	wget -r -l1 --no-parent -A signaling_pathway_group_data* -O $3/signaling_pathway_group_data_latest.tsv.gz https://ftp.flybase.net/releases/current/precomputed_files/genes/
+	wget -r -l1 --no-parent -A metabolic_pathway_group_data* -O $3/metabolic_pathway_group_data_latest.tsv.gz https://ftp.flybase.net/releases/current/precomputed_files/genes/
+	gunzip $3/signaling_pathway_group_data_latest.tsv.gz
+	gunzip $3/metabolic_pathway_group_data_latest.tsv.gz
+	grep -v ^\## $3/signaling_pathway_group_data_latest.tsv > pathway_group_data_latest.tsv
+	grep -v ^\## $3/metabolic_pathway_group_data_fb_2024_05.tsv >> pathway_group_data_latest.tsv
+	cut -f 1,3,6 pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
 
-	wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/fbgn_annotation_ID_fb_2024_05.tsv.gz -O $3/fbgn_annotation_ID_fb_2024_05.tsv.gz
-	gunzip $3/fbgn_annotation_ID_fb_2024_05.tsv.gz
-	grep -v ^\## $3/fbgn_annotation_ID_fb_2024_05.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
+	wget -r -l1 --no-parent -A fbgn_annotation_ID_* -O fbgn_annotation_ID_latest.tsv.gz http://ftp.flybase.org/releases/current/precomputed_files/genes/
+	gunzip $3/fbgn_annotation_ID_latest.tsv.gz
+	grep -v ^\## $3/fbgn_annotation_ID_latest.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 
 	#PULL FB PROTEIN FASTA
-        wget https://ftp.flybase.net/releases/current/dmel_r6.61/fasta/dmel-all-translation-r6.61.fasta.gz -O $3/dmel-all-translation-r6.61.fasta.gz
-        gunzip $3/dmel-all-translation-r6.61.fasta.gz
+	wget -r -l1 --no-parent -A dmel-all-translation* -O $3/dmel-all-translation-latest.fasta.gz https://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/
+        gunzip $3/dmel-all-translation-latest.fasta.gz
 
 	#PULL FBGN TO FBPP FILES
-	wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz -O $3/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz
-	gunzip $3/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz
-	grep -v ^\## $3/fbgn_fbtr_fbpp_fb_2024_05.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
+	wget -r -l1 --no-parent -A fbgn_fbtr_fbpp* -O $3/fbgn_fbtr_fbpp_latest.tsv.gz http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/
+	gunzip $3/fbgn_fbtr_fbpp_latest.tsv.gz
+	grep -v ^\## $3/fbgn_fbtr_fbpp_latest.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 fi
