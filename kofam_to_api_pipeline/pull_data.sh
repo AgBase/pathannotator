@@ -86,8 +86,8 @@ then
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 
 	#PULL FB PROTEIN FASTA
-        wget https://ftp.flybase.net/releases/current/dmel_r6.60/fasta/dmel-all-translation-r6.60.fasta.gz -O $3/dmel-all-translation-r6.60.fasta.gz
-        gunzip $3/dmel-all-translation-r6.60.fasta.gz
+        wget https://ftp.flybase.net/releases/current/dmel_r6.61/fasta/dmel-all-translation-r6.61.fasta.gz -O $3/dmel-all-translation-r6.61.fasta.gz
+        gunzip $3/dmel-all-translation-r6.61.fasta.gz
 
 	#PULL FBGN TO FBPP FILES
 	wget http://ftp.flybase.org/releases/FB2024_05/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz -O $3/fbgn_fbtr_fbpp_fb_2024_05.tsv.gz
