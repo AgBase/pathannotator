@@ -1,0 +1,108 @@
+ABOUT THIS TOOL
+
+This tool provides KEGG pathway annotations and, if the specified species code is 'dme' (Drosophila melanogaster) it will provide Flybase pathway annotations as well.
+If your accessions are NCBI protein accessions and you specify a KEGG species code then the annotations will be pulled directly from the KEGG API. 
+If your accessions are anything other than NCBI protein accessions then they will be mapped using Kofamscan (HMMER-based) to KEGG objects and annotations to KEGG reference pathways will be provided. Species specific annotations will be provided if a valid KEGG species code (not 'NA') is provided. 
+
+WHERE TO FIND IT
+the container is on dockerhub: agbase/kofamscan:1.1
+the scripts are on GitHub: agbase/kofamscan
+
+BASIC USAGE
+
+The pipeline takes 3 positional arguments:
+kegg species code (can be found here: https://www.kegg.jp/brite/br08601.keg . If your species of interest is not available in KEGG you can use a related species or 'NA'.
+FASTA file of protein sequences (accessions are interpreted as everything before the first space in the def line. Be careful NOT to include a space immediately after '>'.)
+output directory (this directory must exist before you run the pipeline.)
+
+Your local working directory should be mounted to /workdir in the container.
+The kofam ko_list and profiles should be mounted to /data in the container. If you don't have these files that's ok, just mount an existing directory where they can be downloaded and the tool will do it for you.
+
+DOCKER USAGE
+
+sudo docker run \
+--rm \
+-v /your/file/path/to/working/dir:/workdir \
+-v /your/file/path/to/data:/data \
+agbase/kofamscan:1.1 \
+tca \
+ncbi-protein.fa \
+tricas/
+
+
+APPTAINER USAGE
+
+singularity run \
+-B /your/file/path/to/working/dir:/workdir \
+-B /your/file/path/to/data:/data \
+kofamscan_1.1.sif \
+tca \
+ncbi-protein.fa \
+tricas/
+
+
+EXPECTED OUTPUTS
+NCBI protein IDs, KEGG species code
+example: tca ncbi-protein.fa tricas/
+
+	tca_kegg_ref.tsv
+	tca_kegg_species.tsv
+
+if KEGG code is dme...FB
+
+	dme_flybase.tsv
+
+NCBI protein IDs, 'NA' species code
+example: NA ncbi-protein.fa tricas/
+
+	NA_kegg_ref.tsv
+	kofam_filtered_asterisk.txt
+	kofam_result_full.txt
+
+
+non-NCBI protein IDs, KEGG species code
+example: tca ogs.fa tricasOGS/
+
+	tca_kegg_ref.tsv
+	tca_kegg_species.tsv
+	kofam_filtered_asterisk.txt
+	kofam_result_full.txt
+
+if KEGG code is dme...FB
+
+	HMM_flybase.tsv
+
+non-NCBI protein IDs, 'NA' species code
+example: NA ogs.fa tricasOGS/
+
+	tca_kegg_ref.tsv
+	kofam_filtered_asterisk.txt
+	kofam_result_full.txt
+
+
+
+TIME AND RESOURCE USAGE
+
+With both NCBI IDs and a valid KEGG species code it should complete quickly.
+
+	dme GCF_031307605.1_icTriCast1.1_protein.faa tricas
+	with 96 cores: 23 seconds
+	with 198 cores: 14 seconds
+
+With NCBI IDs and 'NA' species code it will take a little longer.
+
+	NA GCF_031307605.1_icTriCast1.1_protein.faa tricas
+	with 96 cores: 36 minutes
+	with 198 cores: 39 minutes
+
+With non-NCBI IDs and 'NA' species code it will take longer still.
+
+	NA tricas_OGSv3.1_pep.fa tricas
+	with 96 cores: 26 minutes
+	with 198 cores:15 minutes
+
+With non-NCBI IDs and valid KEGG species code it will take longest.
+
+	dme tricas_OGSv3.1_pep.fa tricas
+	with 96 cores: 3 hours 19 minutes
+	with 198 cores:
