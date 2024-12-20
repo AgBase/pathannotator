@@ -5,7 +5,7 @@
 #$2 is the filtered * input file ( from kofam, filter kofam)
 #$3 output directory
 #$4 ncbi status of input FASTA accessions ('ncbi' or 'non-ncbi')
-
+#$5 FB for flybase annotations, NA for none
 
 kegg=$(grep $1 /usr/bin/kegg_org_codes.txt)
 
@@ -72,7 +72,7 @@ then
 	sed -i "s/$1\://g" $3/link_"$1"_ko.tsv
 fi
 
-if [ "$1" == "dme" ];
+if [ "$5" == "FB" ];
 then
 	echo "Species code is 'dme'; pulling Flybase data now."
 	#THIS PULLS THE FLYBASE ANNOTATIONS

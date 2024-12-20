@@ -3,7 +3,7 @@
 # $1 KEGG species code (NA or related species code if species not in KEGG)
 # $2 input file (protein FASTA without header lines)
 # $3 output directory (must be existing directory at the moment)
-
+# $4 FB for flybase annotations, NA for none
 
 # WORKS-TESTS WHETHER ACCESSIONS ARE NCBI PROTEIN IDS
 acc1=$(head -n1 $2 | sed 's/>//g' | sed 's/\s.*$//')
@@ -28,17 +28,17 @@ then
 	then
 		#WORKS-PULL DATA
 		echo "This is a KEGG species code. Pulling KEGG API DATA NOW."
-		bash /usr/bin/pull_data.sh $1 NA $3 ncbi
+		bash /usr/bin/pull_data.sh $1 NA $3 ncbi $4
 
 		#WORKS-MERGE DATA HERE
 		echo "Creating annotations output."
-		python /usr/bin/merge_data.py "$1" no "$3" "$3"
+		python /usr/bin/merge_data.py $1 no $3 $3 $4
 
 	else # ELSE MEANS THE THE CODE IS NOT A KEGG SPECIES CODE
 
 		#WORKS-PULL DATA
 		echo "Pulling KEGG API data."
-		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 ncbi
+		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 ncbi $4
 
 		#RUN KOFAMSCAN
 		echo "This is not a KEGG species code. Running KofamScan now."
@@ -54,7 +54,7 @@ then
 
 		#WORKS-MERGE DATA
 		echo "Creating annotations output."
-		python /usr/bin/merge_data.py $1 yes $3 $3
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4
 	fi
 
 else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
@@ -67,7 +67,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi
+		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 non-ncbi $4
 
 		#RUN KOFAM HERE
 		avail=$(nproc)
@@ -81,8 +81,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-		#IF DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
-		if [ "$1" == dme ];
+		#IF FB RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
+		if [ "$4" == FB ];
 		then
 			echo "The specified species code is 'dme'. Performing Flybase annotation".
 			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
@@ -98,7 +98,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -106,7 +106,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3
+		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 $4
 
 		#RUN KOFAM HERE
 		avail=$(nproc)
@@ -120,9 +120,24 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
+		#IF FB RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
+		if [ "$4" == FB ];
+		then
+			echo "The specified species code is 'dme'. Performing Flybase annotation".
+			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
+ 			#PULL MATCHES FROM OUTPUT
+			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
+			readarray -t phmmarray < $3/phmmacc.txt
+			for each in "${phmmarray[@]}"
+        		do
+				grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
+				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
+			done
+		fi
+
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4
 	fi
 fi
 
