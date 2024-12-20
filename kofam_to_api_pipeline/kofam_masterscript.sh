@@ -84,7 +84,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#IF FB RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$4" == FB ];
 		then
-			echo "The specified species code is 'dme'. Performing Flybase annotation".
+			echo "Performing Flybase annotation".
 			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
  			#PULL MATCHES FROM OUTPUT
 			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
@@ -123,7 +123,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#IF FB RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$4" == FB ];
 		then
-			echo "The specified species code is 'dme'. Performing Flybase annotation".
+			echo "Performing Flybase annotation".
 			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
  			#PULL MATCHES FROM OUTPUT
 			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
