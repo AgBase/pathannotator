@@ -12,7 +12,7 @@ import argparse
 import os
 
 parser = argparse.ArgumentParser()
-parser.add_argument('species', required=True)
+parser.add_argument('species')
 parser.add_argument('kofam')
 parser.add_argument('indir')
 parser.add_argument('outdir')
