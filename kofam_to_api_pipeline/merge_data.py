@@ -49,7 +49,7 @@ if kofam == "no" and species != "NA":
     ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
     ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_KEGG_species.tsv", sep='\t', index=False)
     #ADD FLYBASE ANNOTATIONS WHEN DME IS THE SPECIFIED SPECIES
-    if flybase == "FB":
+    if flybase == "FB" and species == "dme":
         #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
         fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
@@ -62,6 +62,24 @@ if kofam == "no" and species != "NA":
         fbgn_CG_path_ncbi_spec_ko = pd.merge(ncbi_spec_ko, fbgn_CG_path, on='KEGG_species_ID', how='inner')
         fbgn_CG_path_ncbi_spec_ko.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_CG_path_ncbi_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
+    elif flybase =="FB" and species != "dme":
+        #READ INTO DATAFRAMES
+        fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
+        fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
+        fbgn_phmm = pd.read_table(f"{indir}/phmm_matches.txt", dtype=str)
+        fbgn_fbpp = pd.read_table(f"{indir}/Fbgn_fbpp.tsv", dtype=str)
+        #ADD HEADERS
+        fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
+        fbgn_CG.columns = ['Flybase_gene', 'KEGG_species_ID']
+        fbgn_phmm.columns = ['Flybase_protein', 'Input_species_ID']
+        fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein']
+        #MERGE AND OUTPUT TO FILE
+        fbgn_fbpp_phmm = pd.merge(fbgn_fbpp, fbgn_phmm, on='Flybase_protein', how='inner')
+        fbgn_fbpp_phmm_path = pd.merge(fbgn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
+        fbgn_fbpp_phmm_path_CG = pd.merge(fbgn_fbpp_phmm_path, fbgn_CG, on='Flybase_gene', how='inner')
+        fbgn_fbpp_phmm_path_CG.drop('Flybase_gene', axis=1, inplace=True)
+        fbgn_fbpp_phmm_path_CG = fbgn_fbpp_phmm_path_CG[["KEGG_species_ID","Input_species_ID","Flybase_protein","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_fbpp_phmm_path_CG.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
     else:
         print("You have not requested Flybase annotations.")
 elif kofam == "yes" and species == "NA":
