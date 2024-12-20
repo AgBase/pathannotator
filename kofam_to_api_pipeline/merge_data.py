@@ -62,7 +62,7 @@ if kofam == "no" and species != "NA":
         fbgn_CG_path_ncbi_spec_ko = pd.merge(ncbi_spec_ko, fbgn_CG_path, on='KEGG_species_ID', how='inner')
         fbgn_CG_path_ncbi_spec_ko.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_CG_path_ncbi_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
-    else
+    else:
         print("You have not requested Flybase annotations.")
 elif kofam == "yes" and species == "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
@@ -143,7 +143,7 @@ elif kofam == "yes" and species != "NA":
         fbgn_fbpp_phmm_path_CG.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_phmm_path_CG = fbgn_fbpp_phmm_path_CG[["KEGG_species_ID","Input_species_ID","Flybase_protein","Flybase_pathway_ID","Flybase_pathway_name"]]
         fbgn_fbpp_phmm_path_CG.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
-    else
+    else:
         print("You have not requested Flybase annotations.")
 else:
     print("Not an acceptable combination of arguments.")
