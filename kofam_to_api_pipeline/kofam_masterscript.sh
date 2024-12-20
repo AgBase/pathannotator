@@ -24,19 +24,36 @@ then
 	sed -i 's/\s.*$//' $3/deflines.tmp
 
 
-	if grep -q $1 /usr/bin/kegg_org_codes.txt;
+	if grep -q $1 /usr/bin/kegg_org_codes.txt; #IF THIS IS A KEGG SPECIES
 	then
-		#WORKS-PULL DATA
+		#PULL DATA
 		echo "This is a KEGG species code. Pulling KEGG API DATA NOW."
 		bash /usr/bin/pull_data.sh $1 NA $3 ncbi $4
 
-		#WORKS-MERGE DATA HERE
+		#IF FB AND NOT DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
+		if [ "$1" != "dme" ] && [ "$4" == "FB" ];
+		then
+			echo "Performing Flybase annotation".
+			avail=$(nproc)
+			cpus=$(( $avail - 1 ))
+			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
+ 			#PULL MATCHES FROM OUTPUT
+			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
+			readarray -t phmmarray < $3/phmmacc.txt
+			for each in "${phmmarray[@]}"
+        		do
+				grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
+				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
+			done
+		fi
+
+		#MERGE DATA HERE
 		echo "Creating annotations output."
 		python /usr/bin/merge_data.py $1 no $3 $3 $4
 
 	else # ELSE MEANS THE THE CODE IS NOT A KEGG SPECIES CODE
 
-		#WORKS-PULL DATA
+		#PULL DATA
 		echo "Pulling KEGG API data."
 		bash /usr/bin/pull_data.sh $1 $3/kofam_filtered_asterisk.txt $3 ncbi $4
 
@@ -46,13 +63,13 @@ then
 		cpus=$(( $avail - 1 ))
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
-		#WORKS-FILTER KOFAM HERE
+		#FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
 		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-		#WORKS-MERGE DATA
+		#MERGE DATA
 		echo "Creating annotations output."
 		python /usr/bin/merge_data.py $1 yes $3 $3 $4
 	fi
