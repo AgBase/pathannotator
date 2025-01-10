@@ -142,8 +142,21 @@ elif kofam == "yes" and species != "NA":
     ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
     ncbi_spec_ko_specpath_specpathname = ncbi_spec_ko_specpath_specpathname[["KEGG_species_ID","input_species_ID","KEGG_KO",f"KEGG_{species}_pathway",f"KEGG_{species}_pathway_name"]]
     ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_KEGG_species.tsv", sep='\t', index=False)
-    #ADD FLYBASE ANNOTATIONS
-    if flybase == "FB":
+    #ADD FLYBASE ANNOTATIONS WHEN DME IS THE SPECIFIED SPECIES
+    if flybase == "FB" and species == "dme":
+        #READ INTO DATAFRAMES
+        fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
+        fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
+        #ADD HEADERS
+        fbgn_CG.columns = ['Flybase_gene', 'KEGG_species_ID']
+        fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
+        #MERGE AND OUTPUT TO FILE
+        fbgn_CG_path = pd.merge(fbgn_CG, fbgn_path, on='Flybase_gene', how='inner')
+        ncbi_spec_ko['KEGG_species_ID'] = ncbi_spec_ko['KEGG_species_ID'].str.replace('Dmel_', '')
+        fbgn_CG_path_ncbi_spec_ko = pd.merge(ncbi_spec_ko, fbgn_CG_path, on='KEGG_species_ID', how='inner')
+        fbgn_CG_path_ncbi_spec_ko.drop('Flybase_gene', axis=1, inplace=True)
+        fbgn_CG_path_ncbi_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
+    elif flybase =="FB" and species != "dme":
         #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
         fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
