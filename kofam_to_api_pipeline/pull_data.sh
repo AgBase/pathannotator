@@ -86,7 +86,7 @@ then
 
 	wget -r -nd -np -A gz --accept-regex "fbgn_annotation_ID_fb*" -P $3/ 'https://ftp.flybase.org/releases/current/precomputed_files/genes/'
 	gunzip $3/fbgn_annotation_ID_fb*
-	grep -v ^\# $3/fbgn_annotation_ID_fb* | cut -f 3,5 > $3/Fbgn_CG.tsv
+	grep -h -v ^\# $3/fbgn_annotation_ID_fb* | cut -f 3,5 > $3/Fbgn_CG.tsv
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 
 	#PULL FB PROTEIN FASTA
