@@ -1,8 +1,7 @@
 #! /bin/bash
 
-#MUST SUPPLY $1 OR $2 OR BOTH
 #$1 is the KEGG species code (use NA or related species if species not in KEGG)
-#$2 is the filtered * input file ( from kofam, filter kofam)
+#$2 whether kofamscan is necessary ('yes' or 'no')
 #$3 output directory
 #$4 ncbi status of input FASTA accessions ('ncbi' or 'non-ncbi')
 #$5 FB for flybase annotations, NA for none
@@ -15,8 +14,9 @@ then
 	wget https://rest.kegg.jp/conv/ncbi-proteinid/"$1" -O $3/conv_ncbi-proteinid_"$1".tsv
 	sed -i 's/ncbi-proteinid\://g' $3/conv_ncbi-proteinid_"$1".tsv
 	sed -i "s/$1\://g" $3/conv_ncbi-proteinid_"$1".tsv
-else
-
+fi
+if [ $2 == "yes" ];
+then
 	#THIS PULLS THE DATABASE FILES FOR KOFAMSCAN
 	if [ ! -f /data/ko_list ] && [ ! -f /data/ko_list.gz ];
 	then
@@ -74,7 +74,7 @@ fi
 
 if [ "$5" == "FB" ];
 then
-	echo "Species code is 'dme'; pulling Flybase data now."
+	echo "Pulling Flybase data now."
 	#THIS PULLS THE FLYBASE ANNOTATIONS
 	wget -r -nd -np -A gz --accept-regex "signaling_pathway_group_data*" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
 	wget -r -nd -np -A gz --accept-regex "metabolic_pathway_group_data*" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
