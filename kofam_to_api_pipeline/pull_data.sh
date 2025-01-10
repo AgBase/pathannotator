@@ -80,8 +80,8 @@ then
 	wget -r -nd -np -A gz --accept-regex "metabolic_pathway_group_data*" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
 	gunzip $3/signaling_pathway_group_data_*
 	gunzip $3/metabolic_pathway_group_data_*
-	grep -v ^\# $3/signaling_pathway_group_data_* > $3/pathway_group_data_latest.tsv
-	grep -v ^\# $3/metabolic_pathway_group_data_* >> $3/pathway_group_data_latest.tsv
+	grep -h -v ^\# $3/signaling_pathway_group_data_* > $3/pathway_group_data_latest.tsv
+	grep -h -v ^\# $3/metabolic_pathway_group_data_* >> $3/pathway_group_data_latest.tsv
 	cut -f 1,3,6 $3/pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
 
 	wget -r -nd -np -A gz --accept-regex "fbgn_annotation_ID_fb*" -P $3/ 'https://ftp.flybase.org/releases/current/precomputed_files/genes/'
