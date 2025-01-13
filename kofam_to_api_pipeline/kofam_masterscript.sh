@@ -193,7 +193,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash /usr/bin/pull_data.sh $1 yes $3 $4
+		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
 
 		#RUN KOFAM HERE
 		avail=$(nproc)
