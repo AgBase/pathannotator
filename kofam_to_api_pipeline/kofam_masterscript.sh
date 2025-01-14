@@ -5,6 +5,7 @@ then
 	echo "Help and Usage:
 	There are 4 positional arguments.
 	1: KEGG species code (NA or related species code if species not in KEGG; 'help' to see this help and usage statement)
+	   KEGG species codes can be found here: https://www.genome.jp/brite/br08611
 	2: input file (protein FASTA without header lines)
 	3: output directory (must be an existing directory)
 	4: 'FB' for flybase annotations, 'NA' for none"
