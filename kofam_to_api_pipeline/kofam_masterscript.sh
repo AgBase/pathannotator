@@ -36,7 +36,7 @@ then
 	then
 		#PULL DATA
 		echo "This is a KEGG species code. Pulling KEGG API data now."
-		bash /usr/bin/pull_data.sh $1 yes $3 ncbi $4
+		bash /usr/bin/pull_data.sh $1 no $3 ncbi $4
 
 		#NEED TO COMPARE DEFLINES.TMP TO SPECIFIED SPECIES CODE AND DECIDE IF THEY ARE THE SAME SPECIES
 		#if i were to pull data then grep the first defline.tmp entry from ncbi_ko to see if it exists...
