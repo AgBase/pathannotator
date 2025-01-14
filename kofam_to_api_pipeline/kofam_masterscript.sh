@@ -1,9 +1,14 @@
 #! /bin/bash
 
-# $1 KEGG species code (NA or related species code if species not in KEGG)
-# $2 input file (protein FASTA without header lines)
-# $3 output directory (must be existing directory at the moment)
-# $4 FB for flybase annotations, NA for none
+if [ $1 == "help" ];
+then
+	echo "Help and Usage:"
+	"There are 4 positional arguments."
+	"$1 KEGG species code (NA or related species code if species not in KEGG; 'help' to see this help and usage statement)"
+	"$2 input file (protein FASTA without header lines)"
+	"$3 output directory (must be an existing directory)"
+	"$4 'FB' for flybase annotations, 'NA' for none"
+fi
 
 # WORKS-TESTS WHETHER ACCESSIONS ARE NCBI PROTEIN IDS
 acc1=$(head -n1 $2 | sed 's/>//g' | sed 's/\s.*$//')
