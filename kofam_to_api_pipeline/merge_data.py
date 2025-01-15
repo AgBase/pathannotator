@@ -89,14 +89,14 @@ elif kofam == "yes" and species == "NA":
     ko_pathway = pd.read_table(f"{indir}/link_ko_pathway.tsv", dtype=str)
     pathway = pd.read_table(f"{indir}/list_pathway.tsv", dtype=str)
 #ADD HEADERS TO DATAFRAME COLUMNS
-    ncbi_ko.columns = ['KEGG_KO', 'input_species_ID']
+    ncbi_ko.columns = ['KEGG_KO', 'Input_species_ID']
     ko_pathway.columns = ['KEGG_ref_pathway', 'KEGG_KO']
     pathway.columns = ['KEGG_ref_pathway', 'KEGG_ref_pathway_name']
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
     ncbi_ko_pathway = pd.merge(ncbi_ko, ko_pathway, on='KEGG_KO', how='inner')
     ncbi_ko_pathway_pathname = pd.merge(ncbi_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
     ncbi_ko_pathway_pathname.insert(0, 'KEGG_species_ID','NA',allow_duplicates=True)
-    ncbi_ko_pathway_pathname = ncbi_ko_pathway_pathname[['KEGG_species_ID', 'input_species_ID','KEGG_KO', 'KEGG_ref_pathway', 'KEGG_ref_pathway_name']]
+    ncbi_ko_pathway_pathname = ncbi_ko_pathway_pathname[['KEGG_species_ID', 'Input_species_ID','KEGG_KO', 'KEGG_ref_pathway', 'KEGG_ref_pathway_name']]
     ncbi_ko_pathway_pathname.to_csv(f"{outdir}/NA_KEGG_ref.tsv", sep='\t', index=False)
     if flybase == "FB":
         #READ INTO DATAFRAMES
@@ -125,7 +125,7 @@ elif kofam == "yes" and species != "NA":
     spec_pathway = pd.read_table(f"{indir}/link_pathway_{species}.tsv", dtype=str)
     list_pathway_spec = pd.read_table(f"{indir}/list_pathway_{species}.tsv", dtype=str)
 #ADD HEADERS TO DATAFRAME COLUMNS
-    ncbi_ko.columns = ['KEGG_KO', 'input_species_ID']
+    ncbi_ko.columns = ['KEGG_KO', 'Input_species_ID']
     spec_ko.columns = ['KEGG_KO', 'KEGG_species_ID']
     ko_pathway.columns = ['KEGG_ref_pathway', 'KEGG_KO']
     pathway.columns = ['KEGG_ref_pathway', 'KEGG_ref_pathway_name']
@@ -134,14 +134,14 @@ elif kofam == "yes" and species != "NA":
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
     ncbi_ko_pathway = pd.merge(ncbi_ko, ko_pathway, on='KEGG_KO', how='inner')
     ncbi_ko_pathway_pathname = pd.merge(ncbi_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
-    ncbi_ko_pathway_pathname = ncbi_ko_pathway_pathname[["input_species_ID","KEGG_KO","KEGG_ref_pathway","KEGG_ref_pathway_name"]]
+    ncbi_ko_pathway_pathname = ncbi_ko_pathway_pathname[["Input_species_ID","KEGG_KO","KEGG_ref_pathway","KEGG_ref_pathway_name"]]
     ncbi_ko_pathway_pathname.insert(0, 'KEGG_species_ID','NA',allow_duplicates=True)
     ncbi_ko_pathway_pathname.to_csv(f"{outdir}/{species}_KEGG_ref.tsv", sep='\t', index=False)
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
     ncbi_spec_ko = pd.merge(ncbi_ko, spec_ko, on='KEGG_KO', how='inner')
     ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on='KEGG_species_ID', how='inner')
     ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
-    ncbi_spec_ko_specpath_specpathname = ncbi_spec_ko_specpath_specpathname[["KEGG_species_ID","input_species_ID","KEGG_KO",f"KEGG_{species}_pathway",f"KEGG_{species}_pathway_name"]]
+    ncbi_spec_ko_specpath_specpathname = ncbi_spec_ko_specpath_specpathname[["KEGG_species_ID","Input_species_ID","KEGG_KO",f"KEGG_{species}_pathway",f"KEGG_{species}_pathway_name"]]
     ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_KEGG_species.tsv", sep='\t', index=False)
     #ADD FLYBASE ANNOTATIONS
     if flybase == "FB" and species == "dme":
