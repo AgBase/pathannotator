@@ -61,6 +61,7 @@ if kofam == "no" and species != "NA":
         ncbi_spec_ko['KEGG_species_ID'] = ncbi_spec_ko['KEGG_species_ID'].str.replace('Dmel_', '')
         fbgn_CG_path_ncbi_spec_ko = pd.merge(ncbi_spec_ko, fbgn_CG_path, on='KEGG_species_ID', how='inner')
         fbgn_CG_path_ncbi_spec_ko.drop('Flybase_gene', axis=1, inplace=True)
+        fbgn_CG_path_ncbi_spec_ko = fbgn_CG_path_ncbi_spec_ko[["KEGG_KO","Input_species_ID","KEGG_species_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
         fbgn_CG_path_ncbi_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
     elif flybase =="FB" and species != "dme":
         #READ INTO DATAFRAMES
