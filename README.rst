@@ -299,12 +299,12 @@ Reference `Understanding results`_.
 
 The output files you can expect will differ depending on the circumstances of your run. If you are using the KEGG code for your species of interest and your FASTA protein identifiers are NCBI protein IDs then your annotations will be pulled directly from the KEGG API. In other circumstances (detailed below) KofamScan will be run to identify homologs and transfer annotations to your species of interest. Under all circumstances you may specify whether or not you want to receive Flybase pathways annotations as well.
 
-**KEGG code and NCBI protein IDs**
+**Same-species KEGG code and NCBI RefSeq protein IDs**
 ----------------------------------
 
 **Expected output files:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-- **tca_KEGG_species.tsv:** These are annotations to the species-specific pathways. The filename will begin with the KEGG species code. The pathway identifiers will begin the KEGG species code.
+- **tca_KEGG_species.tsv:** These are KEGG's annotations of the NCBI-RefSeq proteins to the species-specific KEGG pathways. The filename will begin with the KEGG species code. The pathway identifiers will begin the KEGG species code. Note that for species-specific pathways, KEGG internally filters associations between the KO (KEGG Orthology) accession and the reference pathway. 
 
     +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
     |KEGG_species_ID    |Input_species_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
@@ -318,7 +318,7 @@ The output files you can expect will differ depending on the circumstances of yo
 
 
 
-- **tca_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers wil begin with 'map'.
+- **tca_KEGG_ref.tsv:** These are KEGG's annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'. You should expect more pathway annotations per protein than for the species-specific pathway.
 
     +----------------+-------------------+-----------+---------------------+-------------------------------------------+
     |KEGG_species_ID |  Input_species_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
@@ -389,7 +389,7 @@ The output files you can expect will differ depending on the circumstances of yo
     |\* | NP_001034491.1   |   K00698          |133.83            |1083.4                   |0                        |chitin synthase [EC:2.4.1.16] |
     +---+------------------+-------------------+------------------+-------------------------+-------------------------+------------------------------+
 
-- **tca_KEGG_species.tsv:** These are annotations to the species-specific pathways. The pathway identifiers will begin the KEGG species code.
+- **tca_KEGG_species.tsv:** These are annotations to the species-specific KEGG pathway. The pathway identifiers will begin the KEGG species code.
 
     +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
     |KEGG_species_ID    |Input_species_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
@@ -402,7 +402,7 @@ The output files you can expect will differ depending on the circumstances of yo
     +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
 
 
-- **tca_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers wil begin with 'map'.
+- **tca_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'.
 
     +----------------+-------------------+-----------+---------------------+-------------------------------------------+
     |KEGG_species_ID |  Input_species_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
@@ -448,7 +448,7 @@ The output files you can expect will differ depending on the circumstances of yo
 
 **Expected output files:**
 
-If you did not specify a KEGG species code (used 'NA') there will be no species-specific annotations file made.
+If you did not specify a KEGG species code (used 'NA') then no species-specific annotations file will be generated.
 
 - **kofam_result_full.txt:** This is the full output from KofamScan. It has not yet been filtered and pathways annotations have not yet been identified.
 
