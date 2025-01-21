@@ -32,6 +32,9 @@ If you want to download them beforehand they are available from the KEGG website
 
         wget https://www.genome.jp/ftp/db/kofam/ko_list.gz
 
+**TIP:**
+KEGG updates their annotations approximately once a month. If your profiles and ko_list files are older than this then your annotations will not be up-to-date. Just delete them and the new versions will be downloaded with your first annotation run.
+
 If your species of interest has been annotated by the KEGG project you can provide this tool with the corresponding KEGG species code to pull those annotations directly. If your species of interest is not listed you should choose a closely related species and use that code.
 KEGG species codes can be found here: https://www.genome.jp/brite/br08611
 
@@ -125,7 +128,7 @@ The container can be pulled with this command:
     sudo docker run --rm agbase/pathannotator:1.0 help
 
 
-.. tip::
+**TIP:**
 
     The /workdir directory is built into this container and should be used to mount your working directory.
 
