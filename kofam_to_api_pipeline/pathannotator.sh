@@ -268,6 +268,7 @@ if [ -f "$3"/ko_ncbi.tsv ]; then rm "$3"/ko_ncbi.tsv; fi
 if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
 if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
 if [ -f "$3"/pathway_group_data_latest.tsv ]; then rm $3/pathway_group_data_latest.tsv; fi
+if [ -f "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
 if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_group_data_fb*; fi
 if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
 if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
@@ -279,4 +280,3 @@ if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -f "$3"/FB_phmmer.txt ]; then rm "$3"/FB_phmmer.txt; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -d "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-if [ -d "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
