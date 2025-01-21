@@ -42,8 +42,6 @@ ADD kofam_to_api_pipeline/pull_data.sh /usr/bin
 
 ADD kofam_to_api_pipeline/merge_data.py /usr/bin
 
-#ADD kofam_to_api_pipeline/kegg_org_codes.txt /usr/bin
-
 WORKDIR /usr/bin
 
 RUN git clone https://github.com/takaram/kofam_scan.git
