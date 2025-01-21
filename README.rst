@@ -487,6 +487,6 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
     +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
 
 
-`Contact us <agbase@email.arizona.edu>`_.
+`Contact us <agbase@email.arizona.edu>`_
 
 
