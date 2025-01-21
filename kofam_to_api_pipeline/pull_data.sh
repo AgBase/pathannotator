@@ -7,7 +7,7 @@
 #$5 FB for flybase annotations, NA for none
 
 wget https://rest.kegg.jp/list/genome -O $3/kegg_organisms.txt
-cut -f 2 kegg_organims.txt > kegg_org_codes.txt
+cut -f 2 kegg_organisms.txt > kegg_org_codes.txt
 sed -t 's/\;//g' kegg_org_codes.txt
 kegg=$(grep $1 $3/kegg_org_codes.txt)
 
