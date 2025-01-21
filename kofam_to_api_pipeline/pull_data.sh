@@ -78,23 +78,24 @@ then
 	#THIS PULLS THE FLYBASE ANNOTATIONS
 	wget -r -nd -np -A gz --accept-regex "signaling_pathway_group_data*" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
 	wget -r -nd -np -A gz --accept-regex "metabolic_pathway_group_data*" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
-	gunzip $3/signaling_pathway_group_data_*
-	gunzip $3/metabolic_pathway_group_data_*
+	gunzip -f $3/signaling_pathway_group_data_*.gz
+	gunzip -f $3/metabolic_pathway_group_data_*.gz
+
 	grep -h -v ^\# $3/signaling_pathway_group_data_* > $3/pathway_group_data_latest.tsv
 	grep -h -v ^\# $3/metabolic_pathway_group_data_* >> $3/pathway_group_data_latest.tsv
 	cut -f 1,3,6 $3/pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
 
 	wget -r -nd -np -A gz --accept-regex "fbgn_annotation_ID_fb*" -P $3/ 'https://ftp.flybase.org/releases/current/precomputed_files/genes/'
-	gunzip $3/fbgn_annotation_ID_fb*
+	gunzip -f $3/fbgn_annotation_ID_fb*
 	grep -h -v ^\# $3/fbgn_annotation_ID_fb* | cut -f 3,5 > $3/Fbgn_CG.tsv
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 
 	#PULL FB PROTEIN FASTA
 	wget -r -nd -np -A gz --accept-regex "dmel-all-translation*" -P $3/ 'https://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/'
-        gunzip $3/dmel-all-translation-*
+        gunzip -f $3/dmel-all-translation-*
 
 	#PULL FBGN TO FBPP FILES
 	wget -r -nd -np -A gz --accept-regex "fbgn_fbtr_fbpp_fb*" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
-	gunzip $3/fbgn_fbtr_fbpp_fb_*
+	gunzip -f $3/fbgn_fbtr_fbpp_fb_*.gz
 	grep -v ^\# $3/fbgn_fbtr_fbpp_fb_* | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 fi
