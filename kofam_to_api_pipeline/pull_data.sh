@@ -6,7 +6,10 @@
 #$4 ncbi status of input FASTA accessions ('ncbi' or 'non-ncbi')
 #$5 FB for flybase annotations, NA for none
 
-kegg=$(grep $1 /usr/bin/kegg_org_codes.txt)
+wget https://rest.kegg.jp/list/genome -O $3/kegg_organisms.txt
+cut -f $2 kegg_organims.txt > kegg_org_codes.txt
+sed -t 's/\;//g' kegg_org_codes.txt
+kegg=$(grep $1 $3/kegg_org_codes.txt)
 
 if [ ! -z "${kegg}" ] && [ $4 == "ncbi" ];
 then
