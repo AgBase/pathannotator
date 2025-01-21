@@ -348,7 +348,7 @@ The output files you can expect will differ depending on the circumstances of yo
 **Expected output files:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- **kofam_result_full.txt:** This is the full output from KofamScan. It has not yet been filtered and pathways annotations have not yet been identified.
+- **kofam_result_full.txt:** This is the full output from KofamScan. According to KEGG: "K number assignments with scores above the predefined thresholds for individual KOs are more reliable than other proposed assignments. Such high score assignments are highlighted with asterisks '*' in the output." Pathways annotations have not yet been identified.
 
     +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
     |# gene name        |   KO            |thrshld          |score                |E-value              |KO definition      |
@@ -360,17 +360,6 @@ The output files you can expect will differ depending on the circumstances of yo
     |  NP_001034280.2   |   K10176        |750.77           |300.4                |4.6e-91              |T-box protein 2    |
     +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
 
-- **kofam_filtered_asterisk.txt:** This is the KofsamScan output filtered for the KEGG pre-determined 'asterisk' cutoffs. According to KEGG: "K number assignments with scores above the predefined thresholds for individual KOs are more reliable than other proposed assignments. Such high score assignments are highlighted with asterisks '*' in the output."
-
-    +---+------------------+-------------------+------------------+-------------------------+-------------------------+------------------------------+
-    |\* | NP_001034488.1   |  K20232           |99.97             |148.2                    |9.7e-46                  |ETS-domain lacking            |
-    +---+------------------+-------------------+------------------+-------------------------+-------------------------+------------------------------+
-    |\* | NP_001034489.1   |   K16672          |642.27            |911.6                    |1.2e-276                 |homeobox protein homothorax   |
-    +---+------------------+-------------------+------------------+-------------------------+-------------------------+------------------------------+
-    |\* | NP_001034490.1   |   K04491          |446.07            |754.9                    |6.8e-229                 |transcription factor 7-like 2 |
-    +---+------------------+-------------------+------------------+-------------------------+-------------------------+------------------------------+
-    |\* | NP_001034491.1   |   K00698          |133.83            |1083.4                   |0                        |chitin synthase [EC:2.4.1.16] |
-    +---+------------------+-------------------+------------------+-------------------------+-------------------------+------------------------------+
 
 - **tca_KEGG_species.tsv:** These are annotations to the species-specific KEGG pathway. The pathway identifiers will begin the KEGG species code.
 
@@ -433,7 +422,7 @@ The output files you can expect will differ depending on the circumstances of yo
 
 If you did not specify a KEGG species code (used 'NA') then no species-specific annotations file will be generated.
 
-- **kofam_result_full.txt:** This is the full output from KofamScan. It has not yet been filtered and pathways annotations have not yet been identified.
+- **kofam_result_full.txt:** This is the full output from KofamScan. According to KEGG: "K number assignments with scores above the predefined thresholds for individual KOs are more reliable than other proposed assignments. Such high score assignments are highlighted with asterisks '*' in the output." Pathways annotations have not yet been identified.
 
     +--------------------+----------------------+----------------------+-------------------------+--------------------------+----------------+
     |# gene name         |  KO                  |thrshld               |score                    |E-value                   |KO definition   |
@@ -444,19 +433,6 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
     +--------------------+----------------------+----------------------+-------------------------+--------------------------+----------------+
     |  NP_001034280.2    |  K10176              |750.77                |300.4                    |4.6e-91                   |T-box protein 2 |
     +--------------------+----------------------+----------------------+-------------------------+--------------------------+----------------+
-
-
-- **kofam_filtered_asterisk.txt:** This is the KofsamScan output filtered for the KEGG pre-determined 'asterisk' cutoffs. According to KEGG: "K number assignments with scores above the predefined thresholds for individual KOs are more reliable than other proposed assignments. Such high score assignments are highlighted with asterisks '*' in the output."
-
-    +---+--------------------+----------------------+---------------------+----------------------+---------------------+------------------------------+
-    |\* |NP_001034488.1      |K20232                |99.97                |148.2                 |9.7e-46              |ETS-domain lacking            |
-    +---+--------------------+----------------------+---------------------+----------------------+---------------------+------------------------------+
-    |\* |NP_001034489.1      |K16672                |642.27               |911.6                 |1.2e-276             |homeobox protein homothorax   |
-    +---+--------------------+----------------------+---------------------+----------------------+---------------------+------------------------------+
-    |\* |NP_001034490.1      |K04491                |446.07               |754.9                 |6.8e-229             |transcription factor 7-like 2 |
-    +---+--------------------+----------------------+---------------------+----------------------+---------------------+------------------------------+
-    |\* |NP_001034491.1      |K00698                |133.83               |1083.4                | 0                   |chitin synthase [EC:2.4.1.16] |
-    +---+--------------------+----------------------+---------------------+----------------------+---------------------+------------------------------+
 
 
 - **NA_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers wil begin with 'map'.
