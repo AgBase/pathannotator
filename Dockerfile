@@ -36,20 +36,20 @@ RUN conda install -c conda-forge -c bioconda hmmer
 
 ENV PATH /usr/bin/:$PATH
 
-ADD kofam/kofam_to_api_pipeline/kofam_masterscript.sh /usr/bin
+ADD kofam_to_api_pipeline/pathannotator.sh /usr/bin
 
-ADD kofam/kofam_to_api_pipeline/pull_data.sh /usr/bin
+ADD kofam_to_api_pipeline/pull_data.sh /usr/bin
 
-ADD kofam/kofam_to_api_pipeline/merge_data.py /usr/bin
+ADD kofam_to_api_pipeline/merge_data.py /usr/bin
 
-ADD kofam/kofam_to_api_pipeline/kegg_org_codes.txt /usr/bin
+#ADD kofam_to_api_pipeline/kegg_org_codes.txt /usr/bin
 
 WORKDIR /usr/bin
 
 RUN git clone https://github.com/takaram/kofam_scan.git
 
 # Change the permissions and the path for the wrapper script
-RUN chmod +x /usr/bin/kofam_masterscript.sh
+RUN chmod +x /usr/bin/pathannotator.sh
 
 WORKDIR /root
 
@@ -58,7 +58,7 @@ RUN mkdir /workdir /data
 RUN chmod a+w /workdir /data
 
 # Entrypoint
-ENTRYPOINT ["/usr/bin/kofam_masterscript.sh"]
+ENTRYPOINT ["/usr/bin/pathannotator.sh"]
 
 # Add path to working directory
 WORKDIR /workdir
