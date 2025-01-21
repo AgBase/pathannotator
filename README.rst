@@ -76,24 +76,6 @@ On the command line the following help statement can be displayed with 'help'.
 **Pathannotator on the Command Line**
 ======================================
 
-
-**Getting the databases**
-==========================
-The KOfam 'profiles' and 'ko_list' databases are required to run the pipeline. If you don't already have these databases the pipeline will pull them during the first run.
-If you want to download them beforehand they are available from the KEGG website.
-
-    Using wget:
-
-    .. code-block:: bash
-
-        wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz
-
-        wget https://www.genome.jp/ftp/db/kofam/ko_list.gz
-
-If your species of interest has been annotated by the KEGG project you can provide this tool with the corresponding KEGG species code to pull those annotations directly. If your species of interest is not listed you should choose a closely related species and use that code.
-KEGG species codes can be found here: https://www.genome.jp/brite/br08611
-
-
 **Container Technologies**
 ===========================
 Pathannotator is provided as a Docker container.
