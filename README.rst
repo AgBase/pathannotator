@@ -1,10 +1,10 @@
 ==========
 **Intro**
 ==========
-- Pathannotator annotates proteins with KEGG and Flybase pathways. It does this through the use of KofamScan, KEGG API and Flybase.org.
+- Pathannotator annotates proteins with KEGG and Flybase pathways. It does this through the use of `KofamScan <https://github.com/takaram/kofam_scan>`_, `KEGG API <https://www.kegg.jp/kegg/rest/keggapi.html>`_ and `Flybase <https://flybase.org/>`_.
 - KofamScan is a gene functional annotation tool based on KEGG Orthology and hidden Markov model (HMM). It is provided by the KEGG (Kyoto Encyclopedia of Genes and Genomes) project. The online version is available here: https://www.genome.jp/tools/kofamkoala/ .
 - This pipeline pulls annotation directly from the KEGG API when possible. When that isn't possible the pipeline impliments Kofamscan to identify homologous KEGG objects (KO). The pathways annotated to these KEGG objects can then be transfered to the corresponding proteins in your species of interest.
-- If specified, the pipeline will also provide annotations to Flybase pathways.
+- If specified, the pipeline will also provide annotations to Flybase pathways. To do this the pipeline uses phmmer to identify homologous *Drosophila melanogaster* proteins for your input proteins. Flybase `metabolic pathway <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/metabolic_pathway_group_data_fb_2024_06.tsv.gz>`_ and `signaling annotations <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/signaling_pathway_group_data_fb_2024_06.tsv.gz>`_ are then transferred to your input proteins from these homologs.
 
 
 **Where to Find Pathannotator**
@@ -75,24 +75,6 @@ On the command line the following help statement can be displayed with 'help'.
 ======================================
 **Pathannotator on the Command Line**
 ======================================
-
-
-**Getting the databases**
-==========================
-The KOfam 'profiles' and 'ko_list' databases are required to run the pipeline. If you don't already have these databases the pipeline will pull them during the first run.
-If you want to download them beforehand they are available from the KEGG website.
-
-    Using wget:
-
-    .. code-block:: bash
-
-        wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz
-
-        wget https://www.genome.jp/ftp/db/kofam/ko_list.gz
-
-If your species of interest has been annotated by the KEGG project you can provide this tool with the corresponding KEGG species code to pull those annotations directly. If your species of interest is not listed you should choose a closely related species and use that code.
-KEGG species codes can be found here: https://www.genome.jp/brite/br08611
-
 
 **Container Technologies**
 ===========================
@@ -299,8 +281,9 @@ Reference `Understanding results`_.
 
 The output files you can expect will differ depending on the circumstances of your run. If you are using the KEGG code for your species of interest and your FASTA protein identifiers are NCBI protein IDs then your annotations will be pulled directly from the KEGG API. In other circumstances (detailed below) KofamScan will be run to identify homologs and transfer annotations to your species of interest. Under all circumstances you may specify whether or not you want to receive Flybase pathways annotations as well.
 
+
 **Same-species KEGG code and NCBI RefSeq protein IDs**
-----------------------------------
+------------------------------------------------------
 
 **Expected output files:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
