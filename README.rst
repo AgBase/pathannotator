@@ -290,7 +290,7 @@ The output files you can expect will differ depending on the circumstances of yo
 - **tca_KEGG_species.tsv:** These are KEGG's annotations of the NCBI-RefSeq proteins to the species-specific KEGG pathways. The filename will begin with the KEGG species code. The pathway identifiers will begin the KEGG species code. Note that for species-specific pathways, KEGG internally filters associations between the KO (KEGG Orthology) accession and the reference pathway. 
 
     +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |KEGG_species_ID    |Input_species_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
+    |KEGG_genes_ID      |Input_protein_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
     +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
     |100141520          |XP_001813251        |K01540                |tca04820              |Cytoskeleton in muscle cells - Tribolium castaneum (red flour beetle) |
     +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
@@ -304,7 +304,7 @@ The output files you can expect will differ depending on the circumstances of yo
 - **tca_KEGG_ref.tsv:** These are KEGG's annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'. You should expect more pathway annotations per protein than for the species-specific pathway.
 
     +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |KEGG_species_ID |  Input_species_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
+    |KEGG_genes_ID   |  Input_protein_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
     +----------------+-------------------+-----------+---------------------+-------------------------------------------+
     |100141516       |  XP_015835225     |  K26207   |  map04024           |    cAMP signaling pathway                 |
     +----------------+-------------------+-----------+---------------------+-------------------------------------------+
@@ -317,22 +317,22 @@ The output files you can expect will differ depending on the circumstances of yo
 
 - **HMM_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
 
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
-    | KEGG_species_ID |Input_species_ID |Flybase_protein |Flybase_pathway_ID |Flybase_pathway_name                                   |
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
-    | CG9885          |NP_001034540.1   |FBpp0077451     |FBgg0001085        |BMP Signaling Pathway Core Components                  |
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
-    |CG10002          |NP_001034503.2   |FBpp0084690     |FBgg0000904        |Insulin-like Receptor Signaling Pathway Core Components|
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
-    |CG2666           |NP_001034492.1   |FBpp0078442     |FBgg0002045        |CHITIN BIOSYNTHESIS                                    |
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    | KEGG_genes_ID   |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    | CG9885          |NP_001034540.1   |FBpp0077451        |FBgg0001085        |BMP Signaling Pathway Core Components                  |
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |CG10002          |NP_001034503.2   |FBpp0084690        |FBgg0000904        |Insulin-like Receptor Signaling Pathway Core Components|
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |CG2666           |NP_001034492.1   |FBpp0078442        |FBgg0002045        |CHITIN BIOSYNTHESIS                                    |
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
 
 
 
 - **dme_flybase.tsv:** This is an alternative to 'HMM_flybase.tsv' if you used the 'FB' option for Flybase pathways annotations AND your species code was 'dme' (Drosophila melanogaster).
 
     +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
-    |KEGG_species_ID     |Input_species_ID         |KEGG_KO         |Flybase_pathway_ID          |Flybase_pathway_name                     |
+    |KEGG_genes_ID       |Input_protein_ID         |KEGG_KO         |Flybase_pathway_ID          |Flybase_pathway_name                     |
     +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------
     |CG34403             |NP_001034490             |K04491          |FBgg0000890                 |Wnt-TCF Signaling Pathway Core Components|
     +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
@@ -375,7 +375,7 @@ The output files you can expect will differ depending on the circumstances of yo
 - **tca_KEGG_species.tsv:** These are annotations to the species-specific KEGG pathway. The pathway identifiers will begin the KEGG species code.
 
     +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |KEGG_species_ID    |Input_species_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
+    |KEGG_genes_ID      |Input_protein_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
     +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
     |100141520          |XP_001813251        |K01540                |tca04820              |Cytoskeleton in muscle cells - Tribolium castaneum (red flour beetle) |
     +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
@@ -388,7 +388,7 @@ The output files you can expect will differ depending on the circumstances of yo
 - **tca_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'.
 
     +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |KEGG_species_ID |  Input_species_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
+    |KEGG_genes_ID   |  Input_protein_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
     +----------------+-------------------+-----------+---------------------+-------------------------------------------+
     |100141516       |  XP_015835225     |  K26207   |  map04024           |    cAMP signaling pathway                 |
     +----------------+-------------------+-----------+---------------------+-------------------------------------------+
@@ -400,21 +400,21 @@ The output files you can expect will differ depending on the circumstances of yo
 
 - **HMM_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
 
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
-    | KEGG_species_ID |Input_species_ID |Flybase_protein |Flybase_pathway_ID |Flybase_pathway_name                                   |
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
-    | CG9885          |NP_001034540.1   |FBpp0077451     |FBgg0001085        |BMP Signaling Pathway Core Components                  |
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
-    |CG10002          |NP_001034503.2   |FBpp0084690     |FBgg0000904        |Insulin-like Receptor Signaling Pathway Core Components|
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
-    |CG2666           |NP_001034492.1   |FBpp0078442     |FBgg0002045        |CHITIN BIOSYNTHESIS                                    |
-    +-----------------+-----------------+----------------+-------------------+-------------------------------------------------------+
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    | KEGG_genes_ID   |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    | CG9885          |NP_001034540.1   |FBpp0077451        |FBgg0001085        |BMP Signaling Pathway Core Components                  |
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |CG10002          |NP_001034503.2   |FBpp0084690        |FBgg0000904        |Insulin-like Receptor Signaling Pathway Core Components|
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |CG2666           |NP_001034492.1   |FBpp0078442        |FBgg0002045        |CHITIN BIOSYNTHESIS                                    |
+    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
 
 
 - **dme_flybase.tsv:** This is an alternative to 'HMM_flybase.tsv' if you used the 'FB' option for Flybase pathways annotations AND your species code was 'dme' (Drosophila melanogaster).
 
     +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
-    |KEGG_species_ID     |Input_species_ID         |KEGG_KO         |Flybase_pathway_ID          |Flybase_pathway_name                     |
+    |KEGG_genes_ID       |Input_protein_ID         |KEGG_KO         |Flybase_pathway_ID          |Flybase_pathway_name                     |
     +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------
     |CG34403             |NP_001034490             |K04491          |FBgg0000890                 |Wnt-TCF Signaling Pathway Core Components|
     +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
@@ -462,7 +462,7 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
 - **NA_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers wil begin with 'map'.
 
     +------------------+---------------------+-----------------------+----------------------+------------------------------+
-    |KEGG_species_ID   |Input_species_ID     |  KEGG_KO              |KEGG_ref_pathway      | KEGG_ref_pathway_name        |
+    |KEGG_genes_ID     |Input_protein_ID     |  KEGG_KO              |KEGG_ref_pathway      | KEGG_ref_pathway_name        |
     +------------------+---------------------+-----------------------+----------------------+------------------------------+
     |NA                |NP_001034489         |K16672                 |map04391              |Hippo signaling pathway - fly |
     +------------------+---------------------+-----------------------+----------------------+------------------------------+
@@ -475,7 +475,7 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
 - **HMM_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
 
     +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
-    |KEGG_species_ID  |Input_species_ID          |Flybase_protein        |Flybase_pathway_ID       |Flybase_pathway_name                                    |
+    |KEGG_genes_ID    |Input_protein_ID          |Flybase_protein_ID     |Flybase_pathway_ID       |Flybase_pathway_name                                    |
     +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
     |CG9885           |NP_001034540.1            |FBpp0077451            |FBgg0001085              |BMP Signaling Pathway Core Components                   |
     +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
