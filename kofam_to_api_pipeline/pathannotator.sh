@@ -54,7 +54,7 @@ then
 	sed -i 's/.[0-9]$//' $3/deflines.tmp
 	readarray -t defarray < $3/deflines.tmp
 
-	if grep -q $1 /usr/bin/kegg_org_codes.txt; #IF THIS IS A KEGG SPECIES
+	if grep -q $1 $3/kegg_org_codes.txt; #IF THIS IS A KEGG SPECIES
 	then
 		#PULL DATA
 		echo "This is a KEGG species code. Pulling KEGG API data now."
@@ -177,7 +177,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 	echo "These are NOT NCBI protein IDs. Proceeding with KofamScan."
 
-	if grep -q $1 /usr/bin/kegg_org_codes.txt;
+	if grep -q $1 /$3/kegg_org_codes.txt;
 	then
 		echo "This is a KEGG species".
 
