@@ -66,7 +66,6 @@ then
 		bash /usr/bin/pull_data.sh $1 no $3 ncbi $4
 
 		#NEED TO COMPARE DEFLINES.TMP TO SPECIFIED SPECIES CODE AND DECIDE IF THEY ARE THE SAME SPECIES
-		#if i were to pull data then grep the first defline.tmp entry from ncbi_ko to see if it exists...
 		echo "${defarray[0]}"
 		if grep -q "${defarray[0]}" $3/conv_ncbi-proteinid_"$1".tsv; #TESTING IF INPUT IDS ARE THE SAME SPECIES AS THE KEGG CODE
 		then
