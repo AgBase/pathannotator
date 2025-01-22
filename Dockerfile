@@ -12,6 +12,7 @@ RUN apt-get update && \
     parallel \
     python3 \
     ruby \
+    tar \
     nano
 
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
