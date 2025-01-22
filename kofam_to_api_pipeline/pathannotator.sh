@@ -46,7 +46,8 @@ fi
 
 #PULLS THE KEGG ORG CODES FILE (NEEDS TO BE IN HERE, NOT PULL_DATA.SH BECAUSE PULL DATA ONLY RUNS IN THE IF STATEMENTS BELOW
 wget https://rest.kegg.jp/list/genome -O $3/kegg_organisms.txt
-cut -f 2 $3/kegg_organisms.txt > $3/kegg_org_codes.txt
+grep ';' $3/kegg_organisms.txt > $3/kegg_orgs_with_codes.txt
+cut -f 2 $3/kegg_orgs_with_codes.txt > $3/kegg_org_codes.txt
 sed -i 's/;.*$//g' $3/kegg_org_codes.txt
 
 if [ "$ncbi" == true ] ;
