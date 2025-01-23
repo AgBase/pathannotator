@@ -44,7 +44,6 @@ else
 	ncbi=false
 fi
 
-tar -xzf /data/profiles.tar.gz
 
 #PULLS THE KEGG ORG CODES FILE (NEEDS TO BE IN HERE, NOT PULL_DATA.SH BECAUSE PULL DATA ONLY RUNS IN THE IF STATEMENTS BELOW
 wget https://rest.kegg.jp/list/genome -O $3/kegg_organisms.txt
