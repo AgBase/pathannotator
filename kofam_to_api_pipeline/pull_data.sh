@@ -35,12 +35,12 @@ then
 	then
 		echo "Getting Kofam profiles."
 		wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz -O /data/profiles.tar.gz
-		tar -xzf /data/profiles.tar.gz
+		tar -xvzf /data/profiles.tar.gz
 #		rm /data/profiles.tar.gz
 	elif [ -f /data/profiles.tar.gz ] && [ ! -d /data/profiles ];
 	then
 		echo "profiles.tar.gz present; decompressing."
-		tar -xzf /data/profiles.tar.gz
+		tar -xvzf /data/profiles.tar.gz
 #		rm /data/profiles.tar.gz
 	else
 		echo "profiles are already present."
