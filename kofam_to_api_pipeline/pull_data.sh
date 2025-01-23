@@ -32,7 +32,7 @@ then
 		echo "ko_list is already present."
 	fi
 
-tar -xvf /data/profiles.tar.gz
+tar -xzf /data/profiles.tar.gz
 
 #NEED TO RECONSTRUCT THIS IF STATEMENT
 #	if [ ! -d /data/profiles ] && [ ! -f /data/profiles.tar.gz ];
