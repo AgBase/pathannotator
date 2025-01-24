@@ -292,5 +292,5 @@ if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -d "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
 
 endtime=$(date +%m)
-runtime=$((endtime - starttime))
+runtime=$(($endtime - $starttime))
 echo "Run time: $runtime"
