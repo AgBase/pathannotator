@@ -1,6 +1,6 @@
 #! /bin/bash
 
-starttime=$(date +%m)
+starttime=$(date +%s)
 
 if [ $1 == "help" ];
 then
@@ -291,6 +291,7 @@ if [ -f "$3"/FB_phmmer.txt ]; then rm "$3"/FB_phmmer.txt; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -d "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
 
-endtime=$(date +%m)
-runtime=$(($endtime - $starttime))
+endtime=$(date +%s)
+seconds=$(($endtime - $starttime))
+runtime=$(($seconds / 60))
 echo "Run time: $runtime"
