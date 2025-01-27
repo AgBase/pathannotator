@@ -294,4 +294,4 @@ if [ -d "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
 runtime=$(($seconds / 60))
-echo "Run time: $runtime"
+echo "Run time: $runtime minutes"
