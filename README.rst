@@ -50,7 +50,7 @@ On the command line the following help statement can be displayed with 'help'.
         1: KEGG species code (NA or related species code if species not in KEGG; 'help' to see this help and usage statement)
            KEGG species codes can be found here: https://www.genome.jp/brite/br08611
         2: input file (protein FASTA without header lines)
-        3: output directory (must be an existing directory)
+        3: output directory (must be an existing directory; the file path should be  relative to, and inside of, your working directory)
         4: 'FB' for flybase annotations, 'NA' for none
 
         KofamScan is used under an MIT License:
@@ -171,7 +171,7 @@ The container can be pulled with this command:
 
 **GCF_031307605.1_icTriCast1.1_protein.faa:** input file (protein FASTA, no header lines).
 
-**out_dir:** Directory where you want the pipeline outputs to go. The directory must exist before you run the pipeline.
+**out_dir:** Directory where you want the pipeline outputs to go. The directory must exist before you run the pipeline. The file path should be relative to (and inside of) your working directory.
 
 **FB:** FB indicates that we want to get Flybase pathways annotations in addition to KEGG annotations.
 
@@ -271,7 +271,7 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
 
 **GCF_031307605.1_icTriCast1.1_protein.faa:** input file (protein FASTA, no header lines)
 
-**out_dir:** Directory where you want the outputs of the pipeline to be stored. The directory must exist before you run the pipeline.
+**out_dir:** Directory where you want the outputs of the pipeline to be stored. The directory must exist before you run the pipeline. The file path should be relative to (and inside of) your working directory.
 
 **FB:** FB indicates that you want Flybase pathways annotations in addition to KEGG annotations
 
