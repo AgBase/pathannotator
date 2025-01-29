@@ -184,7 +184,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 	echo "These are NOT NCBI protein IDs. Proceeding with KofamScan."
 
-	if grep -q $1 /$3/kegg_org_codes.txt;
+	if grep -q $1 $3/kegg_org_codes.txt;
 	then
 		echo "This is a KEGG species".
 
