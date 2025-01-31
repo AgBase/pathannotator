@@ -89,7 +89,7 @@ Please consider your options carefully as they can impact run times significantl
 
 **Example runs for various circumstances described above. These examples were run on the SciNet Ceres HPC system using Apptainer.**
 
-tca-trimad refseq
+
 +---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
 | Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs available | Time to run (minutes) |
 +---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
@@ -110,7 +110,7 @@ tca-trimad refseq
 |20,571                     | related species    | yes                  | no                        | 96                       | 24                    |
 +---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
 
-tca-tricas refseq
+
 +---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
 | Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs available | Time to run (minutes) |
 +---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
@@ -131,7 +131,7 @@ tca-tricas refseq
 |   22,272                  | same species       |  yes                 | no                        | 96                       | < 1                   |
 +---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
 
-tca-tricas ogs
+
 +---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
 | Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs available | Time to run (minutes) |
 +---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
