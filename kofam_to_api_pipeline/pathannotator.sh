@@ -83,13 +83,13 @@ then
 				cpus=$(( $avail - 1 ))
 
 #				phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
-				diamond makedb --in dmel-all-translation-* --db dmel_db
-				diamond blastp --threads $cpus -q $2 -d dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+				diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
+				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
-				awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > dia_matches.tsv
-				cut -f 1,5 dia_matches.tsv > FB_diamond.tsv
+				awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
 #				grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #				readarray -t phmmarray < $3/phmmacc.txt
 #				for each in "${phmmarray[@]}"
@@ -130,13 +130,13 @@ then
 				avail=$(nproc)
 				cpus=$(( $avail - 1 ))
 #				phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
-				diamond makedb --in dmel-all-translation-* --db dmel_db
-				diamond blastp --threads $cpus -q $2 -d dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
+				diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
+				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
-				awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > dia_matches.tsv
-				cut -f 1,5 dia_matches.tsv > FB_diamond.tsv
+				awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
 #				grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #				readarray -t phmmarray < $3/phmmacc.txt
 #				for each in "${phmmarray[@]}"
@@ -178,13 +178,13 @@ then
 			avail=$(nproc)
 			cpus=$(( $avail - 1 ))
 #			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
-			diamond makedb --in dmel-all-translation-* --db dmel_db
-			diamond blastp --threads $cpus -q $2 -d dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
+			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
+			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > dia_matches.tsv
-			cut -f 1,5 dia_matches.tsv > FB_diamond.tsv
+			awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
 #			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #			readarray -t phmmarray < $3/phmmacc.txt
 #			for each in "${phmmarray[@]}"
@@ -228,13 +228,13 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		then
 			echo "Performing Flybase annotation".
 #			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
-			diamond makedb --in dmel-all-translation-* --db dmel_db
-			diamond blastp --threads $cpus -q $2 -d dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
+			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
+			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > dia_matches.tsv
-			cut -f 1,5 dia_matches.tsv > FB_diamond.tsv
+			awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
 #			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #			readarray -t phmmarray < $3/phmmacc.txt
 #			for each in "${phmmarray[@]}"
@@ -273,13 +273,13 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		then
 			echo "Performing Flybase annotation".
 #			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
-			diamond makedb --in dmel-all-translation-* --db dmel_db
-			diamond blastp --threads $cpus -q $2 -d dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
+			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
+			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > dia_matches.tsv
-			cut -f 1,5 dia_matches.tsv > FB_diamond.tsv
+			awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
 #			grep -h -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #			readarray -t phmmarray < $3/phmmacc.txt
 #			for each in "${phmmarray[@]}"
