@@ -33,7 +33,8 @@ RUN conda upgrade conda
 RUN pip install pandas
 
 # add hmmer 
-RUN conda install -c conda-forge -c bioconda hmmer
+#RUN conda install -c conda-forge -c bioconda hmmer
+RUN conda install -c conda-forge -c bioconda diamond
 
 ENV PATH /usr/bin/:$PATH
 
