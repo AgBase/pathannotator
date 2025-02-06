@@ -1,12 +1,6 @@
 
 #! /usr/bin/env/python
 
-#module load python miniconda3
-
-#conda create -c conda-forge -n venv-pandas python pandas
-#conda init
-#conda activate venv-pandas
-
 import pandas as pd
 import argparse
 import os
@@ -67,20 +61,20 @@ if kofam == "no" and species != "NA":
         #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
         fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
-        fbgn_phmm = pd.read_table(f"{indir}/phmm_matches.txt", dtype=str)
+        fbgn_dia = pd.read_table(f"{indir}/FB_diamond.tsv", dtype=str)
         fbgn_fbpp = pd.read_table(f"{indir}/Fbgn_fbpp.tsv", dtype=str)
         #ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
-        fbgn_phmm.columns = ['Flybase_protein_ID', 'Input_protein_ID']
+        fbgn_dia.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
         #MERGE AND OUTPUT TO FILE
-        fbgn_fbpp_phmm = pd.merge(fbgn_fbpp, fbgn_phmm, on='Flybase_protein_ID', how='inner')
-        fbgn_fbpp_phmm_path = pd.merge(fbgn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
-        fbgn_fbpp_phmm_path_CG = pd.merge(fbgn_fbpp_phmm_path, fbgn_CG, on='Flybase_gene', how='inner')
-        fbgn_fbpp_phmm_path_CG.drop('Flybase_gene', axis=1, inplace=True)
-        fbgn_fbpp_phmm_path_CG = fbgn_fbpp_phmm_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
-        fbgn_fbpp_phmm_path_CG.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
+        fbgn_fbpp_dia = pd.merge(fbgn_fbpp, fbgn_dia, on='Flybase_protein_ID', how='inner')
+        fbgn_fbpp_dia_path = pd.merge(fbgn_fbpp_dia, fbgn_path, on='Flybase_gene', how='inner')
+        fbgn_fbpp_dia_path_CG = pd.merge(fbgn_fbpp_dia_path, fbgn_CG, on='Flybase_gene', how='inner')
+        fbgn_fbpp_dia_path_CG.drop('Flybase_gene', axis=1, inplace=True)
+        fbgn_fbpp_dia_path_CG = fbgn_fbpp_dia_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_fbpp_dia_path_CG.to_csv(f"{outdir}/Diamond_flybase.tsv", sep='\t', index=False)
     else:
         print("You have not requested Flybase annotations.")
 elif kofam == "yes" and species == "NA":
@@ -102,20 +96,20 @@ elif kofam == "yes" and species == "NA":
         #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
         fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
-        fbgn_phmm = pd.read_table(f"{indir}/phmm_matches.txt", dtype=str)
+        fbgn_dia = pd.read_table(f"{indir}/FB_diamond.tsv", dtype=str)
         fbgn_fbpp = pd.read_table(f"{indir}/Fbgn_fbpp.tsv", dtype=str)
         #ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
-        fbgn_phmm.columns = ['Flybase_protein_ID', 'Input_protein_ID']
+        fbgn_dia.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
         #MERGE AND OUTPUT TO FILE
-        fbgn_fbpp_phmm = pd.merge(fbgn_fbpp, fbgn_phmm, on='Flybase_protein_ID', how='inner')
-        fbgn_fbpp_phmm_path = pd.merge(fbgn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
-        fbgn_fbpp_phmm_path_CG = pd.merge(fbgn_fbpp_phmm_path, fbgn_CG, on='Flybase_gene', how='inner')
-        fbgn_fbpp_phmm_path_CG.drop('Flybase_gene', axis=1, inplace=True)
-        fbgn_fbpp_phmm_path_CG = fbgn_fbpp_phmm_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
-        fbgn_fbpp_phmm_path_CG.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
+        fbgn_fbpp_dia = pd.merge(fbgn_fbpp, fbgn_dia, on='Flybase_protein_ID', how='inner')
+        fbgn_fbpp_dia_path = pd.merge(fbgn_fbpp_dia, fbgn_path, on='Flybase_gene', how='inner')
+        fbgn_fbpp_dia_path_CG = pd.merge(fbgn_fbpp_dia_path, fbgn_CG, on='Flybase_gene', how='inner')
+        fbgn_fbpp_dia_path_CG.drop('Flybase_gene', axis=1, inplace=True)
+        fbgn_fbpp_dia_path_CG = fbgn_fbpp_dia_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_fbpp_dia_path_CG.to_csv(f"{outdir}/Diamond_flybase.tsv", sep='\t', index=False)
 elif kofam == "yes" and species != "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
     ncbi_ko = pd.read_table(f"{indir}/ko_ncbi.tsv", dtype=str)
@@ -162,20 +156,20 @@ elif kofam == "yes" and species != "NA":
         #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
         fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
-        fbgn_phmm = pd.read_table(f"{indir}/phmm_matches.txt", dtype=str)
+        fbgn_dia = pd.read_table(f"{indir}/FB_diamond.tsv", dtype=str)
         fbgn_fbpp = pd.read_table(f"{indir}/Fbgn_fbpp.tsv", dtype=str)
         #ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
-        fbgn_phmm.columns = ['Flybase_protein_ID', 'Input_protein_ID']
+        fbgn_dia.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
         #MERGE AND OUTPUT TO FILE
-        fbgn_fbpp_phmm = pd.merge(fbgn_fbpp, fbgn_phmm, on='Flybase_protein_ID', how='inner')
-        fbgn_fbpp_phmm_path = pd.merge(fbgn_fbpp_phmm, fbgn_path, on='Flybase_gene', how='inner')
-        fbgn_fbpp_phmm_path_CG = pd.merge(fbgn_fbpp_phmm_path, fbgn_CG, on='Flybase_gene', how='inner')
-        fbgn_fbpp_phmm_path_CG.drop('Flybase_gene', axis=1, inplace=True)
-        fbgn_fbpp_phmm_path_CG = fbgn_fbpp_phmm_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
-        fbgn_fbpp_phmm_path_CG.to_csv(f"{outdir}/HMM_flybase.tsv", sep='\t', index=False)
+        fbgn_fbpp_dia = pd.merge(fbgn_fbpp, fbgn_dia, on='Flybase_protein_ID', how='inner')
+        fbgn_fbpp_dia_path = pd.merge(fbgn_fbpp_dia, fbgn_path, on='Flybase_gene', how='inner')
+        fbgn_fbpp_dia_path_CG = pd.merge(fbgn_fbpp_dia_path, fbgn_CG, on='Flybase_gene', how='inner')
+        fbgn_fbpp_dia_path_CG.drop('Flybase_gene', axis=1, inplace=True)
+        fbgn_fbpp_dia_path_CG = fbgn_fbpp_dia_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_fbpp_dia_path_CG.to_csv(f"{outdir}/Diamond_flybase.tsv", sep='\t', index=False)
     else:
         print("You have not requested Flybase annotations.")
 else:
