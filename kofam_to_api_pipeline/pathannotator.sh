@@ -82,21 +82,14 @@ then
 				avail=$(nproc)
 				cpus=$(( $avail - 1 ))
 
-#				phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
 				diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
 				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
-				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+#				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				awk '{ if(($8 > 70)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
-#				grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-#				readarray -t phmmarray < $3/phmmacc.txt
-#				for each in "${phmmarray[@]}"
-#       			do
-#					grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-#					awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-#				done
 			fi
 
 			#MERGE DATA HERE
@@ -129,21 +122,14 @@ then
 				echo "Performing Flybase annotation".
 				avail=$(nproc)
 				cpus=$(( $avail - 1 ))
-#				phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
 				diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
 				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
-				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+#				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				awk '{ if(($8 > 70)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
-#				grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-#				readarray -t phmmarray < $3/phmmacc.txt
-#				for each in "${phmmarray[@]}"
-#       			do
-#					grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-#					awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-#				done
 			fi
 
 			#MERGE DATA HERE
@@ -177,21 +163,14 @@ then
 			echo "Performing Flybase annotation".
 			avail=$(nproc)
 			cpus=$(( $avail - 1 ))
-#			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
 			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
 			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+#			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			awk '{ if(($8 > 70)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
-#			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-#			readarray -t phmmarray < $3/phmmacc.txt
-#			for each in "${phmmarray[@]}"
-#        		do
-#				grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-#				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-#			done
 		fi
 
 		#MERGE DATA
@@ -227,21 +206,14 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-#			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
 			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
 			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+#			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			awk '{ if(($8 > 70)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
-#			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-#			readarray -t phmmarray < $3/phmmacc.txt
-#			for each in "${phmmarray[@]}"
-#       		do
-#				grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-#				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-#			done
 		fi
 
 		#MERGE DATA
@@ -272,21 +244,14 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-#			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
 			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
 			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+#			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			awk '{ if(($8 > 70)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
-#			grep -h -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-#			readarray -t phmmarray < $3/phmmacc.txt
-#			for each in "${phmmarray[@]}"
-#        		do
-#				grep -h -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-#				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-#			done
 		fi
 
 		#MERGE DATA
@@ -314,11 +279,7 @@ if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_gr
 if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
 if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
 if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
-#if [ -f "$3"/phmmacc.txt ]; then  rm "$3"/phmmacc.txt; fi
-#if [ -f "$3"/phmm_tophits.txt ]; then  rm "$3"/phmm_tophits.txt; fi
-#if [ -f "$3"/phmm_matches.txt ]; then  rm "$3"/phmm_matches.txt; fi
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
-#if [ -f "$3"/FB_phmmer.txt ]; then rm "$3"/FB_phmmer.txt; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -d "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
 #if [ -d "$3"/FB_diamond.tsv ]; then rm  "$3"/FB_diamond.tsv; fi
