@@ -276,11 +276,11 @@ if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-a
 if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
-if [ -d "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-if [ -d "$3"/FB_diamond.tsv ]; then rm  "$3"/FB_diamond.tsv; fi
-if [ -d "$3"/dia_matches.tsv ]; then rm  "$3"/dia_matches.tsv; fi
-if [ -d "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
-if [ -d "$3"/dmel_db.dmnd ]; then rm  "$3"/dmel_db.dmnd; fi
+if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
+if [ -f "$3"/FB_diamond.tsv ]; then rm  "$3"/FB_diamond.tsv; fi
+if [ -f "$3"/dia_matches.tsv ]; then rm  "$3"/dia_matches.tsv; fi
+if [ -f "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
+if [ -f "$3"/dmel_db.dmnd ]; then rm  "$3"/dmel_db.dmnd; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
