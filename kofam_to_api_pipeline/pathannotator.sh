@@ -87,8 +87,7 @@ then
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
-#				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-				awk '{ if(($8 > 70) && ($16/$2 > 0.7)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 			fi
 
@@ -127,8 +126,7 @@ then
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
-#				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-				awk '{ if(($8 > 70) && ($16/$2 > 0.7)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 			fi
 
@@ -168,8 +166,7 @@ then
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-#			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-			awk '{ if(($8 > 70)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 		fi
 
@@ -211,8 +208,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-#			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-			awk '{ if(($8 > 70) && ($16/$2 > 0.7)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 		fi
 
@@ -249,8 +245,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-#			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($11 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-			awk '{ if(($8 > 70) && ($16/$2 > 0.7)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 		fi
 
