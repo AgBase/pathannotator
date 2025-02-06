@@ -89,7 +89,7 @@ then
 
  				#PULL MATCHES FROM OUTPUT
 				awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-				cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
+				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 #				grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #				readarray -t phmmarray < $3/phmmacc.txt
 #				for each in "${phmmarray[@]}"
@@ -136,7 +136,7 @@ then
 
  				#PULL MATCHES FROM OUTPUT
 				awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-				cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
+				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 #				grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #				readarray -t phmmarray < $3/phmmacc.txt
 #				for each in "${phmmarray[@]}"
@@ -184,7 +184,7 @@ then
 
  			#PULL MATCHES FROM OUTPUT
 			awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-			cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
+			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 #			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #			readarray -t phmmarray < $3/phmmacc.txt
 #			for each in "${phmmarray[@]}"
@@ -234,7 +234,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
  			#PULL MATCHES FROM OUTPUT
 			awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-			cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
+			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 #			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #			readarray -t phmmarray < $3/phmmacc.txt
 #			for each in "${phmmarray[@]}"
@@ -279,7 +279,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
  			#PULL MATCHES FROM OUTPUT
 			awk '{ if(($8 > 70) && ($16/$2 > y) && ($11 < 9) && ($2/$6 <= r)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-			cut -f 1,5 $3/dia_matches.tsv > FB_diamond.tsv
+			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 #			grep -h -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
 #			readarray -t phmmarray < $3/phmmacc.txt
 #			for each in "${phmmarray[@]}"
