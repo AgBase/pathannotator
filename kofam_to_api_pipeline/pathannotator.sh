@@ -83,7 +83,7 @@ then
 				cpus=$(( $avail - 1 ))
 
 				diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length --max-target-seqs 3
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
@@ -122,7 +122,7 @@ then
 				avail=$(nproc)
 				cpus=$(( $avail - 1 ))
 				diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
+				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
@@ -162,7 +162,7 @@ then
 			avail=$(nproc)
 			cpus=$(( $avail - 1 ))
 			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
+			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
@@ -204,7 +204,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		then
 			echo "Performing Flybase annotation".
 			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
+			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
@@ -241,7 +241,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		then
 			echo "Performing Flybase annotation".
 			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length
+			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
