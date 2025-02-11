@@ -234,7 +234,6 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		cpus=$(( $avail - 1 ))
 		echo -e "$avail cpus available. Using $cpus cpus"
 
-		echo -e "/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2"
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#FILTER KOFAM HERE
