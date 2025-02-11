@@ -34,6 +34,7 @@ RUN pip install pandas
 
 # add hmmer 
 RUN conda install -c conda-forge -c bioconda diamond
+RUN conda install -c conda-forge -c bioconda hmmer
 
 ENV PATH /usr/bin/:$PATH
 
