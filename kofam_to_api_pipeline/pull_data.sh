@@ -78,8 +78,8 @@ if [ "$5" == "FB" ];
 then
 	echo "Pulling Flybase data now."
 	#THIS PULLS THE FLYBASE ANNOTATIONS
-	wget -r -nd -np -A "signaling_pathway_group_data*.gz" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
-	wget -r -nd -np -A "metabolic_pathway_group_data*.gz" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
+	wget -r -nd -np -R "*.html" -A "signaling_pathway_group_data*.gz" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
+	wget -r -nd -np -R "*.html" -A "metabolic_pathway_group_data*.gz" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
 	gunzip -f $3/signaling_pathway_group_data_*.gz
 	gunzip -f $3/metabolic_pathway_group_data_*.gz
 
@@ -87,17 +87,17 @@ then
 	grep -h -v ^\# $3/metabolic_pathway_group_data_* >> $3/pathway_group_data_latest.tsv
 	cut -f 1,3,6 $3/pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
 
-	wget -r -nd -np -A "fbgn_annotation_ID_fb*.gz" -P $3/ 'https://ftp.flybase.org/releases/current/precomputed_files/genes/'
+	wget -r -nd -np -R "*.html" -A "fbgn_annotation_ID_fb*.gz" -P $3/ 'https://ftp.flybase.org/releases/current/precomputed_files/genes/'
 	gunzip -f $3/fbgn_annotation_ID_fb*
 	grep -h -v ^\# $3/fbgn_annotation_ID_fb* | cut -f 3,5 > $3/Fbgn_CG.tsv
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 
 	#PULL FB PROTEIN FASTA
-	wget -r -nd -np -A "dmel-all-translation*.gz" -P $3/ 'https://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/'
+	wget -r -nd -np -R "*.html" -A "dmel-all-translation*.gz" -P $3/ 'https://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/'
         gunzip -f $3/dmel-all-translation-*
 
 	#PULL FBGN TO FBPP FILES
-	wget -r -nd -np -A "fbgn_fbtr_fbpp_fb*.gz" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
+	wget -r -nd -np -R "*.html" -A "fbgn_fbtr_fbpp_fb*.gz" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
 	gunzip -f $3/fbgn_fbtr_fbpp_fb_*.gz
 	grep -v ^\# $3/fbgn_fbtr_fbpp_fb_* | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 fi
