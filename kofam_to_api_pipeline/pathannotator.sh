@@ -112,12 +112,9 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				avail=$(nproc)
-				cpus=$(( $avail - 1 ))
-				echo -e "$avail cpus available. Using $cpus cpus"
 
 				diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length --max-target-seqs 3
+				diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length --max-target-seqs 3
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
@@ -141,7 +138,6 @@ then
 			echo "Running KofamScan now."
 			avail=$(nproc)
 			cpus=$(( $avail - 1 ))
-			echo -e "$avail cpus available. Using $cpus cpus"
 
 			/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
@@ -155,12 +151,8 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				avail=$(nproc)
-				cpus=$(( $avail - 1 ))
-				echo -e "$avail cpus available. Using $cpus cpus"
-
 				diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-				diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
+				diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
@@ -185,7 +177,6 @@ then
 		echo "This is not a KEGG species code. Running KofamScan now."
 		avail=$(nproc)
 		cpus=$(( $avail - 1 ))
-		echo -e "$avail cpus available. Using $cpus cpus"
 
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
@@ -199,12 +190,8 @@ then
 		if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 		then
 			echo "Performing Flybase annotation".
-			avail=$(nproc)
-			cpus=$(( $avail - 1 ))
-			echo -e "$avail cpus available. Using $cpus cpus"
-
 			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
+			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
@@ -232,7 +219,6 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#RUN KOFAM HERE
 		avail=$(nproc)
 		cpus=$(( $avail - 1 ))
-		echo -e "$avail cpus available. Using $cpus cpus"
 
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
@@ -247,7 +233,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		then
 			echo "Performing Flybase annotation".
 			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
+			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
@@ -270,7 +256,6 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#RUN KOFAM HERE
 		avail=$(nproc)
 		cpus=$(( $avail - 1 ))
-		echo -e "$avail cpus available. Using $cpus cpus"
 
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
@@ -285,7 +270,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		then
 			echo "Performing Flybase annotation".
 			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db
-			diamond blastp --threads $cpus -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
+			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --outfmt 6 qseqid qstart qend sseqid sstart send evalue pident ppos gapopen gaps bitscore score qlen slen length --max-target-seqs 3
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
