@@ -16,7 +16,7 @@ RUN apt-get update && \
     nano
 
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
-    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py312_24.9.2-0-Linux-x86_64.sh -O ~/miniconda.sh && \
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_25.1.1-2-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh
 
@@ -32,10 +32,11 @@ RUN conda upgrade conda
 
 RUN pip install pandas
 
-# add hmmer 
+# add hmmer and diamond
+
 RUN conda install -c conda-forge -c bioconda diamond
 
-RUN conda install -c conda-forge -c bioconda hmmer
+RUN conda install --solver=classic -c conda-forge -c bioconda hmmer
 
 ENV PATH /usr/bin/:$PATH
 
