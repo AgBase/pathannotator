@@ -112,7 +112,7 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-
+				echo -e "$1 $2 $3 $4"
 				diamond makedb --in "$3"/dmel-all-translation-* --db "$3"/dmel_db --log
 				diamond blastp -q "$2" -d "$3"/dmel_db -o "$3"/diamond_out.tsv --max-target-seqs 3 --log --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
 
@@ -156,6 +156,7 @@ then
 				echo "Performing Flybase annotation".
 #				diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db --log
 #				diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --log --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+				echo -e "$1 $2 $3 $4"
 				diamond makedb --in "$3"/dmel-all-translation-* --db "$3"/dmel_db --log
 				diamond blastp -q "$2" -d "$3"/dmel_db -o "$3"/diamond_out.tsv --max-target-seqs 3 --log --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
@@ -197,6 +198,7 @@ then
 			echo "Performing Flybase annotation".
 #			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db --log
 #			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --log --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+				echo -e "$1 $2 $3 $4"
 			diamond makedb --in "$3"/dmel-all-translation-* --db "$3"/dmel_db --log
 			diamond blastp -q "$2" -d "$3"/dmel_db -o "$3"/diamond_out.tsv --max-target-seqs 3 --log --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
@@ -241,6 +243,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			echo "Performing Flybase annotation".
 #			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db --log
 #			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --log --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+				echo -e "$1 $2 $3 $4"
 			diamond makedb --in "$3"/dmel-all-translation-* --db "$3"/dmel_db --log
 			diamond blastp -q "$2" -d "$3"/dmel_db -o "$3"/diamond_out.tsv --max-target-seqs 3 --log --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
@@ -280,6 +283,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			echo "Performing Flybase annotation".
 #			diamond makedb --in $3/dmel-all-translation-* --db $3/dmel_db --log
 #			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --log --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+				echo -e "$1 $2 $3 $4"
 			diamond makedb --in "$3"/dmel-all-translation-* --db "$3"/dmel_db --log
 			diamond blastp -q "$2" -d "$3"/dmel_db -o "$3"/diamond_out.tsv --max-target-seqs 3 --log --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
