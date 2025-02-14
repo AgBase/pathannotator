@@ -136,7 +136,7 @@ then
 
 			#RUN KOFAMSCAN
 			echo "Running KofamScan now."
-			avail=$(nproc)
+			avail=$(getconf _NPROCESSORS_ONLN)
 			cpus=$(( $avail - 1 ))
 
 			/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
@@ -176,7 +176,7 @@ then
 
 		#RUN KOFAMSCAN
 		echo "This is not a KEGG species code. Running KofamScan now."
-		avail=$(nproc)
+		avail=$(getconf _NPROCESSORS_ONLN)
 		cpus=$(( $avail - 1 ))
 
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
@@ -219,7 +219,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
 
 		#RUN KOFAM HERE
-		avail=$(nproc)
+		avail=$(getconf _NPROCESSORS_ONLN)
 		cpus=$(( $avail - 1 ))
 
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
@@ -257,7 +257,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
 
 		#RUN KOFAM HERE
-		avail=$(nproc)
+		avail=$(getconf _NPROCESSORS_ONLN)
 		cpus=$(( $avail - 1 ))
 
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
