@@ -40,11 +40,11 @@ RUN conda install --solver=classic -c conda-forge -c bioconda hmmer
 
 ENV PATH /usr/bin/:$PATH
 
-ADD kofam_to_api_pipeline/pathannotator.sh /usr/bin
+ADD pipeline/pathannotator.sh /usr/bin
 
-ADD kofam_to_api_pipeline/pull_data.sh /usr/bin
+ADD pipeline/pull_data.sh /usr/bin
 
-ADD kofam_to_api_pipeline/merge_data.py /usr/bin
+ADD pipeline/merge_data.py /usr/bin
 
 WORKDIR /usr/bin
 
