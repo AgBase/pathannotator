@@ -187,13 +187,13 @@ The container can be pulled with this command:
 
 .. code-block:: bash
 
-    docker pull agbase/pathannotator:1.0
+    docker pull agbase/pathannotator:2.0
 
 .. admonition:: Remember
 
     You must have root permissions or use sudo, like so:
 
-    sudo docker pull agbase/pathannotator:1.0
+    sudo docker pull agbase/pathannotator:2.0
 
 
 
@@ -203,7 +203,7 @@ The container can be pulled with this command:
 
 .. code-block:: bash
 
-    sudo docker run --rm agbase/pathannotator:1.0 help
+    sudo docker run --rm agbase/pathannotator:2.0 help
 
 
 **TIP:**
@@ -222,7 +222,7 @@ The container can be pulled with this command:
     --rm \
     -v /path/to/your/input/files:/workdir \
     -v /path/to/kofam/databases/:/data \
-    agbase/pathannotator:1.0 \
+    agbase/pathannotator:2.0 \
     tca \
     GCF_031307605.1_icTriCast1.1_protein.faa \
     out_dir \
@@ -239,7 +239,7 @@ The container can be pulled with this command:
 
 **-v /path/to/kofam/databases/:/data:** mounts the directory with the Kofam database files (or where you want them to be stored) on the host machine to '/data' inside the container
 
-**agbase/pathannotator:1.0:** the name of the Docker image to use
+**agbase/pathannotator:2.0:** the name of the Docker image to use
 
 .. tip::
 
@@ -291,7 +291,7 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
 
     cd /location/where/you/want/to/save/image/file
 
-    apptainer pull docker://agbase/pathannotator:1.0
+    apptainer pull docker://agbase/pathannotator:2.0
 
 
 **Running Pathannotator with Data**
@@ -323,7 +323,7 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
     singularity run \
     -B /directory/you/want/to/work/in:/workdir \
     -B /directory/with/kofam/database/files:/data \
-    /path/with/image/file/pathannotator_1.0.sif \
+    /path/with/image/file/pathannotator_2.0.sif \
     tca \
     GCF_031307605.1_icTriCast1.1_protein.faa \
     out_dir \
@@ -340,7 +340,7 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
 
 **-B /directory/with/kofam/database/files:/data:** mounts the directory with the kofam database file (or where you want them stored) on the host machine to '/data' in the container
 
-**/path/with/image/file/pathannotator_1.0.sif:** the name of the Apptainer image to use
+**/path/with/image/file/pathannotator_2.0.sif:** the name of the Apptainer image to use
 
 .. tip::
 
