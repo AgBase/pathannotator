@@ -4,7 +4,7 @@
 - Pathannotator annotates proteins with KEGG and Flybase pathways. It does this through the use of `KofamScan <https://github.com/takaram/kofam_scan>`_, `KEGG API <https://www.kegg.jp/kegg/rest/keggapi.html>`_ and `Flybase <https://flybase.org/>`_.
 - KofamScan is a gene functional annotation tool based on KEGG Orthology and hidden Markov model (HMM). It is provided by the KEGG (Kyoto Encyclopedia of Genes and Genomes) project. The online version is available here: https://www.genome.jp/tools/kofamkoala/ .
 - This pipeline pulls annotation directly from the KEGG API when possible. When that isn't possible the pipeline impliments Kofamscan to identify homologous KEGG objects (KO). The pathways annotated to these KEGG objects can then be transfered to the corresponding proteins in your species of interest.
-- If specified, the pipeline will also provide annotations to Flybase pathways. To do this the pipeline uses phmmer to identify homologous *Drosophila melanogaster* proteins for your input proteins. Flybase `metabolic pathway <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/metabolic_pathway_group_data_fb_2024_06.tsv.gz>`_ and `signaling annotations <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/signaling_pathway_group_data_fb_2024_06.tsv.gz>`_ are then transferred to your input proteins from these homologs.
+- If specified, the pipeline will also provide annotations to Flybase pathways. To do this the pipeline uses Diamond to identify homologous *Drosophila melanogaster* proteins for your input proteins. Flybase `metabolic pathway <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/metabolic_pathway_group_data_fb_2024_06.tsv.gz>`_ and `signaling pathway annotations <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/signaling_pathway_group_data_fb_2024_06.tsv.gz>`_ are then transferred to your input proteins from these homologs.
 
 
 **Where to Find Pathannotator**
@@ -43,7 +43,7 @@ KEGG species codes can be found here: https://www.genome.jp/brite/br08611
 ============================
 On the command line the following help statement can be displayed with 'help'.
 
-.. code-block:: none
+.. code-block::
 
     Help and Usage:
         There are 4 positional arguments.
@@ -73,7 +73,20 @@ On the command line the following help statement can be displayed with 'help'.
         AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
         LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-        SOFTWARE."
+        SOFTWARE.
+
+        Flybase annotation is carried out using the Diamond Bioconda package:
+
+        Grüning, Björn, Ryan Dale, Andreas Sjödin, Brad A. Chapman, Jillian Rowe,
+        Christopher H. Tomkins-Tinch, Renan Valieris, the Bioconda Team, 
+        and Johannes Köster. 2018. Bioconda: Sustainable and Comprehensive Software 
+        Distribution for the Life Sciences. Nature Methods, 2018 doi:10.1038/s41592-018-0046-7.
+
+        Buchfink B, Reuter K, Drost HG, "Sensitive protein alignments at tree-of-life scale 
+        using DIAMOND", Nature Methods 18, 366–368 (2021). doi:10.1038/s41592-021-01101-x
+
+
+
 
 ======================================
 **Benchmarking**
@@ -85,74 +98,59 @@ The amount of time it takes to run this tool will vary greatly depending on seve
 4. whether you request Flybase annotation in addition to KEGG
 5. how many CPUs you have available to run the analysis
 
-Please consider your options carefully as they can impact run times significantly.
+**Example runs for various circumstances described above. These examples were run on the SciNet Atlas HPC system using Apptainer.**
 
-**Example runs for various circumstances described above. These examples were run on the SciNet Ceres HPC system using Apptainer.**
-
-
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-| Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs available | Time to run (minutes) |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|20,571                     | related species    | yes                  | yes                       | 2                        | > 1,663               |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|20,571                     | related species    | yes                  | no                        | 2                        | 944                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|20,571                     | related species    | yes                  | yes                       | 12                       | 477                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|20,571                     | related species    | yes                  | no                        | 12                       | 234                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|20,571                     | related species    | yes                  | yes                       | 48                       | 380                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|20,571                     | related species    | yes                  | no                        | 48                       | 32                    |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|20,571                     | related species    | yes                  | yes                       | 96                       | 344                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|20,571                     | related species    | yes                  | no                        | 96                       | 24                    |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+| Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs | Time to run (minutes) |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|20,571                     | related species    | yes                  | yes                       | 2              | 553                   |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|20,571                     | related species    | yes                  | no                        | 2              | 544                   |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|20,571                     | related species    | yes                  | yes                       | 12             | 190                   |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|20,571                     | related species    | yes                  | no                        | 12             | 132                   |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|20,571                     | related species    | yes                  | yes                       | 48             | 27                    |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|20,571                     | related species    | yes                  | no                        | 48             | 26                    |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
 
 
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-| Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs available | Time to run (minutes) |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|   22,272                  | same species       |  yes                 | yes                       | 2                        | 1,174                 |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|   22,272                  | same species       |  yes                 | no                        | 2                        | < 1                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|   22,272                  | same species       |  yes                 | yes                       | 12                       | 409                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|   22,272                  | same species       |  yes                 | no                        | 12                       | < 1                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|   22,272                  | same species       |  yes                 | yes                       | 48                       | 365                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|   22,272                  | same species       |  yes                 | no                        | 48                       | < 1                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|   22,272                  | same species       |  yes                 | yes                       | 96                       | 358                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|   22,272                  | same species       |  yes                 | no                        | 96                       | < 1                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
+
++---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
+| Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs| Time to run (minutes) |
++---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
+|   22,272                  | same species       |  yes                 | yes                       | 2             | 1                     |
++---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
+|   22,272                  | same species       |  yes                 | no                        | 2             | < 1                   |
++---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
+|   22,272                  | same species       |  yes                 | yes                       | 12            | < 1                   |
++---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
+|   22,272                  | same species       |  yes                 | no                        | 12            | < 1                   |
++---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
+|   22,272                  | same species       |  yes                 | yes                       | 48            | < 1                   |
++---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
+|   22,272                  | same species       |  yes                 | no                        | 48            | < 1                   |
++---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
 
 
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-| Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs available | Time to run (minutes) |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|  18,330                   | related species    | no                   | yes                       | 2                        |  974                  |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|  18,330                   | related species    | no                   | no                        | 2                        |  494                  |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|  18,330                   | related species    | no                   | yes                       | 12                       |  273                  |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|  18,330                   | related species    | no                   | no                        | 12                       |  206                  |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|  18,330                   | related species    | no                   | yes                       | 48                       |  220                  |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|  18,330                   | related species    | no                   | no                        | 48                       |  47                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|  18,330                   | related species    | no                   | yes                       | 96                       |  179                  |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
-|  18,330                   | related species    | no                   | no                        | 96                       |  18                   |
-+---------------------------+--------------------+----------------------+---------------------------+--------------------------+-----------------------+
 
-
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+| Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs | Time to run (minutes) |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|  18,330                   | related species    | no                   | yes                       | 2              |  299                  |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|  18,330                   | related species    | no                   | no                        | 2              |  299                  |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|  18,330                   | related species    | no                   | yes                       | 12             |  48                   |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|  18,330                   | related species    | no                   | no                        | 12             |  48                   |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|  18,330                   | related species    | no                   | yes                       | 48             |  15                   |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
+|  18,330                   | related species    | no                   | no                        | 48             |  14                   |
++---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
 
 
 ======================================
@@ -312,8 +310,9 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
 
     #!/bin/bash
     #SBATCH --job-name=pathannot
-    #SBATCH --ntasks=8
-    #SBATCH --time=2:00:00
+    #SBATCH --ntasks=48
+    #SBATCH --time=12:00:00
+    #SBATCH --nodes=1
     #SBATCH --partition=short
     #SBATCH --account=nal_genomics
 
@@ -398,7 +397,7 @@ The output files you can expect will differ depending on the circumstances of yo
 
 
 
-- **HMM_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+- **Diamond_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
 
     +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
     | KEGG_genes_ID   |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
@@ -412,7 +411,7 @@ The output files you can expect will differ depending on the circumstances of yo
 
 
 
-- **dme_flybase.tsv:** This is an alternative to 'HMM_flybase.tsv' if you used the 'FB' option for Flybase pathways annotations AND your species code was 'dme' (Drosophila melanogaster).
+- **dme_flybase.tsv:** This is an alternative to 'Diamond_flybase.tsv' if you are annotating Drosophila melanogaster.
 
     +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
     |KEGG_genes_ID       |Input_protein_ID         |KEGG_KO         |Flybase_pathway_ID          |Flybase_pathway_name                     |
@@ -470,7 +469,7 @@ The output files you can expect will differ depending on the circumstances of yo
     +----------------+-------------------+-----------+---------------------+-------------------------------------------+
 
 
-- **HMM_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+- **Diamond_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
 
     +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
     | KEGG_genes_ID   |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
@@ -481,20 +480,6 @@ The output files you can expect will differ depending on the circumstances of yo
     +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
     |CG2666           |NP_001034492.1   |FBpp0078442        |FBgg0002045        |CHITIN BIOSYNTHESIS                                    |
     +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
-
-
-- **dme_flybase.tsv:** This is an alternative to 'HMM_flybase.tsv' if you used the 'FB' option for Flybase pathways annotations AND your species code was 'dme' (Drosophila melanogaster).
-
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
-    |KEGG_genes_ID       |Input_protein_ID         |KEGG_KO         |Flybase_pathway_ID          |Flybase_pathway_name                     |
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------
-    |CG34403             |NP_001034490             |K04491          |FBgg0000890                 |Wnt-TCF Signaling Pathway Core Components|
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
-    |CG2666              |NP_001034491             |K00698          |FBgg0002045                 |CHITIN BIOSYNTHESIS                      |
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
-    |CG7464              |NP_001034491             |K00698          |FBgg0002045                 |CHITIN BIOSYNTHESIS                      |
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
-
 
 
 
@@ -531,7 +516,7 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
     +------------------+---------------------+-----------------------+----------------------+------------------------------+
 
 
-- **HMM_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+- **Diamond_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
 
     +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
     |KEGG_genes_ID    |Input_protein_ID          |Flybase_protein_ID     |Flybase_pathway_ID       |Flybase_pathway_name                                    |

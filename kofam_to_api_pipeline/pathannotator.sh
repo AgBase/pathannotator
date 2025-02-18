@@ -1,5 +1,32 @@
 #! /bin/bash
 
+if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
+if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
+if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
+if [ -f "$3"/link_"$1"_ko.tsv ]; then rm "$3"/link_"$1"_ko.tsv; fi
+if [ -f "$3"/link_pathway_"$1".tsv ]; then rm "$3"/link_pathway_"$1".tsv; fi
+if [ -f "$3"/list_pathway_"$1".tsv ]; then rm "$3"/list_pathway_"$1".tsv; fi
+if [ -f "$3"/deflines.tmp ]; then rm "$3"/deflines.tmp; fi
+if [ -f "$3"/ko_ncbi.tsv ]; then rm "$3"/ko_ncbi.tsv; fi
+if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
+if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
+if [ -f "$3"/pathway_group_data_latest.tsv ]; then rm $3/pathway_group_data_latest.tsv; fi
+if [ -f "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
+if [ -f "$3"/kegg_organisms.txt ]; then rm "$3"/kegg_organisms.txt; fi
+if [ -f "$3"/kegg_org_codes.txt ]; then rm "$3"/kegg_org_codes.txt; fi
+if [ -f "$3"/kegg_orgs_with_codes.txt ]; then rm "$3"/kegg_orgs_with_codes.txt; fi
+if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_group_data_fb*; fi
+if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
+if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
+if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
+if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
+if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
+if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
+if [ -f "$3"/FB_diamond.tsv ]; then rm  "$3"/FB_diamond.tsv; fi
+if [ -f "$3"/dia_matches.tsv ]; then rm  "$3"/dia_matches.tsv; fi
+if [ -f "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
+if [ -f "$3"/dmel_db.dmnd ]; then rm  "$3"/dmel_db.dmnd; fi
+
 starttime=$(date +%s)
 
 if [ $1 == "help" ];
@@ -32,7 +59,13 @@ then
 	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-	SOFTWARE."
+	SOFTWARE.
+
+	Flybase annotation is carried out using the Diamond Bioconda package.
+
+        Grüning, Björn, Ryan Dale, Andreas Sjödin, Brad A. Chapman, Jillian Rowe, Christopher H. Tomkins-Tinch, Renan Valieris, the Bioconda Team, and Johannes Köster. 2018. Bioconda: Sustainable and Comprehensive   Software Distribution for the Life Sciences. Nature Methods, 2018 doi:10.1038/s41592-018-0046-7.
+
+	Buchfink B, Reuter K, Drost HG, "Sensitive protein alignments at tree-of-life scale using DIAMOND", Nature Methods 18, 366–368 (2021). doi:10.1038/s41592-021-01101-x "
 	exit 0
 fi
 
@@ -75,21 +108,18 @@ then
 			#IF YES, THEN PROCEED WITH FB, MERGE FROM API DATA
 			echo "IDs are $1 species IDs"
 
-			#IF FB AND NOT DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
+			#IF FB AND NOT DME RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				avail=$(nproc)
-				cpus=$(( $avail - 1 ))
-				phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
+				diamond version
+				diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
+				diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+
  				#PULL MATCHES FROM OUTPUT
-				grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-				readarray -t phmmarray < $3/phmmacc.txt
-				for each in "${phmmarray[@]}"
-        			do
-					grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-					awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-				done
+				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 			fi
 
 			#MERGE DATA HERE
@@ -106,8 +136,9 @@ then
 
 			#RUN KOFAMSCAN
 			echo "Running KofamScan now."
-			avail=$(nproc)
+			avail=$(getconf _NPROCESSORS_ONLN)
 			cpus=$(( $avail - 1 ))
+
 			/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 			#FILTER KOFAM HERE
@@ -116,21 +147,18 @@ then
 	        	awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        	sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-			#IF FB AND NOT DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
+			#IF FB AND NOT DME RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				avail=$(nproc)
-				cpus=$(( $avail - 1 ))
-				phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
+				diamond version
+				diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
+				diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+
  				#PULL MATCHES FROM OUTPUT
-				grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-				readarray -t phmmarray < $3/phmmacc.txt
-				for each in "${phmmarray[@]}"
-        			do
-					grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-					awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-				done
+				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 			fi
 
 			#MERGE DATA HERE
@@ -148,8 +176,9 @@ then
 
 		#RUN KOFAMSCAN
 		echo "This is not a KEGG species code. Running KofamScan now."
-		avail=$(nproc)
+		avail=$(getconf _NPROCESSORS_ONLN)
 		cpus=$(( $avail - 1 ))
+
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#FILTER KOFAM HERE
@@ -158,21 +187,18 @@ then
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-		#IF FB AND NOT DME RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
+		#IF FB AND NOT DME RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 		then
 			echo "Performing Flybase annotation".
-			avail=$(nproc)
-			cpus=$(( $avail - 1 ))
-			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
+			diamond version
+			diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
+			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+
  			#PULL MATCHES FROM OUTPUT
-			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-			readarray -t phmmarray < $3/phmmacc.txt
-			for each in "${phmmarray[@]}"
-        		do
-				grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-			done
+			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 		fi
 
 		#MERGE DATA
@@ -193,9 +219,9 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
 
 		#RUN KOFAM HERE
-		avail=$(nproc)
+		avail=$(getconf _NPROCESSORS_ONLN)
 		cpus=$(( $avail - 1 ))
-		#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF EUKARYOTE.HAL??
+
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#FILTER KOFAM HERE
@@ -204,19 +230,18 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-		#IF FB RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
+		#IF FB RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
+			diamond version
+			diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
+			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+
  			#PULL MATCHES FROM OUTPUT
-			grep -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-			readarray -t phmmarray < $3/phmmacc.txt
-			for each in "${phmmarray[@]}"
-        		do
-				grep -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-			done
+			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 		fi
 
 		#MERGE DATA
@@ -232,9 +257,9 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
 
 		#RUN KOFAM HERE
-		avail=$(nproc)
+		avail=$(getconf _NPROCESSORS_ONLN)
 		cpus=$(( $avail - 1 ))
-		#NEED TO MAKE THIS WORK WITH HMM FILES INSTEAD OF EUKARYOTE.HAL??
+
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#FILTER KOFAM HERE
@@ -243,19 +268,18 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-		#IF FB RUN HMMER AND PROCEED TO MERGE (INCLUDING FLYBASE)
+		#IF FB RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			phmmer --cpu $cpus --tblout $3/FB_phmmer.txt -o /dev/null -E 0.05 $2 $3/dmel-all-translation-*.fasta
+			diamond version
+			diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
+			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
+			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+
  			#PULL MATCHES FROM OUTPUT
-			grep -h -v ^\# $3/FB_phmmer.txt | awk -F " +" '{print $3}' | sort | uniq > $3/phmmacc.txt
-			readarray -t phmmarray < $3/phmmacc.txt
-			for each in "${phmmarray[@]}"
-        		do
-				grep -h -m 1 $each $3/FB_phmmer.txt > $3/phmm_tophits.txt
-				awk -F ' +' '{ OFS="\t"; print $1, $3 }'  $3/phmm_tophits.txt >> $3/phmm_matches.txt
-			done
+			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 		fi
 
 		#MERGE DATA
@@ -283,13 +307,13 @@ if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_gr
 if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
 if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
 if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
-if [ -f "$3"/phmmacc.txt ]; then  rm "$3"/phmmacc.txt; fi
-if [ -f "$3"/phmm_tophits.txt ]; then  rm "$3"/phmm_tophits.txt; fi
-if [ -f "$3"/phmm_matches.txt ]; then  rm "$3"/phmm_matches.txt; fi
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
-if [ -f "$3"/FB_phmmer.txt ]; then rm "$3"/FB_phmmer.txt; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
-if [ -d "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
+if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
+if [ -f "$3"/FB_diamond.tsv ]; then rm  "$3"/FB_diamond.tsv; fi
+if [ -f "$3"/dia_matches.tsv ]; then rm  "$3"/dia_matches.tsv; fi
+if [ -f "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
+if [ -f "$3"/dmel_db.dmnd ]; then rm  "$3"/dmel_db.dmnd; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
