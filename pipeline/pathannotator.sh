@@ -28,7 +28,7 @@ if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
 if [ -f "$3"/FB_diamond.tsv ]; then rm  "$3"/FB_diamond.tsv; fi
 if [ -f "$3"/dia_matches.tsv ]; then rm  "$3"/dia_matches.tsv; fi
-if [ -f "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
+#if [ -f "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
 if [ -f "$3"/dmel_db.dmnd ]; then rm  "$3"/dmel_db.dmnd; fi
 
 starttime=$(date +%s)
@@ -122,7 +122,7 @@ then
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
-				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 			fi
 
@@ -161,7 +161,7 @@ then
 				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  				#PULL MATCHES FROM OUTPUT
-				awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+				awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 			fi
 
@@ -201,7 +201,7 @@ then
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 		fi
 
@@ -244,7 +244,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 		fi
 
@@ -282,7 +282,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 
  			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($8 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+			awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 		fi
 
@@ -316,7 +316,7 @@ if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
 if [ -f "$3"/FB_diamond.tsv ]; then rm  "$3"/FB_diamond.tsv; fi
 if [ -f "$3"/dia_matches.tsv ]; then rm  "$3"/dia_matches.tsv; fi
-if [ -f "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
+#if [ -f "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
 if [ -f "$3"/dmel_db.dmnd ]; then rm  "$3"/dmel_db.dmnd; fi
 
 endtime=$(date +%s)
