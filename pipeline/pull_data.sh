@@ -107,13 +107,6 @@ then
 	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_genomic.gff.gz -O $3/GCF_031307605.1_icTriCast1.1_genomic.gff.gz
         gunzip -f $3/GCF_031307605.1_icTriCast1.1_genomic.gff.gz
 
-	#DROSOPHILA MELANOGASTER
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/215/GCF_000001215.4_Release_6_plus_ISO1_MT/GCF_000001215.4_Release_6_plus_ISO1_MT_protein.faa.gz -O $3/GCF_000001215.4_Release_6_plus_ISO1_MT_protein.faa.gz
-        gunzip -f $3/GCF_000001215.4_Release_6_plus_ISO1_MT_protein.faa.gz
-
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/215/GCF_000001215.4_Release_6_plus_ISO1_MT/GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gff.gz -O $3/GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gff.gz
-        gunzip -f $3/GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gff.gz
-
 	#APIS MELLIFERA
 	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/003/254/395/GCF_003254395.2_Amel_HAv3.1/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz -O $3/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz
         gunzip -f $3/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz

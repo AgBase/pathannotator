@@ -101,7 +101,7 @@ then
 		echo "${defarray[0]}"
 		if grep -q "${defarray[0]}" $3/conv_ncbi-proteinid_"$1".tsv; #TESTING IF INPUT IDS ARE THE SAME SPECIES AS THE KEGG CODE
 		then
-			#IF YES, THEN PROCEED WITH FB, MERGE FROM API DATA
+			#IF YES, MERGE FROM API DATA
 			echo "IDs are $1 species IDs"
 
 			#IF FB AND NOT DME RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
@@ -116,7 +116,7 @@ then
 #				agat_sp_keep_longest_isoform.pl -gff file.gff   -o diacit_longest_isoform.fa
 #				agat_sp_keep_longest_isoform.pl -gff file.gff   -o schgre_longest_isoform.fa
 #RUN agat ON INPUT GFF--SAVE NEW SINGLE-TRANSCRIPT FASTA
-#				noext="${$2%%.*}"
+#				noext=$3/"${$2%%.*}"
 #				agat_sp_keep_longest_isoform.pl -gff $5   -o $3/"$noext"_longest_isoform.fa
 #RUN ORTHOFINDER WITH SINGLE-TRANCRIPT FASTAS FROM INPUT SPECIES AND DROMEL
 
@@ -127,8 +127,8 @@ then
 			fi
 
 			#MERGE DATA HERE
-			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 no $3 $3 $4
+#			echo "Creating annotations output."
+#			python /usr/bin/merge_data.py $1 no $3 $3 $4
 
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
