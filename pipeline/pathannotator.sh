@@ -26,10 +26,6 @@ if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_f
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-if [ -f "$3"/FB_diamond.tsv ]; then rm  "$3"/FB_diamond.tsv; fi
-if [ -f "$3"/dia_matches.tsv ]; then rm  "$3"/dia_matches.tsv; fi
-#if [ -f "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
-if [ -f "$3"/dmel_db.dmnd ]; then rm  "$3"/dmel_db.dmnd; fi
 
 starttime=$(date +%s)
 
@@ -42,6 +38,7 @@ then
 	2: input file (protein FASTA without header lines)
 	3: output directory (must be an existing directory)
 	4: 'FB' for flybase annotations, 'NA' for none
+	5: GFF corresponding to input FASTA
 
 	KofamScan is used under an MIT License:
 
@@ -63,13 +60,8 @@ then
 	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-	SOFTWARE.
+	SOFTWARE."
 
-	Flybase annotation is carried out using the Diamond Bioconda package.
-
-        Grüning, Björn, Ryan Dale, Andreas Sjödin, Brad A. Chapman, Jillian Rowe, Christopher H. Tomkins-Tinch, Renan Valieris, the Bioconda Team, and Johannes Köster. 2018. Bioconda: Sustainable and Comprehensive   Software Distribution for the Life Sciences. Nature Methods, 2018 doi:10.1038/s41592-018-0046-7.
-
-	Buchfink B, Reuter K, Drost HG, "Sensitive protein alignments at tree-of-life scale using DIAMOND", Nature Methods 18, 366–368 (2021). doi:10.1038/s41592-021-01101-x "
 	exit 0
 fi
 
@@ -116,14 +108,22 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				diamond version
-				diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
-				diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
-				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+#RUN agat ON FB AND REPRESENTATIVE SPECIES GFFS--SAVE NEW SINGLE-TRANSCRIPT FASTA
+#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o dromel_longest_isoform.fa
+#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o tricas_longest_isoform.fa
+#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o apimel_longest_isoform.fa
+#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o mansex_longest_isoform.fa
+#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o diacit_longest_isoform.fa
+#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o schgre_longest_isoform.fa
+#RUN agat ON INPUT GFF--SAVE NEW SINGLE-TRANSCRIPT FASTA
+#				noext="${$2%%.*}"
+#				agat_sp_keep_longest_isoform.pl -gff $5   -o $3/"$noext"_longest_isoform.fa
+#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT FASTAS FROM INPUT SPECIES AND DROMEL
 
- 				#PULL MATCHES FROM OUTPUT
-				awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
+#PULL MATCHES FROM OUTPUT
+#				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+#				awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
+#				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 			fi
 
 			#MERGE DATA HERE
@@ -314,10 +314,6 @@ if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_f
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-if [ -f "$3"/FB_diamond.tsv ]; then rm  "$3"/FB_diamond.tsv; fi
-if [ -f "$3"/dia_matches.tsv ]; then rm  "$3"/dia_matches.tsv; fi
-#if [ -f "$3"/diamond_out.tsv ]; then rm  "$3"/diamond_out.tsv; fi
-if [ -f "$3"/dmel_db.dmnd ]; then rm  "$3"/dmel_db.dmnd; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))

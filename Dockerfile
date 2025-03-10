@@ -1,7 +1,7 @@
 ## Dockerfile
 FROM ubuntu:22.04
 MAINTAINER Amanda Cooksey
-LABEL Description="AgBase KofamScan"
+LABEL Description="AgBase Pathannotator"
 
 # Install all the updates and download dependencies
 RUN apt-get update && \
@@ -34,7 +34,9 @@ RUN pip install pandas
 
 # add hmmer and diamond
 
-RUN conda install -c conda-forge -c bioconda diamond
+RUN conda install -c conda-forge -c bioconda agat
+
+RUN conda install -c conda-forge -c bioconda orthofinder
 
 RUN conda install --solver=classic -c conda-forge -c bioconda hmmer
 
