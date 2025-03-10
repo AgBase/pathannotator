@@ -109,12 +109,13 @@ then
 			then
 				echo "Performing Flybase annotation".
 #RUN agat ON FB AND REPRESENTATIVE SPECIES GFFS--SAVE NEW SINGLE-TRANSCRIPT FASTA
-#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o dromel_longest_isoform.fa
-#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o tricas_longest_isoform.fa
-#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o apimel_longest_isoform.fa
-#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o mansex_longest_isoform.fa
-#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o diacit_longest_isoform.fa
-#				agat_sp_keep_longest_isoform.pl -gff file.gff   -o schgre_longest_isoform.fa
+				agat_sp_keep_longest_isoform.pl -gff $3/dmel-all-r6.62.gff   -o $3/dromel_longest_isoform.fa
+				agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/tricas_longest_isoform.fa
+				agat_sp_keep_longest_isoform.pl -gff $3/GCF_003254395.2_Amel_HAv3.1_genomic.gff   -o $3/apimel_longest_isoform.fa
+				agat_sp_keep_longest_isoform.pl -gff $3/GCF_014839805.1_JHU_Msex_v1.0_genomic.gff   -o $3/mansex_longest_isoform.fa
+				agat_sp_keep_longest_isoform.pl -gff $3/GCF_020184175.1_ASM2018417v2_genomic.gff   -o $3/aphgos_longest_isoform.fa
+				agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/schgre_longest_isoform.fa
+
 #RUN agat ON INPUT GFF--SAVE NEW SINGLE-TRANSCRIPT FASTA
 #				noext=$3/"${$2%%.*}"
 #				agat_sp_keep_longest_isoform.pl -gff $5   -o $3/"$noext"_longest_isoform.fa
@@ -292,28 +293,28 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	fi
 fi
 
-if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
-if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
-if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
-if [ -f "$3"/link_"$1"_ko.tsv ]; then rm "$3"/link_"$1"_ko.tsv; fi
-if [ -f "$3"/link_pathway_"$1".tsv ]; then rm "$3"/link_pathway_"$1".tsv; fi
-if [ -f "$3"/list_pathway_"$1".tsv ]; then rm "$3"/list_pathway_"$1".tsv; fi
-if [ -f "$3"/deflines.tmp ]; then rm "$3"/deflines.tmp; fi
-if [ -f "$3"/ko_ncbi.tsv ]; then rm "$3"/ko_ncbi.tsv; fi
-if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
-if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
-if [ -f "$3"/pathway_group_data_latest.tsv ]; then rm $3/pathway_group_data_latest.tsv; fi
-if [ -f "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
-if [ -f "$3"/kegg_organisms.txt ]; then rm "$3"/kegg_organisms.txt; fi
-if [ -f "$3"/kegg_org_codes.txt ]; then rm "$3"/kegg_org_codes.txt; fi
-if [ -f "$3"/kegg_orgs_with_codes.txt ]; then rm "$3"/kegg_orgs_with_codes.txt; fi
-if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_group_data_fb*; fi
-if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
-if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
-if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
-if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
-if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
-if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
+#if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
+#if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
+#if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
+#if [ -f "$3"/link_"$1"_ko.tsv ]; then rm "$3"/link_"$1"_ko.tsv; fi
+#if [ -f "$3"/link_pathway_"$1".tsv ]; then rm "$3"/link_pathway_"$1".tsv; fi
+#if [ -f "$3"/list_pathway_"$1".tsv ]; then rm "$3"/list_pathway_"$1".tsv; fi
+#if [ -f "$3"/deflines.tmp ]; then rm "$3"/deflines.tmp; fi
+#if [ -f "$3"/ko_ncbi.tsv ]; then rm "$3"/ko_ncbi.tsv; fi
+#if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
+#if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
+#if [ -f "$3"/pathway_group_data_latest.tsv ]; then rm $3/pathway_group_data_latest.tsv; fi
+#if [ -f "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
+#if [ -f "$3"/kegg_organisms.txt ]; then rm "$3"/kegg_organisms.txt; fi
+#if [ -f "$3"/kegg_org_codes.txt ]; then rm "$3"/kegg_org_codes.txt; fi
+#if [ -f "$3"/kegg_orgs_with_codes.txt ]; then rm "$3"/kegg_orgs_with_codes.txt; fi
+#if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_group_data_fb*; fi
+#if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
+#if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
+#if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
+#if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
+#if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
+#if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
