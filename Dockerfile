@@ -13,7 +13,8 @@ RUN apt-get update && \
     python3 \
     ruby \
     tar \
-    nano
+    nano \
+    liblist-moreutils-perl
 
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_25.1.1-2-Linux-x86_64.sh -O ~/miniconda.sh && \
@@ -35,6 +36,10 @@ RUN pip install pandas
 # add hmmer and diamond
 
 RUN conda install -c conda-forge -c bioconda agat
+
+RUN conda install -c conda-forge -c bioconda perl-list-moreutils
+
+RUN push(@INC,/opt/cond/pkgs) 
 
 RUN conda install -c conda-forge -c bioconda orthofinder
 
