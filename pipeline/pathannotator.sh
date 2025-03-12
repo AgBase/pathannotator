@@ -109,16 +109,16 @@ then
 			then
 				echo "Performing Flybase annotation".
 #RUN agat ON FB AND REPRESENTATIVE SPECIES GFFS--SAVE NEW SINGLE-TRANSCRIPT FASTA
-				agat_sp_keep_longest_isoform.pl -gff $3/dmel-all-r6.62.gff   -o $3/dromel_longest_isoform.fa
-				agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/tricas_longest_isoform.fa
-				agat_sp_keep_longest_isoform.pl -gff $3/GCF_003254395.2_Amel_HAv3.1_genomic.gff   -o $3/apimel_longest_isoform.fa
-				agat_sp_keep_longest_isoform.pl -gff $3/GCF_014839805.1_JHU_Msex_v1.0_genomic.gff   -o $3/mansex_longest_isoform.fa
-				agat_sp_keep_longest_isoform.pl -gff $3/GCF_020184175.1_ASM2018417v2_genomic.gff   -o $3/aphgos_longest_isoform.fa
-				agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/schgre_longest_isoform.fa
+				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/dmel-all-r6.62.gff   -o $3/dromel_longest_isoform.fa
+				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/tricas_longest_isoform.fa
+				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_003254395.2_Amel_HAv3.1_genomic.gff   -o $3/apimel_longest_isoform.fa
+				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_014839805.1_JHU_Msex_v1.0_genomic.gff   -o $3/mansex_longest_isoform.fa
+				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_020184175.1_ASM2018417v2_genomic.gff   -o $3/aphgos_longest_isoform.fa
+				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/schgre_longest_isoform.fa
 
 #RUN agat ON INPUT GFF--SAVE NEW SINGLE-TRANSCRIPT FASTA
 #				noext=$3/"${$2%%.*}"
-#				agat_sp_keep_longest_isoform.pl -gff $5   -o $3/"$noext"_longest_isoform.fa
+#				perl agat_sp_keep_longest_isoform.pl -gff $5   -o $3/"$noext"_longest_isoform.fa
 #RUN ORTHOFINDER WITH SINGLE-TRANCRIPT FASTAS FROM INPUT SPECIES AND DROMEL
 
 #PULL MATCHES FROM OUTPUT
