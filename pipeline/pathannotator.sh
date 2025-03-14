@@ -39,6 +39,7 @@ then
 	3: output directory (must be an existing directory)
 	4: 'FB' for flybase annotations, 'NA' for none
 	5: GFF corresponding to input FASTA
+	6: genomics FASTA for input species
 
 	KofamScan is used under an MIT License:
 
@@ -109,18 +110,44 @@ then
 			then
 				echo "Performing Flybase annotation".
 #RUN agat ON FB AND REPRESENTATIVE SPECIES GFFS--SAVE NEW SINGLE-TRANSCRIPT FASTA
-				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/dmel-all-r6.62.gff   -o $3/dromel_longest_isoform.fa
-				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/tricas_longest_isoform.fa
-				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_003254395.2_Amel_HAv3.1_genomic.gff   -o $3/apimel_longest_isoform.fa
-				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_014839805.1_JHU_Msex_v1.0_genomic.gff   -o $3/mansex_longest_isoform.fa
-				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_020184175.1_ASM2018417v2_genomic.gff   -o $3/aphgos_longest_isoform.fa
-				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/schgre_longest_isoform.fa
+
+#FLYBASE GFF FILE IS FUCKED UP. NEED TO REMOVE FIRST LINE AND ALL COMMENTS FROM GFF
+#I HAVE SAVED ALL THESE FILES AND WILL SKIP RUNNING THIS FOR NOW--TAKES FOREVER
+#				tail -n +2 $3/dmel-all*.gff | grep -v -P "^#" > $3/dmel-all*.gff.tmp
+#				echo "Removed comments and first line from GFF"
+#				mv $3/dmel-all*.gff.tmp $3/dmel-all*.gff
+#				echo "dmel GFF should be correct now"
+#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/dmel-all*.gff   -o $3/dromel_longest_isoform.gff
+#				echo "Finished making longest isoform GFF"
+
+#				gffread -y $3/dromel_longest_isoform.fa -g $3/"dmel-all-chromosome*.fasta" $3/dromel_longest_isoform.gff
+
+#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/tricas_longest_isoform.gff
+#				gffread -y $3/tricas_longest_isoform.fa -g $3/GCF_031307605.1_icTriCast1.1_genomic.fna $3/tricas_longest_isoform.gff
+
+#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_003254395.2_Amel_HAv3.1_genomic.gff   -o $3/apimel_longest_isoform.gff
+#				gffread -y $3/apimel_longest_isoform.fa -g $3/GCF_003254395.2_Amel_HAv3.1_genomic.fna $3/apimel_longest_isoform.gff
+
+#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_014839805.1_JHU_Msex_v1.0_genomic.gff   -o $3/mansex_longest_isoform.gff
+#				gffread -y $3/mansex_longest_isoform.fa -g 3/GCF_014839805.1_JHU_Msex_v1.0_genomic.fna $3/mansex_longest_isoform.gff
+
+#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_020184175.1_ASM2018417v2_genomic.gff   -o $3/aphgos_longest_isoform.gff
+#				gffread -y $3/aphgos_longest_isoform.fa -g $3/GCF_020184175.1_ASM2018417v2_genomic.fna $3/aphgos_longest_isoform.gff
+
+#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_023897955.1_iqSchGreg1.2_genomic.gff   -o $3/schgre_longest_isoform.gff
+#				gffread -y $3/schgre_longest_isoform.fa -g $3/GCF_023897955.1_iqSchGreg1.2_genomic.fna $3/schgre_longest_isoform.gff
 
 #RUN agat ON INPUT GFF--SAVE NEW SINGLE-TRANSCRIPT FASTA
-#				noext=$3/"${$2%%.*}"
-#				perl agat_sp_keep_longest_isoform.pl -gff $5   -o $3/"$noext"_longest_isoform.fa
-#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT FASTAS FROM INPUT SPECIES AND DROMEL
+#MAY HAVE TO HAVE A LOOKUP OF THE GENOMIC AND GFF FILES THAT MATCH INPUT BECAUSE I NEED EVERYTHING...genomic, protein AND gff.
 
+				noext=$(basename "$5" .gff)
+				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $5   -o $3/"$noext"_longest_isoform.gff
+				gffread -y $3/"$noext"_longest_isoform.fa -g $6  $3/"$noext"_longest_isoform.gff
+
+#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT FASTAS FROM INPUT SPECIES AND DROMEL
+				mkdir $3/orthofinder_inputs
+				mv $3/*longest_isoform.fa $3/orthofinder_inputs
+				orthofinder -f $3/orthofinder_inputs -t 12
 #PULL MATCHES FROM OUTPUT
 #				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 #				awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
@@ -130,7 +157,6 @@ then
 			#MERGE DATA HERE
 #			echo "Creating annotations output."
 #			python /usr/bin/merge_data.py $1 no $3 $3 $4
-
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
 			echo "IDs are NOT $1 species IDs"

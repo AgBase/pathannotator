@@ -52,15 +52,15 @@ RUN pip install pandas
 
 # add hmmer and AGAT and orthofinder
 
-#RUN conda install  perl-bioperl perl-clone perl-graph perl-lwp-simple perl-carp perl-sort-naturally perl-file-share perl-file-sharedir-install perl-moose perl-yaml perl-lwp-protocol-https perl-term-progressbar perl-try-tiny-retry
-
 RUN conda install -c conda-forge -c bioconda agat
+
+RUN conda install -c conda-forge -c bioconda gffread
 
 RUN conda install -c conda-forge -c bioconda orthofinder
 
 RUN conda install --solver=classic -c conda-forge -c bioconda hmmer
 
-ENV PERL5LIB=$PERL5LIB:/opt/conda/pkgs:/opt/conda/pkgs/agat-1.4.2-pl5321hdfd78af_1/lib/perl5/site_perl/
+ENV PERL5LIB=$PERL5LIB:/opt/conda/pkgs:/opt/conda/pkgs/agat-1.4.2-pl5321hdfd78af_1/lib/perl5/site_perl/:/opt/conda/bin
 
 ENV PATH /usr/bin/:$PATH
 
