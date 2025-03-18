@@ -31,7 +31,11 @@ RUN apt-get update && \
     libfile-sharedir-perl \
     libmoose-perl \
     libterm-progressbar-perl \
-    libdevel-cover-perl
+    libdevel-cover-perl \
+    python3-scipy \
+    python3-sklearn \
+    python3-numpy \
+    python3-biopython
 
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_25.1.1-2-Linux-x86_64.sh -O ~/miniconda.sh && \
@@ -48,7 +52,7 @@ RUN conda config --add channels bioconda
 
 RUN conda upgrade conda
 
-RUN pip install pandas
+RUN pip install pandas 
 
 # add hmmer and AGAT and orthofinder
 
@@ -70,6 +74,8 @@ ADD pipeline/pull_data.sh /usr/bin
 
 ADD pipeline/merge_data.py /usr/bin
 
+ADD pipeline/agat_config.yaml /usr/bin
+
 WORKDIR /usr/bin
 
 RUN git clone https://github.com/takaram/kofam_scan.git
@@ -88,6 +94,4 @@ ENTRYPOINT ["/usr/bin/pathannotator.sh"]
 
 # Add path to working directory
 WORKDIR /workdir
-
-RUN echo -e "PATH is $PATH PERL5LIB is $PERL5LIB"
 
