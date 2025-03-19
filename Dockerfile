@@ -16,22 +16,22 @@ RUN apt-get update && \
     ruby \
     tar \
     nano \
-    liblist-moreutils-perl \
-    libbio-perl-perl \
-    libclone-perl \
-    libgraph-perl \ 
-    liblwp-useragent-determined-perl \
-    libstatistics-r-perl \
-    libcarp-clan-perl \
-    libsort-naturally-perl \
-    libfile-share-perl \
-    libfile-sharedir-install-perl \
-    libyaml-perl \
-    liblwp-protocol-https-perl \
-    libfile-sharedir-perl \
-    libmoose-perl \
-    libterm-progressbar-perl \
-    libdevel-cover-perl \
+#agat    liblist-moreutils-perl \
+#agat    libbio-perl-perl \
+#agat    libclone-perl \
+#agat    libgraph-perl \ 
+#agat    liblwp-useragent-determined-perl \
+#agat    libstatistics-r-perl \
+#agat    libcarp-clan-perl \
+#agat    libsort-naturally-perl \
+#agat    libfile-share-perl \
+#agat    libfile-sharedir-install-perl \
+#agat    libyaml-perl \
+#agat    liblwp-protocol-https-perl \
+#agat    libfile-sharedir-perl \
+#agat    libmoose-perl \
+#agat    libterm-progressbar-perl \
+#agat    libdevel-cover-perl \
     python3-scipy \
     python3-sklearn \
     python3-numpy \
@@ -56,9 +56,11 @@ RUN pip install pandas
 
 # add hmmer and AGAT and orthofinder
 
-RUN conda install -c conda-forge -c bioconda agat
+#RUN conda install -c conda-forge -c bioconda agat
 
-RUN conda install -c conda-forge -c bioconda gffread
+#RUN conda install -c conda-forge -c bioconda gffread
+
+RUN conda install -c conda-forge -c bioconda cd-hit
 
 RUN conda install -c conda-forge -c bioconda orthofinder
 
@@ -74,11 +76,13 @@ ADD pipeline/pull_data.sh /usr/bin
 
 ADD pipeline/merge_data.py /usr/bin
 
-ADD pipeline/agat_config.yaml /usr/bin
+#ADD pipeline/agat_config.yaml /usr/bin
 
 WORKDIR /usr/bin
 
 RUN git clone https://github.com/takaram/kofam_scan.git
+
+RUN wget http://github.com/bbuchfink/diamond/releases/download/v2.1.11/diamond-linux64.tar.gz && tar xzf diamond-linux64.tar.gz
 
 # Change the permissions and the path for the wrapper script
 RUN chmod +x /usr/bin/pathannotator.sh
