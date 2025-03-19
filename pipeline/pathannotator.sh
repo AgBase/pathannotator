@@ -134,6 +134,15 @@ then
 
 #				sed -i 's/\./\-/g' $3/*longest_isoform.fa
 
+#THIS IS AN ATTEMPT AT USING CD-HIT INSTEAD OF AGAT
+				mkdir $3/orthofinder
+				cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dmel-all-translation-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/GCF_031307605.1_icTriCast1.1_protein-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/GCF_003254395.2_Amel_HAv3.1_protein-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa -o $3/orthofinder/GCF_014839805.1_JHU_Msex_v1.0_protein-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_020184175.1_ASM2018417v2_protein.faa -o $3/orthofinder/GCF_020184175.1_ASM2018417v2_protein-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/GCF_023897955.1_iqSchGreg1.2_protein-cluster.faa -d 0 -T 0 -M 10000
+
 #RUN agat ON INPUT GFF--SAVE NEW SINGLE-TRANSCRIPT FASTA
 #AGAT ONLY PULLS WHICHEVER FEATURES ARE PARENTS OF THE CDS. GFFREAD ALWAYS PULL TRANSCRIPT IDS EVEN WHEN IT IS AMINO ACID SEQUENCE.
 
@@ -142,9 +151,14 @@ then
 #				gffread -y $3/"$noext"_longest_isoform.fa -g $6  $3/"$noext"_longest_isoform.gff
 #				sed -i 's/\./\-/g' $3/*longest_isoform.fa
 
+#RUN CD-HIT ON INPUT PROTEIN FASTA
+				noext=$(basename "$2" .faa)
+				nopath=$(basename "$2")
+				cp $2 $3/
+				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+
+
 #RUN ORTHOFINDER WITH SINGLE-TRANCRIPT FASTAS FROM INPUT SPECIES AND DROMEL
-				mkdir $3/orthofinder
-				mv $3/*longest_isoform.fa $3/orthofinder
 				orthofinder -f $3/orthofinder -t 12
 #PULL MATCHES FROM OUTPUT
 #				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv

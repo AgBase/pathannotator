@@ -94,7 +94,8 @@ then
 
 
 	#PULL FB PROTEIN AND GENOMIC FASTA AND GFF--FLYBASE GFF IS FUCKED UP-NEED TO REMOVE FIRST LINE AND ALL COMMENT LINES
-	wget -r -nd -np -A "dmel-all-translation*.gz" -P $3/ 'https://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/'
+#	mkdir $3/orthofinder
+	wget -r -nd -np -A "dmel-all-translation*.gz" -P $3 'https://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/'
         gunzip -f $3/dmel-all-translation-*.gz
 
 #	wget -r -nd -np -A "dmel-all-chromosome*.fasta.gz" -P $3/ 'https://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/'
@@ -107,8 +108,8 @@ then
 	#PULL OTHER SPECIES FOR ORTHOFINDER GFF AND GENOMIC FASTA--FOR GETTING LONGEST ISOFORM--IF EVER POSSIBLE
 	#PULL PROTEIN FASTA FOR DIRECT USE IN ORTHOFINDER
 	#TRIBOLIUM CASTENEUM
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_genomic.fna.gz -O $3/orthofinder/GCF_031307605.1_icTriCast1.1_protein.faa.gz
-        gunzip -f $3/orthofinder/GCF_031307605.1_icTriCast1.1_protein.faa.gz
+	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_protein.faa.gz -O $3/GCF_031307605.1_icTriCast1.1_protein.faa.gz
+        gunzip -f $3/GCF_031307605.1_icTriCast1.1_protein.faa.gz
 
 #	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_genomic.gff.gz -O $3/orthofinder/GCF_031307605.1_icTriCast1.1_genomic.gff.gz
 #        gunzip -f $3/orthofinder/GCF_031307605.1_icTriCast1.1_genomic.gff.gz
@@ -117,8 +118,8 @@ then
 #        gunzip -f $3/orthofinder/GCF_031307605.1_icTriCast1.1_genomic.fna.gz
 
 	#APIS MELLIFERA
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/003/254/395/GCF_003254395.2_Amel_HAv3.1/GCF_003254395.2_Amel_HAv3.1_genomic.fna.gz -O $3/orthofinder/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz
-        gunzip -f $3/orthofinder/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz
+	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/003/254/395/GCF_003254395.2_Amel_HAv3.1/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz -O $3/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz
+        gunzip -f $3/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz
 
 #	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/003/254/395/GCF_003254395.2_Amel_HAv3.1/GCF_003254395.2_Amel_HAv3.1_genomic.gff.gz -O $3/orthofinder/GCF_003254395.2_Amel_HAv3.1_genomic.gff.gz
 #        gunzip -f $3/orthofinder/GCF_003254395.2_Amel_HAv3.1_genomic.gff.gz
@@ -127,8 +128,8 @@ then
 #        gunzip -f $3/orthofinder/GCF_003254395.2_Amel_HAv3.1_genomic.fna.gz
 
 	#MANDUCA SEXTA
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/014/839/805/GCF_014839805.1_JHU_Msex_v1.0/GCF_014839805.1_JHU_Msex_v1.0_genomic.fna.gz -O $3/orthofinder/GCF_014839805.1_JHU_Msex_v1.0_protein.faa.gz
-        gunzip -f $3/orthofinder/GCF_014839805.1_JHU_Msex_v1.0_protein.faa.gz
+	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/014/839/805/GCF_014839805.1_JHU_Msex_v1.0/GCF_014839805.1_JHU_Msex_v1.0_protein.faa.gz -O $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa.gz
+        gunzip -f $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa.gz
 
 #	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/014/839/805/GCF_014839805.1_JHU_Msex_v1.0/GCF_014839805.1_JHU_Msex_v1.0_genomic.gff.gz -O $3/orthofinder/GCF_014839805.1_JHU_Msex_v1.0_genomic.gff.gz
 #        gunzip -f $3/orthofinder/GCF_014839805.1_JHU_Msex_v1.0_genomic.gff.gz
@@ -137,8 +138,8 @@ then
 #        gunzip -f $3/orthofinder/GCF_014839805.1_JHU_Msex_v1.0_genomic.fna.gz
 
 	#APHIS GOSSYPII
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/020/184/175/GCF_020184175.1_ASM2018417v2/GCF_020184175.1_ASM2018417v2_genomic.fna.gz -O $3/orthofinder/GCF_020184175.1_ASM2018417v2_protein.faa.gz
-        gunzip -f $3/orthofinder/GCF_020184175.1_ASM2018417v2_protein.faa.gz
+	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/020/184/175/GCF_020184175.1_ASM2018417v2/GCF_020184175.1_ASM2018417v2_protein.faa.gz -O $3/GCF_020184175.1_ASM2018417v2_protein.faa.gz
+        gunzip -f $3/GCF_020184175.1_ASM2018417v2_protein.faa.gz
 
 #	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/020/184/175/GCF_020184175.1_ASM2018417v2/GCF_020184175.1_ASM2018417v2_genomic.gff.gz -O $3/orthofinder/GCF_020184175.1_ASM2018417v2_genomic.gff.gz
 #        gunzip -f $3/orthofinder/GCF_020184175.1_ASM2018417v2_genomic.gff.gz
@@ -147,8 +148,8 @@ then
 #        gunzip -f $3/orthofinder/GCF_020184175.1_ASM2018417v2_genomic.fna.gz
 
 	#SCHISTOCERCA GREGARIA
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/023/897/955/GCF_023897955.1_iqSchGreg1.2/GCF_023897955.1_iqSchGreg1.2_genomic.fna.gz -O $3/orthofinder/GCF_023897955.1_iqSchGreg1.2_protein.faa.gz
-        gunzip -f $3/orthofinder/GCF_023897955.1_iqSchGreg1.2_protein.faa.gz
+	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/023/897/955/GCF_023897955.1_iqSchGreg1.2/GCF_023897955.1_iqSchGreg1.2_protein.faa.gz -O $3/GCF_023897955.1_iqSchGreg1.2_protein.faa.gz
+        gunzip -f $3/GCF_023897955.1_iqSchGreg1.2_protein.faa.gz
 
 #	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/023/897/955/GCF_023897955.1_iqSchGreg1.2/GCF_023897955.1_iqSchGreg1.2_genomic.gff.gz -O $3/orthofinder/GCF_023897955.1_iqSchGreg1.2_genomic.gff.gz
 #        gunzip -f $3/orthofinder/GCF_023897955.1_iqSchGreg1.2_genomic.gff.gz
