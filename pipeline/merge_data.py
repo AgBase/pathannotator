@@ -11,12 +11,14 @@ parser.add_argument('kofam')
 parser.add_argument('indir')
 parser.add_argument('outdir')
 parser.add_argument('flybase')
+parser.add_arguemnt('orthologs')
 args = parser.parse_args()
 species = args.species # kegg speicies code, NA or related species if species not in KEGG
 kofam = args.kofam # yes or no
 indir = args.indir # directory with outputs from pull_data.sh
 outdir = args.outdir # directory where outputs this will go
 flybase = args.flybase #FB for Flybase annotations, NA for none
+orthologs = ars.orthologs # $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv from pathannotator.sh script
 
 #READ API TABLES INTO PANDAS DATAFRAMES
 if kofam == "no" and species != "NA":
@@ -61,20 +63,29 @@ if kofam == "no" and species != "NA":
         #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
         fbgn_path = pd.read_table(f"{indir}/Fbgn_groupid.tsv", dtype=str)
-        fbgn_dia = pd.read_table(f"{indir}/FB_diamond.tsv", dtype=str)
+        fbpp_ortho = pd.read_table(f"{indir}/{orthologs}", dtype=str)
         fbgn_fbpp = pd.read_table(f"{indir}/Fbgn_fbpp.tsv", dtype=str)
-        #ADD HEADERS
+        #REMOVE ORTHOGROUP COLUMN
+	fbpp_ortho.drop('Orthogroup', axis=1, inplace=True)
+	#ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
-        fbgn_dia.columns = ['Input_protein_ID', 'Flybase_protein_ID']
+        fbpp_ortho.columns = ['Flybase_protein_ID', 'Input_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
+	#SPLIT AND EXPLODE TO GET LISTS IN BOTH COLUMNS
+	fbpp_ortho["dromel-cluster"] = fbpp_ortho["dromel-cluster"].str.split(",")
+	fbpp_ortho = fbpp_ortho.explode("dromel-cluster")
+	fbpp_ortho
+	fbpp_ortho["{orthologs}"] = fbpp_ortho["{orthologs}"].str.split(",")
+	fbpp_ortho = fbpp_ortho.explode("{orthologs}")
+	fbpp_ortho
         #MERGE AND OUTPUT TO FILE
-        fbgn_fbpp_dia = pd.merge(fbgn_fbpp, fbgn_dia, on='Flybase_protein_ID', how='inner')
-        fbgn_fbpp_dia_path = pd.merge(fbgn_fbpp_dia, fbgn_path, on='Flybase_gene', how='inner')
-        fbgn_fbpp_dia_path_CG = pd.merge(fbgn_fbpp_dia_path, fbgn_CG, on='Flybase_gene', how='inner')
-        fbgn_fbpp_dia_path_CG.drop('Flybase_gene', axis=1, inplace=True)
-        fbgn_fbpp_dia_path_CG = fbgn_fbpp_dia_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
-        fbgn_fbpp_dia_path_CG.to_csv(f"{outdir}/Diamond_flybase.tsv", sep='\t', index=False)
+#        fbgn_fbpp_dia = pd.merge(fbgn_fbpp, fbgn_dia, on='Flybase_protein_ID', how='inner')
+#        fbgn_fbpp_dia_path = pd.merge(fbgn_fbpp_dia, fbgn_path, on='Flybase_gene', how='inner')
+#        fbgn_fbpp_dia_path_CG = pd.merge(fbgn_fbpp_dia_path, fbgn_CG, on='Flybase_gene', how='inner')
+#        fbgn_fbpp_dia_path_CG.drop('Flybase_gene', axis=1, inplace=True)
+#        fbgn_fbpp_dia_path_CG = fbgn_fbpp_dia_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
+#        fbgn_fbpp_dia_path_CG.to_csv(f"{outdir}/Diamond_flybase.tsv", sep='\t', index=False)
     else:
         print("You have not requested Flybase annotations.")
 elif kofam == "yes" and species == "NA":
