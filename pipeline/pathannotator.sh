@@ -2,8 +2,6 @@
 
 #CHECK FOR OUTDIR. IF IT DOESN'T EXIST CREATE IT
 if [ ! -d "$3" ]; then mkdir "$3"; fi
-
-
 if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
 if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
 if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
@@ -26,6 +24,7 @@ if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_f
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
+if [ -d "$3"/orthofinder/OrthoFinder ]; then rm -r "$3"/orthofinder/OrthoFinder; fi
 
 starttime=$(date +%s)
 
@@ -38,8 +37,8 @@ then
 	2: input file (protein FASTA without header lines)
 	3: output directory (must be an existing directory)
 	4: 'FB' for flybase annotations, 'NA' for none
-	5: GFF corresponding to input FASTA
-	6: genomics FASTA for input species
+#	5: GFF corresponding to input FASTA
+#	6: genomics FASTA for input species
 
 	KofamScan is used under an MIT License:
 
@@ -136,12 +135,12 @@ then
 
 #THIS IS AN ATTEMPT AT USING CD-HIT INSTEAD OF AGAT
 				mkdir $3/orthofinder
-				cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dmel-all-translation-cluster.faa -d 0 -T 0 -M 10000
-				cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/GCF_031307605.1_icTriCast1.1_protein-cluster.faa -d 0 -T 0 -M 10000
-				cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/GCF_003254395.2_Amel_HAv3.1_protein-cluster.faa -d 0 -T 0 -M 10000
-				cd-hit -i $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa -o $3/orthofinder/GCF_014839805.1_JHU_Msex_v1.0_protein-cluster.faa -d 0 -T 0 -M 10000
-				cd-hit -i $3/GCF_020184175.1_ASM2018417v2_protein.faa -o $3/orthofinder/GCF_020184175.1_ASM2018417v2_protein-cluster.faa -d 0 -T 0 -M 10000
-				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/GCF_023897955.1_iqSchGreg1.2_protein-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa -o $3/orthofinder/mansex-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_020184175.1_ASM2018417v2_protein.faa -o $3/orthofinder/aphgos-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 #RUN agat ON INPUT GFF--SAVE NEW SINGLE-TRANSCRIPT FASTA
 #AGAT ONLY PULLS WHICHEVER FEATURES ARE PARENTS OF THE CDS. GFFREAD ALWAYS PULL TRANSCRIPT IDS EVEN WHEN IT IS AMINO ACID SEQUENCE.
@@ -160,7 +159,15 @@ then
 
 #RUN ORTHOFINDER WITH SINGLE-TRANCRIPT FASTAS FROM INPUT SPECIES AND DROMEL
 				orthofinder -f $3/orthofinder -t 12
-#PULL MATCHES FROM OUTPUT
+
+#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
+				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
+				mv $3/orthofinder/OrthoFinder/Results_*/Orthologues/Orthologues_dromel-cluster/ $3/orthofinder/
+
+				#ADDED THE OrthoFinder DIR TO THE REMOVE LIST AT TOP AND BOTTOM
+				#CORRECT FILE SHOULD BE AT $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+				#SEND AS OPTION TO MERGE.PY TO PARSE dromel-cluster__v__"$noext"-cluster.tsv
+#PULL MATCHES FROM OUTPUT--DIAMOND
 #				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
 #				awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
 #				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
@@ -168,7 +175,7 @@ then
 
 			#MERGE DATA HERE
 #			echo "Creating annotations output."
-#			python /usr/bin/merge_data.py $1 no $3 $3 $4
+#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
 			echo "IDs are NOT $1 species IDs"
@@ -331,28 +338,29 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	fi
 fi
 
-#if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
-#if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
-#if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
-#if [ -f "$3"/link_"$1"_ko.tsv ]; then rm "$3"/link_"$1"_ko.tsv; fi
-#if [ -f "$3"/link_pathway_"$1".tsv ]; then rm "$3"/link_pathway_"$1".tsv; fi
-#if [ -f "$3"/list_pathway_"$1".tsv ]; then rm "$3"/list_pathway_"$1".tsv; fi
-#if [ -f "$3"/deflines.tmp ]; then rm "$3"/deflines.tmp; fi
-#if [ -f "$3"/ko_ncbi.tsv ]; then rm "$3"/ko_ncbi.tsv; fi
-#if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
-#if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
-#if [ -f "$3"/pathway_group_data_latest.tsv ]; then rm $3/pathway_group_data_latest.tsv; fi
-#if [ -f "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
-#if [ -f "$3"/kegg_organisms.txt ]; then rm "$3"/kegg_organisms.txt; fi
-#if [ -f "$3"/kegg_org_codes.txt ]; then rm "$3"/kegg_org_codes.txt; fi
-#if [ -f "$3"/kegg_orgs_with_codes.txt ]; then rm "$3"/kegg_orgs_with_codes.txt; fi
-#if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_group_data_fb*; fi
-#if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
-#if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
-#if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
-#if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
-#if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
-#if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
+if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
+if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
+if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
+if [ -f "$3"/link_"$1"_ko.tsv ]; then rm "$3"/link_"$1"_ko.tsv; fi
+if [ -f "$3"/link_pathway_"$1".tsv ]; then rm "$3"/link_pathway_"$1".tsv; fi
+if [ -f "$3"/list_pathway_"$1".tsv ]; then rm "$3"/list_pathway_"$1".tsv; fi
+if [ -f "$3"/deflines.tmp ]; then rm "$3"/deflines.tmp; fi
+if [ -f "$3"/ko_ncbi.tsv ]; then rm "$3"/ko_ncbi.tsv; fi
+if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
+if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
+if [ -f "$3"/pathway_group_data_latest.tsv ]; then rm $3/pathway_group_data_latest.tsv; fi
+if [ -f "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
+if [ -f "$3"/kegg_organisms.txt ]; then rm "$3"/kegg_organisms.txt; fi
+if [ -f "$3"/kegg_org_codes.txt ]; then rm "$3"/kegg_org_codes.txt; fi
+if [ -f "$3"/kegg_orgs_with_codes.txt ]; then rm "$3"/kegg_orgs_with_codes.txt; fi
+if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_group_data_fb*; fi
+if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
+if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
+if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
+if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
+if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
+if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
+if [ -d "$3"/orthofinder/OrthoFinder ]; then rm -r "$3"/orthofinder/OrthoFinder; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
