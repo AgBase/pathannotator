@@ -174,8 +174,8 @@ then
 			fi
 
 			#MERGE DATA HERE
-#			echo "Creating annotations output."
-#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+			echo "Creating annotations output."
+			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
 			echo "IDs are NOT $1 species IDs"
