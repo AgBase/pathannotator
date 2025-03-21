@@ -52,7 +52,7 @@ RUN conda config --add channels bioconda
 
 RUN conda upgrade conda
 
-RUN pip install pandas 
+#RUN pip install pandas 
 
 # add hmmer and AGAT and orthofinder
 
@@ -65,6 +65,8 @@ RUN conda install -c conda-forge -c bioconda cd-hit
 RUN conda install -c conda-forge -c bioconda orthofinder
 
 RUN conda install --solver=classic -c conda-forge -c bioconda hmmer
+
+RUN conda install --solver=classic -c conda-forge -c bioconda pandas
 
 ENV PERL5LIB=$PERL5LIB:/opt/conda/pkgs:/opt/conda/pkgs/agat-1.4.2-pl5321hdfd78af_1/lib/perl5/site_perl/:/opt/conda/bin
 

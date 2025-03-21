@@ -79,12 +79,12 @@ if kofam == "no" and species != "NA":
         fbpp_ortho = fbpp_ortho.explode("Input_protein_ID")
         print(fbpp_ortho)
         #MERGE AND OUTPUT TO FILE
-#        fbgn_fbpp_dia = pd.merge(fbgn_fbpp, fbgn_dia, on='Flybase_protein_ID', how='inner')
-#        fbgn_fbpp_dia_path = pd.merge(fbgn_fbpp_dia, fbgn_path, on='Flybase_gene', how='inner')
-#        fbgn_fbpp_dia_path_CG = pd.merge(fbgn_fbpp_dia_path, fbgn_CG, on='Flybase_gene', how='inner')
-#        fbgn_fbpp_dia_path_CG.drop('Flybase_gene', axis=1, inplace=True)
-#        fbgn_fbpp_dia_path_CG = fbgn_fbpp_dia_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
-#        fbgn_fbpp_dia_path_CG.to_csv(f"{outdir}/Diamond_flybase.tsv", sep='\t', index=False)
+        fbgn_fbpp_ortho = pd.merge(fbgn_fbpp, fbpp_ortho, on='Flybase_protein_ID', how='inner')
+        fbgn_fbpp_ortho_path = pd.merge(fbgn_fbpp_ortho, fbgn_path, on='Flybase_gene', how='inner')
+        fbgn_fbpp_ortho_path_CG = pd.merge(fbgn_fbpp_ortho_path, fbgn_CG, on='Flybase_gene', how='inner')
+        fbgn_fbpp_ortho_path_CG.drop('Flybase_gene', axis=1, inplace=True)
+        fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/Orthofinder_flybase.tsv", sep='\t', index=False)
     else:
         print("You have not requested Flybase annotations.")
 elif kofam == "yes" and species == "NA":
