@@ -120,7 +120,16 @@ then
 				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-				noext=$(basename "$2" .faa)
+				if [[ $2 == "*.faa" ]];
+				then
+					noext=$(basename "$2" .faa)
+				elif [[ $2 == "*.fasta" ]];
+				then
+					noext=$(basename "$2" .fasta)
+				elif [[ $2 == "*.fa" ]];
+				then
+                                        noext=$(basename "$2" .fa)
+				fi
 #				nopath=$(basename "$2")
 #				cp $2 $3/
 				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
@@ -173,7 +182,17 @@ then
 				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-				noext=$(basename "$2" .faa)
+				if [[ $2 == "*.faa" ]];
+				then
+					noext=$(basename "$2" .faa)
+				elif [[ $2 == "*.fasta" ]];
+				then
+					noext=$(basename "$2" .fasta)
+				elif [[ $2 == "*.fa" ]];
+				then
+                                        noext=$(basename "$2" .fa)
+				fi
+
 #				nopath=$(basename "$2")
 #				cp $2 $3/
 				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
@@ -225,7 +244,17 @@ then
 			cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-			noext=$(basename "$2" .faa)
+			if [[ $2 == "*.faa" ]];
+			then
+				noext=$(basename "$2" .faa)
+			elif [[ $2 == "*.fasta" ]];
+			then
+				noext=$(basename "$2" .fasta)
+			elif [[ $2 == "*.fa" ]];
+			then
+                                noext=$(basename "$2" .fa)
+			fi
+
 #			nopath=$(basename "$2")
 #			cp $2 $3/
 			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
@@ -282,7 +311,16 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-			noext=$(basename "$2" .faa)
+			if [[ $2 == "*.faa" ]];
+			then
+				noext=$(basename "$2" .faa)
+			elif [[ $2 == "*.fasta" ]];
+			then
+				noext=$(basename "$2" .fasta)
+			elif [[ $2 == "*.fa" ]];
+			then
+                                noext=$(basename "$2" .fa)
+			fi
 			#nopath=$(basename "$2")
 #			cp $2 $3/
 			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
@@ -333,7 +371,16 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-			noext=$(basename "$2" .faa)
+			if [[ $2 == "*.faa" ]];
+			then
+				noext=$(basename "$2" .faa)
+			elif [[ $2 == "*.fasta" ]];
+			then
+				noext=$(basename "$2" .fasta)
+			elif [[ $2 == "*.fa" ]];
+			then
+                                noext=$(basename "$2" .fa)
+			fi
 			#nopath=$(basename "$2")
 #			cp $2 $3/
 			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
