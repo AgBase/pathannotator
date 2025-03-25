@@ -37,8 +37,6 @@ then
 	2: input file (protein FASTA without header lines)
 	3: output directory (must be an existing directory)
 	4: 'FB' for flybase annotations, 'NA' for none
-#	5: GFF corresponding to input FASTA
-#	6: genomics FASTA for input species
 
 	KofamScan is used under an MIT License:
 
@@ -64,6 +62,10 @@ then
 
 	exit 0
 fi
+#GETTING NUMBER OF AVAILABLE PROCESSORS FOR USE IN THREADING
+avail=$(getconf _NPROCESSORS_ONLN)
+cpus=$(( $avail - 1 ))
+
 
 # WORKS-TESTS WHETHER ACCESSIONS ARE NCBI PROTEIN IDS
 acc1=$(head -n1 $2 | sed 's/>//g' | sed 's/\s.*$//')
@@ -108,32 +110,7 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-#RUN agat ON FB AND REPRESENTATIVE SPECIES GFFS--SAVE NEW SINGLE-TRANSCRIPT FASTA
-#FLYBASE GFF FILE IS FUCKED UP. NEED TO REMOVE EVERYTHING THAT ISN'T "\tFlyBase\t".
-#AGAT ONLY PULLS WHICHEVER FEATURES ARE PARENTS OF THE CDS. GFFREAD ALWAYS PULL TRANSCRIPT IDS EVEN WHEN IT IS AMINO ACID SEQUENCE.
-#				tail -n +2 $3/dmel-all*.gff | grep -P "\tFlyBase\t" > $3/dmel.gff.tmp
-#				mv $3/dmel.gff.tmp $3/dmel.gff
-#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/dmel.gff   -o $3/dromel_longest_isoform.gff -c /usr/bin/agat_config.yaml
-#				gffread -y $3/dromel_longest_isoform.fa -g $3/dmel-all-chromosome*.fasta $3/dromel_longest_isoform.gff
-
-#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_031307605.1_icTriCast1.1_genomic.gff   -o $3/tricas_longest_isoform.gff -c /usr/bin/agat_config.yaml
-#				gffread -y $3/tricas_longest_isoform.fa -g $3/GCF_031307605.1_icTriCast1.1_genomic.fna $3/tricas_longest_isoform.gff
-
-#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_003254395.2_Amel_HAv3.1_genomic.gff   -o $3/apimel_longest_isoform.gff -c /usr/bin/agat_config.yaml
-#				gffread -y $3/apimel_longest_isoform.fa -g $3/GCF_003254395.2_Amel_HAv3.1_genomic.fna $3/apimel_longest_isoform.gff
-
-#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_014839805.1_JHU_Msex_v1.0_genomic.gff   -o $3/mansex_longest_isoform.gff -c /usr/bin/agat_config.yaml
-#				gffread -y $3/mansex_longest_isoform.fa -g $3/GCF_014839805.1_JHU_Msex_v1.0_genomic.fna $3/mansex_longest_isoform.gff
-
-#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_020184175.1_ASM2018417v2_genomic.gff   -o $3/aphgos_longest_isoform.gff -c /usr/bin/agat_config.yaml
-#				gffread -y $3/aphgos_longest_isoform.fa -g $3/GCF_020184175.1_ASM2018417v2_genomic.fna $3/aphgos_longest_isoform.gff
-
-#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $3/GCF_023897955.1_iqSchGreg1.2_genomic.gff   -o $3/schgre_longest_isoform.gff -c /usr/bin/agat_config.yaml
-#				gffread -y $3/schgre_longest_isoform.fa -g $3/GCF_023897955.1_iqSchGreg1.2_genomic.fna $3/schgre_longest_isoform.gff
-
-#				sed -i 's/\./\-/g' $3/*longest_isoform.fa
-
-#THIS IS AN ATTEMPT AT USING CD-HIT INSTEAD OF AGAT
+				#RUN CD-HIT ON COMPARISON SPECIES
 				mkdir $3/orthofinder
 				cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
 				cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
@@ -142,40 +119,28 @@ then
 				cd-hit -i $3/GCF_020184175.1_ASM2018417v2_protein.faa -o $3/orthofinder/aphgos-cluster.faa -d 0 -T 0 -M 10000
 				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
-#RUN agat ON INPUT GFF--SAVE NEW SINGLE-TRANSCRIPT FASTA
-#AGAT ONLY PULLS WHICHEVER FEATURES ARE PARENTS OF THE CDS. GFFREAD ALWAYS PULL TRANSCRIPT IDS EVEN WHEN IT IS AMINO ACID SEQUENCE.
-
-#				noext=$(basename "$5" .gff)
-#				perl /opt/conda/bin/agat_sp_keep_longest_isoform.pl -gff $5   -o $3/"$noext"_longest_isoform.gff -c /usr/bin/agat_config.yaml
-#				gffread -y $3/"$noext"_longest_isoform.fa -g $6  $3/"$noext"_longest_isoform.gff
-#				sed -i 's/\./\-/g' $3/*longest_isoform.fa
-
-#RUN CD-HIT ON INPUT PROTEIN FASTA
+				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 				noext=$(basename "$2" .faa)
-				nopath=$(basename "$2")
-				cp $2 $3/
-				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+#				nopath=$(basename "$2")
+#				cp $2 $3/
+				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
+#				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
 
 
-#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT FASTAS FROM INPUT SPECIES AND DROMEL
-				orthofinder -f $3/orthofinder -t 12
+				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
+				orthofinder -f $3/orthofinder -t $cpus
 
-#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
+				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
 				mv $3/orthofinder/OrthoFinder/Results_*/Orthologues/Orthologues_dromel-cluster/ $3/orthofinder/
 
-				#ADDED THE OrthoFinder DIR TO THE REMOVE LIST AT TOP AND BOTTOM
-				#CORRECT FILE SHOULD BE AT $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
-				#SEND AS OPTION TO MERGE.PY TO PARSE dromel-cluster__v__"$noext"-cluster.tsv
-#PULL MATCHES FROM OUTPUT--DIAMOND
-#				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
-#				awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-#				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
 			fi
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
+
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
 			echo "IDs are NOT $1 species IDs"
@@ -186,9 +151,6 @@ then
 
 			#RUN KOFAMSCAN
 			echo "Running KofamScan now."
-			avail=$(getconf _NPROCESSORS_ONLN)
-			cpus=$(( $avail - 1 ))
-
 			/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 			#FILTER KOFAM HERE
@@ -201,20 +163,34 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				diamond version
-				diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
-				diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
-				sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+				#RUN CD-HIT ON COMPARISON SPECIES
+				mkdir $3/orthofinder
+				cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa -o $3/orthofinder/mansex-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_020184175.1_ASM2018417v2_protein.faa -o $3/orthofinder/aphgos-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
- 				#PULL MATCHES FROM OUTPUT
-				awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-				cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
+				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
+				noext=$(basename "$2" .faa)
+#				nopath=$(basename "$2")
+				cp $2 $3/
+#				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+
+
+				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
+				orthofinder -f $3/orthofinder -t $cpus
+
+				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
+				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
+				mv $3/orthofinder/OrthoFinder/Results_*/Orthologues/Orthologues_dromel-cluster/ $3/orthofinder/
+
 			fi
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 yes $3 $3 $4
-
+			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
 
 		fi
 
@@ -226,9 +202,6 @@ then
 
 		#RUN KOFAMSCAN
 		echo "This is not a KEGG species code. Running KofamScan now."
-		avail=$(getconf _NPROCESSORS_ONLN)
-		cpus=$(( $avail - 1 ))
-
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#FILTER KOFAM HERE
@@ -241,19 +214,33 @@ then
 		if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 		then
 			echo "Performing Flybase annotation".
-			diamond version
-			diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
-			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
-			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+			mkdir $3/orthofinder
+			cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa -o $3/orthofinder/mansex-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_020184175.1_ASM2018417v2_protein.faa -o $3/orthofinder/aphgos-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
- 			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
+			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
+			noext=$(basename "$2" .faa)
+#			nopath=$(basename "$2")
+			cp $2 $3/
+#			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+
+
+			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
+			orthofinder -f $3/orthofinder -t $cpus
+
+			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
+			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
+			mv $3/orthofinder/OrthoFinder/Results_*/Orthologues/Orthologues_dromel-cluster/ $3/orthofinder/
 		fi
 
 		#MERGE DATA
 		echo "Creating annotations output."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+
 	fi
 
 else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
@@ -269,9 +256,6 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
 
 		#RUN KOFAM HERE
-		avail=$(getconf _NPROCESSORS_ONLN)
-		cpus=$(( $avail - 1 ))
-
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#FILTER KOFAM HERE
@@ -284,19 +268,33 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			diamond version
-			diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
-			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
-			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+			#RUN CD-HIT ON COMPARISON SPECIES
+			mkdir $3/orthofinder
+			cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa -o $3/orthofinder/mansex-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_020184175.1_ASM2018417v2_protein.faa -o $3/orthofinder/aphgos-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
- 			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
+			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
+			noext=$(basename "$2" .faa)
+			#nopath=$(basename "$2")
+			cp $2 $3/
+			#cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+
+
+			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
+			orthofinder -f $3/orthofinder -t $cpus
+
+			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
+			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
+			mv $3/orthofinder/OrthoFinder/Results_*/Orthologues/Orthologues_dromel-cluster/ $3/orthofinder/
 		fi
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -307,9 +305,6 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
 
 		#RUN KOFAM HERE
-		avail=$(getconf _NPROCESSORS_ONLN)
-		cpus=$(( $avail - 1 ))
-
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
 		#FILTER KOFAM HERE
@@ -322,19 +317,33 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			diamond version
-			diamond makedb --in $3/dmel-all-translation-*.fasta --db $3/dmel_db
-			diamond blastp -q $2 -d $3/dmel_db -o $3/diamond_out.tsv --max-target-seqs 3 --outfmt 6 qseqid qlen qstart qend sseqid slen sstart send evalue pident ppos gapopen gaps bitscore score length
-			sed -i '1i Query_ID\tQuery_length\tQuery_start\tQuery_end\tSubject_ID\tSubject_length\tSubject_start\tSubject_end\tE_value\tPercent_ID\tPercent_positive_ID\tGap_openings\tTotal_gaps\tBitscore\tRaw_score\tAlignment_length' $3/diamond_out.tsv
+			#RUN CD-HIT ON COMPARISON SPECIES
+			mkdir $3/orthofinder
+			cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa -o $3/orthofinder/mansex-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_020184175.1_ASM2018417v2_protein.faa -o $3/orthofinder/aphgos-cluster.faa -d 0 -T 0 -M 10000
+			cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
- 			#PULL MATCHES FROM OUTPUT
-			awk '{ if(($10 > 70) && ($16/$2 > 0.7) && ($12 < 9) && ($2/$6 <= 1.2)) { print }}' $3/diamond_out.tsv > $3/dia_matches.tsv
-			cut -f 1,5 $3/dia_matches.tsv > $3/FB_diamond.tsv
+			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
+			noext=$(basename "$2" .faa)
+			#nopath=$(basename "$2")
+			cp $2 $3/
+			#cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+
+
+			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
+			orthofinder -f $3/orthofinder -t $cpus
+
+			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
+			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
+			mv $3/orthofinder/OrthoFinder/Results_*/Orthologues/Orthologues_dromel-cluster/ $3/orthofinder/
 		fi
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
 	fi
 fi
 
