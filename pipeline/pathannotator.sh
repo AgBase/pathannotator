@@ -190,7 +190,8 @@ then
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 		fi
 
@@ -239,7 +240,8 @@ then
 
 		#MERGE DATA
 		echo "Creating annotations output."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 	fi
 
@@ -294,7 +296,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -343,7 +346,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 	fi
 fi
 
