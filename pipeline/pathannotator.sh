@@ -175,7 +175,8 @@ then
 				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 				noext=$(basename "$2" .faa)
 #				nopath=$(basename "$2")
-				cp $2 $3/
+#				cp $2 $3/
+				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
 #				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
 
 
@@ -226,7 +227,8 @@ then
 			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 			noext=$(basename "$2" .faa)
 #			nopath=$(basename "$2")
-			cp $2 $3/
+#			cp $2 $3/
+			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
 #			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
 
 
@@ -282,7 +284,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 			noext=$(basename "$2" .faa)
 			#nopath=$(basename "$2")
-			cp $2 $3/
+#			cp $2 $3/
+			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
 			#cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
 
 
@@ -332,7 +335,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 			noext=$(basename "$2" .faa)
 			#nopath=$(basename "$2")
-			cp $2 $3/
+#			cp $2 $3/
+			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
 			#cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
 
 
