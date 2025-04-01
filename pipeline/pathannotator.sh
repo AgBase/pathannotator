@@ -24,7 +24,7 @@ if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_f
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-if [ -d "$3"/orthofinder/OrthoFinder ]; then rm -r "$3"/orthofinder/OrthoFinder; fi
+#if [ -d "$3"/orthofinder/OrthoFinder ]; then rm -r "$3"/orthofinder/OrthoFinder; fi
 
 starttime=$(date +%s)
 
@@ -120,24 +120,38 @@ then
 				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-				if [[ $2 == "*.faa" ]];
+				ext="*.faa"
+				if [[ $2 == $ext ]];
 				then
+					echo FAA
 					noext=$(basename "$2" .faa)
-				elif [[ $2 == "*.fasta" ]];
-				then
-					noext=$(basename "$2" .fasta)
-				elif [[ $2 == "*.fa" ]];
-				then
-                                        noext=$(basename "$2" .fa)
+				else
+					ext="*.fasta"
+					if [[ $2 == $ext ]];
+					then
+						echo FASTA
+						noext=$(basename "$2" .fasta)
+					else
+						ext="*.fa"
+						if [[ $2 == $ext ]];
+						then
+							echo FA
+                                       			noext=$(basename "$2" .fa)
+						else
+							echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
+						fi
+					fi
 				fi
-#				nopath=$(basename "$2")
-#				cp $2 $3/
-				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
-#				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+				echo -e "noext is: $noext"
+
+				nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
+				cp $2 $3/ #THIS IS FOR USING CD-HIT ON ALL FILES
+#				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
+				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-				orthofinder -f $3/orthofinder -t $cpus
+				orthofinder -f $3/orthofinder -t $cpus -p $3/
 
 				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -147,8 +161,8 @@ then
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
-			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
+			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
+#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
@@ -182,25 +196,38 @@ then
 				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-				if [[ $2 == "*.faa" ]];
+				ext="*.faa"
+				if [[ $2 == $ext ]];
 				then
+					echo FAA
 					noext=$(basename "$2" .faa)
-				elif [[ $2 == "*.fasta" ]];
-				then
-					noext=$(basename "$2" .fasta)
-				elif [[ $2 == "*.fa" ]];
-				then
-                                        noext=$(basename "$2" .fa)
+				else
+					ext="*.fasta"
+					if [[ $2 == $ext ]];
+					then
+						echo FASTA
+						noext=$(basename "$2" .fasta)
+					else
+						ext="*.fa"
+						if [[ $2 == $ext ]];
+						then
+							echo FA
+                                        		noext=$(basename "$2" .fa)
+						else
+							echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
+						fi
+					fi
 				fi
+				echo -e "noext is: $noext"
 
-#				nopath=$(basename "$2")
-#				cp $2 $3/
-				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
-#				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+				nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
+				cp $2 $3/ #FOR CD-HIT ON ALL FILES
+#				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
+				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-				orthofinder -f $3/orthofinder -t $cpus
+				orthofinder -f $3/orthofinder -t $cpus -p $3
 
 				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -210,8 +237,8 @@ then
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
-			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
+			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
+#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 		fi
 
@@ -244,25 +271,38 @@ then
 			cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-			if [[ $2 == "*.faa" ]];
+			ext="*.faa"
+			if [[ $2 == $ext ]];
 			then
+				echo FAA
 				noext=$(basename "$2" .faa)
-			elif [[ $2 == "*.fasta" ]];
-			then
-				noext=$(basename "$2" .fasta)
-			elif [[ $2 == "*.fa" ]];
-			then
-                                noext=$(basename "$2" .fa)
+			else
+				ext="*.fasta"
+				if [[ $2 == $ext ]];
+				then
+					echo FASTA
+					noext=$(basename "$2" .fasta)
+				else
+					ext="*.fa"
+					if [[ $2 == $ext ]];
+					then
+						echo FA
+                                       		noext=$(basename "$2" .fa)
+					else
+						echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
+					fi
+				fi
 			fi
+			echo -e "noext is: $noext"
 
-#			nopath=$(basename "$2")
-#			cp $2 $3/
-			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
-#			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+			nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
+			cp $2 $3/ #FOR CD-HIT ON ALL FILES
+#			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
+			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-			orthofinder -f $3/orthofinder -t $cpus
+			orthofinder -f $3/orthofinder -t $cpus -p $3
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -271,8 +311,8 @@ then
 
 		#MERGE DATA
 		echo "Creating annotations output."
-#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
+#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 	fi
 
@@ -311,24 +351,38 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-			if [[ $2 == "*.faa" ]];
+			ext="*.faa"
+			if [[ $2 == $ext ]];
 			then
+				echo FAA
 				noext=$(basename "$2" .faa)
-			elif [[ $2 == "*.fasta" ]];
-			then
-				noext=$(basename "$2" .fasta)
-			elif [[ $2 == "*.fa" ]];
-			then
-                                noext=$(basename "$2" .fa)
+			else
+				ext="*.fasta"
+				if [[ $2 == $ext ]];
+				then
+					echo FASTA
+					noext=$(basename "$2" .fasta)
+				else
+					ext="*.fa"
+					if [[ $2 == $ext ]];
+					then
+						echo FA
+                                 		noext=$(basename "$2" .fa)
+					else
+						echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
+					fi
+				fi
 			fi
-			#nopath=$(basename "$2")
-#			cp $2 $3/
-			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
-			#cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+			echo -e "noext is: $noext"
+
+			nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
+			cp $2 $3/ #FOR CD-HIT ON ALL FILES
+#			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
+			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-			orthofinder -f $3/orthofinder -t $cpus
+			orthofinder -f $3/orthofinder -t $cpus -p $3
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -337,8 +391,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
+#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -371,24 +425,38 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
 
 			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
-			if [[ $2 == "*.faa" ]];
+			ext="*.faa"
+			if [[ $2 == $ext ]];
 			then
+				echo FAA
 				noext=$(basename "$2" .faa)
-			elif [[ $2 == "*.fasta" ]];
-			then
-				noext=$(basename "$2" .fasta)
-			elif [[ $2 == "*.fa" ]];
-			then
-                                noext=$(basename "$2" .fa)
+			else
+				ext="*.fasta"
+				if [[ $2 == $ext ]];
+				then
+					echo FASTA
+					noext=$(basename "$2" .fasta)
+				else
+					ext="*.fa"
+					if [[ $2 == $ext ]];
+					then
+						echo FA
+                                 		noext=$(basename "$2" .fa)
+					else
+						echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
+					fi
+				fi
 			fi
-			#nopath=$(basename "$2")
-#			cp $2 $3/
-			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
-			#cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000
+			echo -e "noext is: $noext"
+
+			nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
+			cp $2 $3/ #FOR CD-HIT ON ALL FILES
+#			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
+			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-			orthofinder -f $3/orthofinder -t $cpus
+			orthofinder -f $3/orthofinder -t $cpus -p $3
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -397,8 +465,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
+#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 	fi
 fi
 
@@ -424,7 +492,7 @@ if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_f
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-if [ -d "$3"/orthofinder/OrthoFinder ]; then rm -r "$3"/orthofinder/OrthoFinder; fi
+#if [ -d "$3"/orthofinder/OrthoFinder ]; then rm -r "$3"/orthofinder/OrthoFinder; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
