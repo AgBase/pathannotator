@@ -62,7 +62,7 @@ RUN conda upgrade conda
 
 RUN conda install -c conda-forge -c bioconda cd-hit
 
-RUN conda install -c conda-forge -c bioconda orthofinder
+RUN conda install -c conda-forge -c bioconda orthofinder=3.0.1b1-0
 
 RUN conda install --solver=classic -c conda-forge -c bioconda hmmer
 

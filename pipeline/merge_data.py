@@ -73,11 +73,12 @@ if kofam == "no" and species != "NA":
         fbpp_ortho.columns = ['Flybase_protein_ID', 'Input_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
 	#SPLIT AND EXPLODE TO GET LISTS IN BOTH COLUMNS
-        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(",")
+        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
         fbpp_ortho = fbpp_ortho.explode("Flybase_protein_ID")
-        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(",")
+        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(", ")
         fbpp_ortho = fbpp_ortho.explode("Input_protein_ID")
-        print(fbpp_ortho)
+        fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
+        fbpp_ortho.to_csv(f"{outdir}/exploded_orthotable.tsv", sep='\t', index=False)
         #MERGE AND OUTPUT TO FILE
         fbgn_fbpp_ortho = pd.merge(fbgn_fbpp, fbpp_ortho, on='Flybase_protein_ID', how='inner')
         fbgn_fbpp_ortho_path = pd.merge(fbgn_fbpp_ortho, fbgn_path, on='Flybase_gene', how='inner')
@@ -116,11 +117,12 @@ elif kofam == "yes" and species == "NA":
         fbpp_ortho.columns = ['Flybase_protein_ID', 'Input_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
 	#SPLIT AND EXPLODE TO GET LISTS IN BOTH COLUMNS
-        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(",")
+        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
         fbpp_ortho = fbpp_ortho.explode("Flybase_protein_ID")
-        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(",")
+        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(", ")
         fbpp_ortho = fbpp_ortho.explode("Input_protein_ID")
-        print(fbpp_ortho)
+        fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
+        fbpp_ortho.to_csv(f"{outdir}/exploded_orthotable.tsv", sep='\t', index=False)
         #MERGE AND OUTPUT TO FILE
         fbgn_fbpp_ortho = pd.merge(fbgn_fbpp, fbpp_ortho, on='Flybase_protein_ID', how='inner')
         fbgn_fbpp_ortho_path = pd.merge(fbgn_fbpp_ortho, fbgn_path, on='Flybase_gene', how='inner')
@@ -184,11 +186,12 @@ elif kofam == "yes" and species != "NA":
         fbpp_ortho.columns = ['Flybase_protein_ID', 'Input_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
 	#SPLIT AND EXPLODE TO GET LISTS IN BOTH COLUMNS
-        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(",")
+        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
         fbpp_ortho = fbpp_ortho.explode("Flybase_protein_ID")
-        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(",")
+        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(", ")
         fbpp_ortho = fbpp_ortho.explode("Input_protein_ID")
-        print(fbpp_ortho)
+        fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
+        fbpp_ortho.to_csv(f"{outdir}/exploded_orthotable.tsv", sep='\t', index=False)
         #MERGE AND OUTPUT TO FILE
         fbgn_fbpp_ortho = pd.merge(fbgn_fbpp, fbpp_ortho, on='Flybase_protein_ID', how='inner')
         fbgn_fbpp_ortho_path = pd.merge(fbgn_fbpp_ortho, fbgn_path, on='Flybase_gene', how='inner')
@@ -200,3 +203,4 @@ elif kofam == "yes" and species != "NA":
         print("You have not requested Flybase annotations.")
 else:
     print("Not an acceptable combination of arguments.")
+
