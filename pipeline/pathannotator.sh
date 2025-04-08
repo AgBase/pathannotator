@@ -115,9 +115,10 @@ then
 				cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
 				cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
 				cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
-				cd-hit -i $3/GCF_014839805.1_JHU_Msex_v1.0_protein.faa -o $3/orthofinder/mansex-cluster.faa -d 0 -T 0 -M 10000
-				cd-hit -i $3/GCF_020184175.1_ASM2018417v2_protein.faa -o $3/orthofinder/aphgos-cluster.faa -d 0 -T 0 -M 10000
-				cd-hit -i $3/GCF_023897955.1_iqSchGreg1.2_protein.faa -o $3/orthofinder/schgre-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/ploint-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/rhomai-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/schser-cluster.faa -d 0 -T 0 -M 10000
+				cd-hit -i $3/GCF_921293095.1_ioIscEleg1.1_protein.faa -o $3/orthofinder/iscele-cluster.faa -d 0 -T 0 -M 10000
 
 				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 				ext="*.faa"
@@ -151,7 +152,8 @@ then
 
 
 				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-				orthofinder -f $3/orthofinder -t $cpus -p $3/
+				mv /usr/bin/MultipleSequenceAlignments $3/orthofinder/
+				orthofinder -f $3/orthofinder -t $cpus
 
 				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -227,7 +229,8 @@ then
 
 
 				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-				orthofinder -f $3/orthofinder -t $cpus -p $3
+				mv /usr/bin/MultipleSequenceAlignments $3/orthofinder
+				orthofinder -f $3/orthofinder -t $cpus
 
 				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -302,7 +305,8 @@ then
 
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-			orthofinder -f $3/orthofinder -t $cpus -p $3
+			mv /usr/bin/MultipleSequenceAlignments $3/orthofinder
+			orthofinder -f $3/orthofinder -t $cpus
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -382,7 +386,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-			orthofinder -f $3/orthofinder -t $cpus -p $3
+			mv /usr/bin/MultipleSequenceAlignments $3/orthofinder
+			orthofinder -f $3/orthofinder -t $cpus
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -456,7 +461,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-			orthofinder -f $3/orthofinder -t $cpus -p $3
+			mv /usr/bin/MultipleSequenceAlignments $3/orthofinder
+			orthofinder -f $3/orthofinder -t $cpus
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
