@@ -147,13 +147,13 @@ then
 
 				nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
 				cp $2 $3/ #THIS IS FOR USING CD-HIT ON ALL FILES
-#				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
 				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-				mv /usr/bin/MultipleSequenceAlignments $3/orthofinder/
-				orthofinder -f $3/orthofinder -t $cpus
+				mv /usr/bin/ref_set.tgz $3/orthofinder/
+				tar -xvzf $3/orthofinder/ref_set.tgz
+				orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -164,7 +164,6 @@ then
 			#MERGE DATA HERE
 			echo "Creating annotations output."
 			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
-#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
@@ -224,13 +223,13 @@ then
 
 				nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
 				cp $2 $3/ #FOR CD-HIT ON ALL FILES
-#				cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
 				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-				mv /usr/bin/MultipleSequenceAlignments $3/orthofinder
-				orthofinder -f $3/orthofinder -t $cpus
+				mv /usr/bin/ref_set.tgz $3/orthofinder
+				tar -xvzf $3/orthofinder/ref_set.tgz
+				orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -241,7 +240,6 @@ then
 			#MERGE DATA HERE
 			echo "Creating annotations output."
 			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
-#			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 		fi
 
@@ -300,13 +298,13 @@ then
 
 			nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
 			cp $2 $3/ #FOR CD-HIT ON ALL FILES
-#			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
 			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-			mv /usr/bin/MultipleSequenceAlignments $3/orthofinder
-			orthofinder -f $3/orthofinder -t $cpus
+			mv /usr/bin/ref_set.tgz $3/orthofinder
+			tar -xvzf $3/orthofinder/ref_set.tgz
+			orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -316,7 +314,6 @@ then
 		#MERGE DATA
 		echo "Creating annotations output."
 		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
-#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 	fi
 
@@ -381,13 +378,13 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 			nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
 			cp $2 $3/ #FOR CD-HIT ON ALL FILES
-#			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
 			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-			mv /usr/bin/MultipleSequenceAlignments $3/orthofinder
-			orthofinder -f $3/orthofinder -t $cpus
+			mv /usr/bin/ref_set.tgz $3/orthofinder
+			tar -xvzf $3/orthofinder/ref_set.tgz
+			orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -397,7 +394,6 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#MERGE DATA
 		echo "Creating annotation outputs."
 		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
-#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -456,13 +452,13 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 			nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
 			cp $2 $3/ #FOR CD-HIT ON ALL FILES
-#			cp $2 $3/orthofinder #THIS IS FOR USING THE ORIGINAL INPUT WITHOUT CD-HIT
 			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
 
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
-			mv /usr/bin/MultipleSequenceAlignments $3/orthofinder
-			orthofinder -f $3/orthofinder -t $cpus
+			mv /usr/bin/ref_set.tgz $3/orthofinder
+			tar -xvzf $3/orthofinder/ref_set.tgz
+			orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
 			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
@@ -472,7 +468,6 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#MERGE DATA
 		echo "Creating annotation outputs."
 		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv #FOR CD-HIT ON ALL FILES
-#		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext".tsv #THIS IS FOR USING THE ORIGINAL INPUT FASTA WITHOUT CDHIT
 	fi
 fi
 

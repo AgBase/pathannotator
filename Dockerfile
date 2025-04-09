@@ -16,22 +16,6 @@ RUN apt-get update && \
     ruby \
     tar \
     nano \
-#agat    liblist-moreutils-perl \
-#agat    libbio-perl-perl \
-#agat    libclone-perl \
-#agat    libgraph-perl \ 
-#agat    liblwp-useragent-determined-perl \
-#agat    libstatistics-r-perl \
-#agat    libcarp-clan-perl \
-#agat    libsort-naturally-perl \
-#agat    libfile-share-perl \
-#agat    libfile-sharedir-install-perl \
-#agat    libyaml-perl \
-#agat    liblwp-protocol-https-perl \
-#agat    libfile-sharedir-perl \
-#agat    libmoose-perl \
-#agat    libterm-progressbar-perl \
-#agat    libdevel-cover-perl \
     python3-scipy \
     python3-sklearn \
     python3-numpy \
@@ -52,14 +36,6 @@ RUN conda config --add channels bioconda
 
 RUN conda upgrade conda
 
-#RUN pip install pandas 
-
-# add hmmer and AGAT and orthofinder
-
-#RUN conda install -c conda-forge -c bioconda agat
-
-#RUN conda install -c conda-forge -c bioconda gffread
-
 RUN conda install -c conda-forge -c bioconda cd-hit
 
 RUN conda install -c conda-forge -c bioconda orthofinder=3.0.1b1-0
@@ -78,7 +54,7 @@ ADD pipeline/pull_data.sh /usr/bin
 
 ADD pipeline/merge_data.py /usr/bin
 
-#ADD pipeline/agat_config.yaml /usr/bin
+ADD ref_set.tgz /usr/bin
 
 WORKDIR /usr/bin
 
