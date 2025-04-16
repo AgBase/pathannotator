@@ -78,52 +78,58 @@ if [ "$5" == "FB" ];
 then
 	echo "Pulling Flybase data now."
 	#THIS PULLS THE FLYBASE ANNOTATIONS
-	wget -r -nd -np -A "signaling_pathway_group_data*.gz" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
-	wget -r -nd -np -A "metabolic_pathway_group_data*.gz" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
-	gunzip -f $3/signaling_pathway_group_data_*.gz
-	gunzip -f $3/metabolic_pathway_group_data_*.gz
+#	wget -r -nd -np -A "signaling_pathway_group_data_db_2025_01.tsv.gz" -P $3/ 'http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/'
+#	wget -r -nd -np -A "metabolic_pathway_group_data_db_2025_01.tsv.gz" -P $3/ 'http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/'
+	wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/metabolic_pathway_group_data_fb_2025_01.tsv.gz -P $3/
+	wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/signaling_pathway_group_data_fb_2025_01.tsv.gz -P $3/
+	gunzip -f $3/signaling_pathway_group_data_fb_2025_01.tsv.gz
+	gunzip -f $3/metabolic_pathway_group_data_fb_2025_01.tsv.gz
 
-	grep -h -v ^\# $3/signaling_pathway_group_data_* > $3/pathway_group_data_latest.tsv
-	grep -h -v ^\# $3/metabolic_pathway_group_data_* >> $3/pathway_group_data_latest.tsv
+	grep -h -v ^\# $3/signaling_pathway_group_data_fb_2025_01.tsv > $3/pathway_group_data_latest.tsv
+	grep -h -v ^\# $3/metabolic_pathway_group_data_fb_2025_01.tsv >> $3/pathway_group_data_latest.tsv
 	cut -f 1,3,6 $3/pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
 
-	wget -r -nd -np -A "fbgn_annotation_ID_fb*.gz" -P $3/ 'https://ftp.flybase.org/releases/current/precomputed_files/genes/'
-	gunzip -f $3/fbgn_annotation_ID_fb*
-	grep -h -v ^\# $3/fbgn_annotation_ID_fb* | cut -f 3,5 > $3/Fbgn_CG.tsv
+#	wget -r -nd -np -A "fbgn_annotation_ID_fb_2025_01.tsv.gz" -P $3/ 'http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/'
+	wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/fbgn_annotation_ID_fb_2025_01.tsv.gz -P $3
+
+	gunzip -f $3/fbgn_annotation_ID_fb_2025_01.tsv.gz
+	grep -h -v ^\# $3/fbgn_annotation_ID_fb_2025_01.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 
 
-	#PULL FB PROTEIN AND GENOMIC FASTA AND GFF--FLYBASE GFF IS FUCKED UP-NEED TO REMOVE FIRST LINE AND ALL COMMENT LINES
-	wget -r -nd -np -A "dmel-all-translation*.gz" -P $3 'https://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/'
-        gunzip -f $3/dmel-all-translation-*.gz
+	#PULL FB PROTEIN FASTA
+#	wget -r -nd -np -A "dmel-all-translation-r6.62.fasta.gz'" -P $3 'http://flybase-ftp.s3-website-us-east-1.amazonaws.com/genomes/Drosophila_melanogaster/dmel_r6.62_FB2025_01/fasta/'
+#        gunzip -f $3/dmel-all-translation-r6.62.fasta.gz'
 
 	#PULL PROTEIN FASTA FOR USE IN ORTHOFINDER
 	#TRIBOLIUM CASTENEUM
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_protein.faa.gz -O $3/GCF_031307605.1_icTriCast1.1_protein.faa.gz
-        gunzip -f $3/GCF_031307605.1_icTriCast1.1_protein.faa.gz
+#	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_protein.faa.gz -O $3/GCF_031307605.1_icTriCast1.1_protein.faa.gz
+#        gunzip -f $3/GCF_031307605.1_icTriCast1.1_protein.faa.gz
 
 	#APIS MELLIFERA
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/003/254/395/GCF_003254395.2_Amel_HAv3.1/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz -O $3/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz
-        gunzip -f $3/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz
+#	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/003/254/395/GCF_003254395.2_Amel_HAv3.1/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz -O $3/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz
+#        gunzip -f $3/GCF_003254395.2_Amel_HAv3.1_protein.faa.gz
 
 	#PLODIA INTERPUNCTELLA
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/027/563/975/GCF_027563975.2_ilPloInte3.2/GCF_027563975.2_ilPloInte3.2_protein.faa.gz -O $3/GCF_027563975.2_ilPloInte3.2_protein.faa.gz
-        gunzip -f $3/GCF_027563975.2_ilPloInte3.2_protein.faa.gz
+#	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/027/563/975/GCF_027563975.2_ilPloInte3.2/GCF_027563975.2_ilPloInte3.2_protein.faa.gz -O $3/GCF_027563975.2_ilPloInte3.2_protein.faa.gz
+#        gunzip -f $3/GCF_027563975.2_ilPloInte3.2_protein.faa.gz
 
 	#RHOPALOSIPHUM MAIDIS
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/003/676/215/GCF_003676215.2_ASM367621v3/GCF_003676215.2_ASM367621v3_protein.faa.gz -O $3/GCF_003676215.2_ASM367621v3_protein.faa.gz
-        gunzip -f $3/GCF_003676215.2_ASM367621v3_protein.faa.gz
+#	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/003/676/215/GCF_003676215.2_ASM367621v3/GCF_003676215.2_ASM367621v3_protein.faa.gz -O $3/GCF_003676215.2_ASM367621v3_protein.faa.gz
+#        gunzip -f $3/GCF_003676215.2_ASM367621v3_protein.faa.gz
 
 	#SCHISTOCERCA SERIALIS CUBENSE
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/023/864/345/GCF_023864345.2_iqSchSeri2.2/GCF_023864345.2_iqSchSeri2.2_protein.faa.gz -O $3/GCF_023864345.2_iqSchSeri2.2_protein.faa.gz
-        gunzip -f $3/GCF_023864345.2_iqSchSeri2.2_protein.faa.gz
+#	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/023/864/345/GCF_023864345.2_iqSchSeri2.2/GCF_023864345.2_iqSchSeri2.2_protein.faa.gz -O $3/GCF_023864345.2_iqSchSeri2.2_protein.faa.gz
+#        gunzip -f $3/GCF_023864345.2_iqSchSeri2.2_protein.faa.gz
 
 	#ISCHNURA ELEGANS
-	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/921/293/095/GCF_921293095.1_ioIscEleg1.1/GCF_921293095.1_ioIscEleg1.1_protein.faa.gz -O $3/GCF_921293095.1_ioIscEleg1.1_protein.faa.gz
-        gunzip -f $3/GCF_921293095.1_ioIscEleg1.1_protein.faa.gz
+#	wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/921/293/095/GCF_921293095.1_ioIscEleg1.1/GCF_921293095.1_ioIscEleg1.1_protein.faa.gz -O $3/GCF_921293095.1_ioIscEleg1.1_protein.faa.gz
+#        gunzip -f $3/GCF_921293095.1_ioIscEleg1.1_protein.faa.gz
 
 	#PULL FBGN TO FBPP FILES
-	wget -r -nd -np -A "fbgn_fbtr_fbpp_fb*.gz" -P $3/ 'https://ftp.flybase.net/releases/current/precomputed_files/genes/'
-	gunzip -f $3/fbgn_fbtr_fbpp_fb_*.gz
-	grep -v ^\# $3/fbgn_fbtr_fbpp_fb_* | cut -f 1,3 > $3/Fbgn_fbpp.tsv
+#	wget -r -nd -np -A "fbgn_fbtr_fbpp_fb_2025_01.tsv.gz" -P $3/ 'http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/'
+	wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_01.tsv.gz -P $3/
+
+	gunzip -f $3/fbgn_fbtr_fbpp_fb_2025_01.tsv.gz
+	grep -v ^\# $3/fbgn_fbtr_fbpp_fb_2025_01.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 fi
