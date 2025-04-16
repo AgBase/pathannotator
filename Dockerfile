@@ -54,7 +54,7 @@ ADD pipeline/pull_data.sh /usr/bin
 
 ADD pipeline/merge_data.py /usr/bin
 
-ADD ref_set.tgz /usr/bin
+COPY pipeline/ref_set.tgz OF/
 
 WORKDIR /usr/bin
 
@@ -69,7 +69,7 @@ WORKDIR /root
 
 RUN mkdir /workdir /data
 
-RUN chmod a+w /workdir /data
+RUN chmod a+w /workdir /data /OF
 
 # Entrypoint
 ENTRYPOINT ["/usr/bin/pathannotator.sh"]

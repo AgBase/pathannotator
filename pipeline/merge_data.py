@@ -18,7 +18,7 @@ kofam = args.kofam # yes or no
 indir = args.indir # directory with outputs from pull_data.sh
 outdir = args.outdir # directory where outputs this will go
 flybase = args.flybase #FB for Flybase annotations, NA for none
-orthologs = args.orthologs # $3/orthofinder/Orthologues_dromel-cluster/dromel-cluster__v__"$noext"-cluster.tsv from pathannotator.sh script
+orthologs = args.orthologs # $3/orthofinder/Orthologues_"$noext"-cluster/"$noext"-cluster__v__dromel-cluster.tsv from pathannotator.sh script
 
 #READ API TABLES INTO PANDAS DATAFRAMES
 if kofam == "no" and species != "NA":
@@ -70,7 +70,7 @@ if kofam == "no" and species != "NA":
 	#ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
-        fbpp_ortho.columns = ['Flybase_protein_ID', 'Input_protein_ID']
+        fbpp_ortho.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
 	#SPLIT AND EXPLODE TO GET LISTS IN BOTH COLUMNS
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
@@ -114,7 +114,7 @@ elif kofam == "yes" and species == "NA":
 	#ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
-        fbpp_ortho.columns = ['Flybase_protein_ID', 'Input_protein_ID']
+        fbpp_ortho.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
 	#SPLIT AND EXPLODE TO GET LISTS IN BOTH COLUMNS
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
@@ -183,7 +183,7 @@ elif kofam == "yes" and species != "NA":
 	#ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
-        fbpp_ortho.columns = ['Flybase_protein_ID', 'Input_protein_ID']
+        fbpp_ortho.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
 	#SPLIT AND EXPLODE TO GET LISTS IN BOTH COLUMNS
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
