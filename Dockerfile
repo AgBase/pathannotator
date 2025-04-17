@@ -19,7 +19,22 @@ RUN apt-get update && \
     python3-scipy \
     python3-sklearn \
     python3-numpy \
-    python3-biopython
+    python3-biopython \
+    liblist-moreutils-perl \
+    libtry-tiny-perl \
+    libbio-perl-perl \
+    libclone-perl \
+    libgraph-perl \
+    liblwp-useragent-determined-perl \
+    libstatistics-r-perl \
+    libcarp-clan-perl \
+    libsort-naturally-perl \
+    libfile-share-perl \
+    libfile-sharedir-perl \
+    libfile-sharedir-install-perl \
+    libyaml-perl \
+    liblwp-protocol-https-perl \
+    libterm-progressbar-perl
 
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_25.1.1-2-Linux-x86_64.sh -O ~/miniconda.sh && \
@@ -36,7 +51,11 @@ RUN conda config --add channels bioconda
 
 RUN conda upgrade conda
 
-RUN conda install -c conda-forge -c bioconda cd-hit
+#RUN conda install -c conda-forge -c bioconda cd-hit
+
+RUN conda install -c conda-forge -c bioconda agat
+
+RUN conda install -c conda-forge -c bioconda gffread
 
 RUN conda install -c conda-forge -c bioconda orthofinder=3.0.1b1-0
 
@@ -54,6 +73,8 @@ ADD pipeline/pull_data.sh /usr/bin
 
 ADD pipeline/merge_data.py /usr/bin
 
+ADD pipeline/build_ref_set.sh /usr/bin
+
 COPY pipeline/ref_set.tgz OF/
 
 WORKDIR /usr/bin
@@ -63,7 +84,7 @@ RUN git clone https://github.com/takaram/kofam_scan.git
 RUN wget http://github.com/bbuchfink/diamond/releases/download/v2.1.11/diamond-linux64.tar.gz && tar xzf diamond-linux64.tar.gz
 
 # Change the permissions and the path for the wrapper script
-RUN chmod +x /usr/bin/pathannotator.sh
+RUN chmod +x /usr/bin/pathannotator.sh build_ref_set.sh
 
 WORKDIR /root
 

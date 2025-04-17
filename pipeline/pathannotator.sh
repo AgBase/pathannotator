@@ -69,7 +69,7 @@ cpus=$(( $avail - 1 ))
 
 # WORKS-TESTS WHETHER ACCESSIONS ARE NCBI PROTEIN IDS
 acc1=$(head -n1 $2 | sed 's/>//g' | sed 's/\s.*$//')
-if  [[ $acc1 == NP_* ]] || [[ $acc1 == XP_* ]] ;
+if  [[ $acc1 == NP_* ]] || [[ $acc1 == XP_* ]] || [[ $acc1 == YP_* ]];
 then
 	ncbi=true
 	echo "$acc1 These are NCBI protein IDs."
