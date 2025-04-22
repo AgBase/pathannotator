@@ -18,10 +18,10 @@ cd new_ref_set
 
 #PULL REFSEQ GENOME FASTAS AND GFFS
 #TRIBOLIUM CASTENEUM
-#wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_genomic.fna.gz -O GCF_031307605.1_icTriCast1.1_genomic.fna.gz
-#wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_genomic.gff.gz -O GCF_031307605.1_icTriCast1.1_genomic.gff.gz
-#gunzip -f GCF_031307605.1_icTriCast1.1_genomic.fna.gz
-#gunzip -f GCF_031307605.1_icTriCast1.1_genomic.gff.gz
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_genomic.fna.gz -O GCF_031307605.1_icTriCast1.1_genomic.fna.gz
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/031/307/605/GCF_031307605.1_icTriCast1.1/GCF_031307605.1_icTriCast1.1_genomic.gff.gz -O GCF_031307605.1_icTriCast1.1_genomic.gff.gz
+gunzip -f GCF_031307605.1_icTriCast1.1_genomic.fna.gz
+gunzip -f GCF_031307605.1_icTriCast1.1_genomic.gff.gz
 
 #APIS MELLIFERA
 #wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/003/254/395/GCF_003254395.2_Amel_HAv3.1/GCF_003254395.2_Amel_HAv3.1_genomic.fna.gz -O GCF_003254395.2_Amel_HAv3.1_genomic.fna.gz
@@ -60,7 +60,7 @@ cd new_ref_set
 #agat_sp_keep_longest_isoform.pl -gff GCF_003676215.2_ASM367621v3_genomic.gff -o rhomai_cluster.gff -c agat_config.yaml
 #agat_sp_keep_longest_isoform.pl -gff GCF_027563975.2_ilPloInte3.2_genomic.gff -o ploint_cluster.gff -c agat_config.yaml
 #agat_sp_keep_longest_isoform.pl -gff GCF_003254395.2_Amel_HAv3.1_genomic.gff -o apimel_cluster.gff -c agat_config.yaml
-#agat_sp_keep_longest_isoform.pl -gff GCF_031307605.1_icTriCast1.1_genomic.gff -o tricas_cluster.gff -c agat_config.yaml
+agat_sp_keep_longest_isoform.pl -gff GCF_031307605.1_icTriCast1.1_genomic.gff -o tricas_cluster.gff -c agat_config.yaml
 #agat_sp_keep_longest_isoform.pl -gff dmel-all-r6.62_flybase_only.gff -o dromel_cluster.gff -c agat_config.yaml
 
 
@@ -70,7 +70,15 @@ cd new_ref_set
 #agat_sp_extract_sequences.pl -g rhomai_cluster.gff -f GCF_003676215.2_ASM367621v3_genomic.fna -t cds -p --keep_attributes -o rhomai_cluster.fa -c agat_config.yaml
 #agat_sp_extract_sequences.pl -g ploint_cluster.gff -f GCF_027563975.2_ilPloInte3.2_genomic.fna -t cds -p --keep_attributes -o ploint_cluster.fa -c agat_config.yaml
 #agat_sp_extract_sequences.pl -g apimel_cluster.gff -f GCF_003254395.2_Amel_HAv3.1_genomic.fna -t cds -p --keep_attributes -o apimel_cluster.fa -c agat_config.yaml
-#agat_sp_extract_sequences.pl -g tricas_cluster.gff -f GCF_031307605.1_icTriCast1.1_genomic.fna -t cds -p --keep_attributes -o tricas_cluster.fa -c agat_config.yaml
+agat_sp_extract_sequences.pl -g tricas_cluster.gff -f GCF_031307605.1_icTriCast1.1_genomic.fna -t cds -p --keep_attributes -o tricas_cluster.fa -c agat_config.yaml
+
+#FIX HEADER LINES TO USE PROTEIN IDS
+sed -i 's/.*=/=/g' tricas_cluster.fa
+sed -i 's/.*=/=/g' apimel_cluster.fa
+sed -i 's/.*=/=/g' ploint_cluster.fa
+sed -i 's/.*=/=/g' rhomai_cluster.fa
+sed -i 's/.*=/=/g' schser_cluster.fa
+sed -i 's/.*=/=/g' iscele_cluster.fa
 
 #SAME BUT DIFFERENT FOR DROMEL
 #agat_sp_extract_sequences.pl -g dromel_cluster.gff -f dmel-all-chromosome-r6.62.fasta -t cds -p -o dromel_cluster.fa --merge -c agat_config.yaml
@@ -80,11 +88,10 @@ grep -v '#' fbgn_fbtr_fbpp_fb_2025_01.tsv > mapping.tmp
 cut -f 2,3 mapping.tmp > mapping.tsv
 
 #REPLACING TRASNCRIPT ID WITH PROTEIN ID WITH SEQKIT
-#cat mapping.tsv | while IFS="!" read -r transcript protein
-#do
-	sed -i 's/\s.*$//' dromel_cluster.fa
-	seqkit replace -k mapping.tsv  -p '(.+)$' -r '{kv}' dromel_cluster.fa > dromel_cluster_renamed.fa
-#done
+sed -i 's/\s.*$//' dromel_cluster.fa
+seqkit replace -k mapping.tsv  -p '(.+)$' -r '{kv}' dromel_cluster.fa > dromel_cluster_renamed.fa
+
+
 #RUN ORTHOFINDER WITH SINGLE-TRANSCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
 #tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
 #orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
