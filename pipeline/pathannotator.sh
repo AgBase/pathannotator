@@ -1,6 +1,5 @@
 #! /bin/bash
 
-#CHECK FOR OUTDIR. IF IT DOESN'T EXIST CREATE IT
 if [ ! -d "$3" ]; then mkdir "$3"; fi
 if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
 if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
@@ -67,7 +66,7 @@ avail=$(getconf _NPROCESSORS_ONLN)
 cpus=$(( $avail - 1 ))
 
 
-# WORKS-TESTS WHETHER ACCESSIONS ARE NCBI PROTEIN IDS
+#TESTS WHETHER ACCESSIONS ARE NCBI PROTEIN IDS
 acc1=$(head -n1 $2 | sed 's/>//g' | sed 's/\s.*$//')
 if  [[ $acc1 == NP_* ]] || [[ $acc1 == XP_* ]] || [[ $acc1 == YP_* ]];
 then
@@ -106,21 +105,12 @@ then
 			#IF YES, MERGE FROM API DATA
 			echo "IDs are $1 species IDs"
 
-			#IF FB AND NOT DME RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
+			#IF FB AND NOT DME RUN OF AND PROCEED TO MERGE (INCLUDING FLYBASE)
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				#RUN CD-HIT ON COMPARISON SPECIES
 				mkdir $3/orthofinder
-#				cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/ploint-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/rhomai-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/schser-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_921293095.1_ioIscEleg1.1_protein.faa -o $3/orthofinder/iscele-cluster.faa -d 0 -T 0 -M 10000
 
-				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 				ext="*.faa"
 				if [[ $2 == $ext ]];
 				then
@@ -145,24 +135,21 @@ then
 				fi
 				echo -e "noext is: $noext"
 
-				nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
-				cp $2 $3/ #THIS IS FOR USING CD-HIT ON ALL FILES
-				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
-
+				cp $2 $3/orthofinder/"$noext"_cluster.fa
 
 				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
 				tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
 				orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
-				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
-				mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"-cluster/ $3/orthofinder/
+				#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
+				mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
 
 			fi
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_"$noext"-cluster/"$noext"-cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
 
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
@@ -186,17 +173,8 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				#RUN CD-HIT ON COMPARISON SPECIES
 				mkdir $3/orthofinder
-#				cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/ploint-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/rhomai-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/schser-cluster.faa -d 0 -T 0 -M 10000
-#				cd-hit -i $3/GCF_921293095.1_ioIscEleg1.1_protein.faa -o $3/orthofinder/iscele-cluster.faa -d 0 -T 0 -M 10000
 
-				#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 				ext="*.faa"
 				if [[ $2 == $ext ]];
 				then
@@ -221,24 +199,21 @@ then
 				fi
 				echo -e "noext is: $noext"
 
-				nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
-				cp $2 $3/ #FOR CD-HIT ON ALL FILES
-				cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
-
+				cp $2 $3/orthofinder/"$noext"_cluster.fa
 
 				#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
 				tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
 				orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 				#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
-				#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
-				mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"-cluster/ $3/orthofinder/
+				#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
+				mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
 
 			fi
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_"$noext"-cluster/"$noext"-cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
 
 		fi
 
@@ -263,15 +238,7 @@ then
 		then
 			echo "Performing Flybase annotation".
 			mkdir $3/orthofinder
-#			cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/ploint-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/rhomai-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/schser-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_921293095.1_ioIscEleg1.1_protein.faa -o $3/orthofinder/iscele-cluster.faa -d 0 -T 0 -M 10000
 
-			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 			ext="*.faa"
 			if [[ $2 == $ext ]];
 			then
@@ -296,23 +263,20 @@ then
 			fi
 			echo -e "noext is: $noext"
 
-			nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
-			cp $2 $3/ #FOR CD-HIT ON ALL FILES
-			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
-
+			cp $2 $3/orthofinder/"$noext"_cluster.fa
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
 			tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
 			orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
-			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
-			mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"-cluster/ $3/orthofinder/
+			#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
+			mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
 		fi
 
 		#MERGE DATA
 		echo "Creating annotations output."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"-cluster/"$noext"-cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
 
 	fi
 
@@ -341,17 +305,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			#RUN CD-HIT ON COMPARISON SPECIES
 			mkdir $3/orthofinder
-#			cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/ploint-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/rhomai-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/schser-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_921293095.1_ioIscEleg1.1_protein.faa -o $3/orthofinder/iscele-cluster.faa -d 0 -T 0 -M 10000
 
-			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 			ext="*.faa"
 			if [[ $2 == $ext ]];
 			then
@@ -376,23 +331,20 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			fi
 			echo -e "noext is: $noext"
 
-			nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
-			cp $2 $3/ #FOR CD-HIT ON ALL FILES
-			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
-
+			cp $2 $3/orthofinder/"$noext"_cluster.fa
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
 			tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
 			orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
-			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
-			mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"-cluster/ $3/orthofinder/
+			#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
+			mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
 		fi
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"-cluster/"$noext"-cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -415,17 +367,8 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			#RUN CD-HIT ON COMPARISON SPECIES
 			mkdir $3/orthofinder
-#			cd-hit -i $3/dmel-all-translation*.fasta -o $3/orthofinder/dromel-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_031307605.1_icTriCast1.1_protein.faa -o $3/orthofinder/tricas-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_003254395.2_Amel_HAv3.1_protein.faa -o $3/orthofinder/apimel-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/ploint-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/rhomai-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_027563975.2_ilPloInte3.2_protein.faa -o $3/orthofinder/schser-cluster.faa -d 0 -T 0 -M 10000
-#			cd-hit -i $3/GCF_921293095.1_ioIscEleg1.1_protein.faa -o $3/orthofinder/iscele-cluster.faa -d 0 -T 0 -M 10000
 
-			#RUN CD-HIT ON INPUT PROTEIN FASTA--OR MAYBE NOT-MAYBE TRY TO GET ANNOTATIONS FOR EVERY ISOFORM??
 			ext="*.faa"
 			if [[ $2 == $ext ]];
 			then
@@ -450,23 +393,20 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			fi
 			echo -e "noext is: $noext"
 
-			nopath=$(basename "$2") #FOR CD-HIT ON ALL FILES
-			cp $2 $3/ #FOR CD-HIT ON ALL FILES
-			cd-hit -i $3/$nopath -o $3/orthofinder/"$noext"-cluster.faa -d 0 -T 0 -M 10000 #FOR CD-HIT ON ALL FILES
-
+			cp $2 $3/orthofinder/"$noext"_cluster.fa
 
 			#RUN ORTHOFINDER WITH SINGLE-TRANCRIPT (OR NOT) FASTAS FROM INPUT SPECIES AND DROMEL
 			tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
 			orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
 
 			#RUN SIMPLIFY ORTHOFINDER OUTPUT AND SELECT THE RIGHT FILE TO PARSE
-			#MOVE THE Orthologues_dromel-cluster DIR UP TO orthofinder
-			mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"-cluster/ $3/orthofinder/
+			#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
+			mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
 		fi
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"-cluster/"$noext"-cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
 	fi
 fi
 
