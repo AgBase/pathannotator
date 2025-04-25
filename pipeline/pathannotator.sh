@@ -23,7 +23,8 @@ if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_f
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-#if [ -d "$3"/orthofinder/OrthoFinder ]; then rm -r "$3"/orthofinder/OrthoFinder; fi
+if [ -d "$3"/orthofinder/ref_set ]; then rm -r "$3"/orthofinder/ref_set; fi
+if [ -f "$3"/orthofinder/*_cluster ]; then rm -r "$3"/orthofinder/*_cluster; fi
 
 starttime=$(date +%s)
 
@@ -432,7 +433,8 @@ if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_f
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-#if [ -d "$3"/orthofinder/OrthoFinder ]; then rm -r "$3"/orthofinder/OrthoFinder; fi
+if [ -d "$3"/orthofinder/ref_set ]; then rm -r "$3"/orthofinder/ref_set; fi
+if [ -f "$3"/orthofinder/*_cluster ]; then rm -r "$3"/orthofinder/*_cluster; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
