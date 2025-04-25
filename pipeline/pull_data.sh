@@ -100,7 +100,7 @@ then
         grep -v ^\# $3/fbgn_fbtr_fbpp_fb_2025_01.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 
 	#PULL FB PROTEIN FASTA
-	wget -r -nd -np -A "dmel-all-translation*.gz" -P $3/ 'https://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/'
-        gunzip -f $3/dmel-all-translation-*
+	wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/genomes/Drosophila_melanogaster/dmel_r6.62_FB2025_01/fasta/dmel-all-translation-r6.62.fasta.gz -P $3/
+        gunzip -f $3/dmel-all-translation-r6.62.fasta.gz
 
 fi
