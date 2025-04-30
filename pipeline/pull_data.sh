@@ -78,29 +78,29 @@ if [ "$5" == "FB" ];
 then
         echo "Pulling Flybase data now."
         #THIS PULLS THE FLYBASE ANNOTATIONS
-        wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/metabolic_pathway_group_data_fb_2025_01.tsv.gz -P $3/
-        wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/signaling_pathway_group_data_fb_2025_01.tsv.gz -P $3/
-        gunzip -f $3/signaling_pathway_group_data_fb_2025_01.tsv.gz
-        gunzip -f $3/metabolic_pathway_group_data_fb_2025_01.tsv.gz
+        wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_02/precomputed_files/genes/metabolic_pathway_group_data_fb_2025_02.tsv.gz -P $3/
+        wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_02/precomputed_files/genes/signaling_pathway_group_data_fb_2025_02.tsv.gz -P $3/
+        gunzip -f $3/signaling_pathway_group_data_fb_2025_02.tsv.gz
+        gunzip -f $3/metabolic_pathway_group_data_fb_2025_02.tsv.gz
 
-        grep -h -v ^\# $3/signaling_pathway_group_data_fb_2025_01.tsv > $3/pathway_group_data_latest.tsv
-        grep -h -v ^\# $3/metabolic_pathway_group_data_fb_2025_01.tsv >> $3/pathway_group_data_latest.tsv
+        grep -h -v ^\# $3/signaling_pathway_group_data_fb_2025_02.tsv > $3/pathway_group_data_latest.tsv
+        grep -h -v ^\# $3/metabolic_pathway_group_data_fb_2025_02.tsv >> $3/pathway_group_data_latest.tsv
         cut -f 1,3,6 $3/pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
 
-        wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/fbgn_annotation_ID_fb_2025_01.tsv.gz -P $3
+        wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_02/precomputed_files/genes/fbgn_annotation_ID_fb_2025_02.tsv.gz -P $3
 
-        gunzip -f $3/fbgn_annotation_ID_fb_2025_01.tsv.gz
-        grep -h -v ^\# $3/fbgn_annotation_ID_fb_2025_01.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
+        gunzip -f $3/fbgn_annotation_ID_fb_2025_02.tsv.gz
+        grep -h -v ^\# $3/fbgn_annotation_ID_fb_2025_02.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
         sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 
         #PULL FBGN TO FBPP FILES
-        wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_01.tsv.gz -P $3/
+        wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_02/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_02.tsv.gz -P $3/
 
-        gunzip -f $3/fbgn_fbtr_fbpp_fb_2025_01.tsv.gz
-        grep -v ^\# $3/fbgn_fbtr_fbpp_fb_2025_01.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
+        gunzip -f $3/fbgn_fbtr_fbpp_fb_2025_02.tsv.gz
+        grep -v ^\# $3/fbgn_fbtr_fbpp_fb_2025_02.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 
 	#PULL FB PROTEIN FASTA
-	wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/genomes/Drosophila_melanogaster/dmel_r6.62_FB2025_01/fasta/dmel-all-translation-r6.62.fasta.gz -P $3/
-        gunzip -f $3/dmel-all-translation-r6.62.fasta.gz
+	wget https://s3ftp.flybase.org/genomes/Drosophila_melanogaster/current/fasta/dmel-all-translation-r6.63.fasta.gz -P $3/
+        gunzip -f $3/dmel-all-translation-r6.63.fasta.gz
 
 fi
