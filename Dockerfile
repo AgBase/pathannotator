@@ -51,8 +51,6 @@ RUN conda config --add channels bioconda
 
 RUN conda upgrade conda
 
-#RUN conda install -c conda-forge -c bioconda cd-hit
-
 RUN conda install -c conda-forge -c bioconda agat
 
 RUN conda install -c conda-forge -c bioconda orthofinder=3.0.1b1-0
