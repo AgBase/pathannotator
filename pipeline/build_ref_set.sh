@@ -14,16 +14,16 @@ cd ref_set
 cp /AGAT/agat_config.yaml .
 
 #PULL FB GENOME FASTA AND GFF
-wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/genomes/Drosophila_melanogaster/dmel_r6.62_FB2025_01/gff/dmel-all-r6.62.gff.gz -O dmel-all-r6.62.gff.gz
-wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/genomes/Drosophila_melanogaster/dmel_r6.62_FB2025_01/fasta/dmel-all-chromosome-r6.62.fasta.gz -O dmel-all-chromosome-r6.62.fasta.gz
-wget http://flybase-ftp.s3-website-us-east-1.amazonaws.com/releases/FB2025_01/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_01.tsv.gz
-gunzip -f dmel-all-r6.62.gff.gz
-gunzip -f dmel-all-chromosome-r6.62.fasta.gz
-gunzip -f fbgn_fbtr_fbpp_fb_2025_01.tsv.gz
+wget https://s3ftp.flybase.org/genomes/Drosophila_melanogaster/current/gff/dmel-all-r6.63.gff.gz -O dmel-all-r6.63.gff.gz
+wget https://s3ftp.flybase.org/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.63.fasta.gz -O dmel-all-chromosome-r6.63.fasta.gz
+wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_02.tsv.gz
+gunzip -f dmel-all-r6.63.gff.gz
+gunzip -f dmel-all-chromosome-r6.63.fasta.gz
+gunzip -f fbgn_fbtr_fbpp_fb_2025_02.tsv.gz
 
 #PROCESS FB GFF TO GET "\tFlyBase\t" LINES ONLY
-tail -n+2 dmel-all-r6.62.gff > dmel-all-r6.62.gff.tmp
-grep -P "\tFlyBase\t" dmel-all-r6.62.gff.tmp > dmel-all-r6.62_flybase_only.gff
+tail -n+2 dmel-all-r6.63.gff > dmel-all-r6.63.gff.tmp
+grep -P "\tFlyBase\t" dmel-all-r6.63.gff.tmp > dmel-all-r6.63_flybase_only.gff
 
 #PULL REFSEQ GENOME FASTAS AND GFFS
 #TRIBOLIUM CASTENEUM
@@ -69,7 +69,7 @@ agat_sp_keep_longest_isoform.pl -gff GCF_003676215.2_ASM367621v3_genomic.gff -o 
 agat_sp_keep_longest_isoform.pl -gff GCF_027563975.2_ilPloInte3.2_genomic.gff -o ploint_cluster.gff -c agat_config.yaml
 agat_sp_keep_longest_isoform.pl -gff GCF_003254395.2_Amel_HAv3.1_genomic.gff -o apimel_cluster.gff -c agat_config.yaml
 agat_sp_keep_longest_isoform.pl -gff GCF_031307605.1_icTriCast1.1_genomic.gff -o tricas_cluster.gff -c agat_config.yaml
-agat_sp_keep_longest_isoform.pl -gff dmel-all-r6.62_flybase_only.gff -o dromel_cluster.gff -c agat_config.yaml
+agat_sp_keep_longest_isoform.pl -gff dmel-all-r6.63_flybase_only.gff -o dromel_cluster.gff -c agat_config.yaml
 
 
 #USE AGAT EXTRACT SEQUENCES TO PULL FASTA FROM REFEQ SPECIES
@@ -91,10 +91,10 @@ sed -i 's/.*=/=/g' iscele_cluster.fa
 sed -i 's/=/>/g' *_cluster.fa
 
 #SAME BUT DIFFERENT FOR DROMEL
-agat_sp_extract_sequences.pl -g dromel_cluster.gff -f dmel-all-chromosome-r6.62.fasta -t cds -p -o dromel_cluster.fa --merge -c agat_config.yaml
+agat_sp_extract_sequences.pl -g dromel_cluster.gff -f dmel-all-chromosome-r6.63.fasta -t cds -p -o dromel_cluster.fa --merge -c agat_config.yaml
 
 #REPLACE fbtr IDS WITH fbpp IDS BASED ON MAPPING FILE
-grep -v '#' fbgn_fbtr_fbpp_fb_2025_01.tsv > mapping.tmp
+grep -v '#' fbgn_fbtr_fbpp_fb_2025_02.tsv > mapping.tmp
 cut -f 2,3 mapping.tmp > mapping.tsv
 
 #REPLACING TRASNCRIPT ID WITH PROTEIN ID WITH SEQKIT
