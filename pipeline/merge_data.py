@@ -22,6 +22,7 @@ orthologs = args.orthologs # $3/orthofinder/Orthologues_"$noext"-cluster/"$noext
 
 #READ API TABLES INTO PANDAS DATAFRAMES
 if kofam == "no" and species != "NA":
+    ncbi_ver = pd.read_table(f"{indir}/ncbiver.tsv", dtype=str)
     ncbi_spec = pd.read_table(f"{indir}/conv_ncbi-proteinid_{species}.tsv", dtype=str)
     spec_ko = pd.read_table(f"{indir}/link_{species}_ko.tsv", dtype=str)
     spec_pathway = pd.read_table(f"{indir}/link_pathway_{species}.tsv", dtype=str)
@@ -29,6 +30,7 @@ if kofam == "no" and species != "NA":
     ko_pathway = pd.read_table(f"{indir}/link_ko_pathway.tsv", dtype=str)
     pathway = pd.read_table(f"{indir}/list_pathway.tsv", dtype=str)
 #ADD HEADERS TO DATAFRAME COLUMNS
+    ncbi_ver.columns = ['Input_protein_ID_version', 'Input_protein_ID']
     ncbi_spec.columns = ['KEGG_genes_ID', 'Input_protein_ID']
     spec_ko.columns = ['KEGG_KO', 'KEGG_genes_ID']
     ko_pathway.columns = ['KEGG_ref_pathway', 'KEGG_KO']
@@ -36,14 +38,27 @@ if kofam == "no" and species != "NA":
     spec_pathway.columns = ['KEGG_genes_ID', f"KEGG_{species}_pathway"]
     list_pathway_spec.columns = [f"KEGG_{species}_pathway", f"KEGG_{species}_pathway_name"]
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
-    ncbi_spec_ko = pd.merge(ncbi_spec, spec_ko, on='KEGG_genes_ID', how='inner')
-    ncbi_spec_ko_pathway = pd.merge(ncbi_spec_ko, ko_pathway, on='KEGG_KO', how='inner')
-    ncbi_spec_ko_pathway_pathname = pd.merge(ncbi_spec_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
-    ncbi_spec_ko_pathway_pathname.to_csv(f"{outdir}/{species}_KEGG_ref.tsv", sep='\t', index=False)
+    ncbi_ver_spec = pd.merge(ncbi_ver, ncbi_spec, on='Input_protein_ID', how='inner')
+    ncbi_ver_spec_ko = pd.merge(ncbi_ver_spec, spec_ko, on='KEGG_genes_ID', how='inner')
+    ncbi_ver_spec_ko_pathway = pd.merge(ncbi_ver_spec_ko, ko_pathway, on='KEGG_KO', how='inner')
+    ncbi_ver_spec_ko_pathway_pathname = pd.merge(ncbi_ver_spec_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
+    ncbi_ver_spec_ko_pathway_pathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+    ncbi_ver_spec_ko_pathway_pathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+    ncbi_ver_spec_ko_pathway_pathname.to_csv(f"{outdir}/{species}_KEGG_ref.tsv", sep='\t', index=False)
+    keggref = ncbi_ver_spec_ko_pathway_pathname[["Input_protein_ID","KEGG_ref_pathway"]]
+    prefix = 'KEGG:'
+    keggref['KEGG_ref_pathway'] = prefix + keggref['KEGG_ref_pathway']
+    keggref.columns = ['Input_protein_ID','pathway']
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
-    ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on='KEGG_genes_ID', how='inner')
-    ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
-    ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_KEGG_species.tsv", sep='\t', index=False)
+    ncbi_ver_spec_ko_specpath = pd.merge(ncbi_ver_spec_ko, spec_pathway, on='KEGG_genes_ID', how='inner')
+    ncbi_ver_spec_ko_specpath_specpathname = pd.merge(ncbi_ver_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
+    ncbi_ver_spec_ko_specpath_specpathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+    ncbi_ver_spec_ko_specpath_specpathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+    ncbi_ver_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_KEGG_species.tsv", sep='\t', index=False)
+    keggspec = ncbi_ver_spec_ko_specpath_specpathname[["Input_protein_ID","KEGG_{species}_pathway"]]
+    prefix = 'KEGG:'
+    keggspec['KEGG_{species}_pathway'] = prefix + keggspec['KEGG_{species}_pathway']
+    keggspec.columns = ['Input_protein_ID','pathway']
     #ADD FLYBASE ANNOTATIONS WHEN DME IS THE SPECIFIED SPECIES
     if flybase == "FB" and species == "dme":
         #READ INTO DATAFRAMES
@@ -54,11 +69,17 @@ if kofam == "no" and species != "NA":
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         #MERGE AND OUTPUT TO FILE
         fbgn_CG_path = pd.merge(fbgn_CG, fbgn_path, on='Flybase_gene', how='inner')
-        ncbi_spec_ko['KEGG_genes_ID'] = ncbi_spec_ko['KEGG_genes_ID'].str.replace('Dmel_', '')
-        fbgn_CG_path_ncbi_spec_ko = pd.merge(ncbi_spec_ko, fbgn_CG_path, on='KEGG_genes_ID', how='inner')
-        fbgn_CG_path_ncbi_spec_ko.drop('Flybase_gene', axis=1, inplace=True)
-        fbgn_CG_path_ncbi_spec_ko = fbgn_CG_path_ncbi_spec_ko[["KEGG_genes_ID","Input_protein_ID","KEGG_KO","Flybase_pathway_ID","Flybase_pathway_name"]]
-        fbgn_CG_path_ncbi_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
+        ncbi_ver_spec_ko['KEGG_genes_ID'] = ncbi_ver_spec_ko['KEGG_genes_ID'].str.replace('Dmel_', '')
+        fbgn_CG_path_ncbi_ver_spec_ko = pd.merge(ncbi_ver_spec_ko, fbgn_CG_path, on='KEGG_genes_ID', how='inner')
+        fbgn_CG_path_ncbi_ver_spec_ko.drop('Flybase_gene', axis=1, inplace=True)
+        fbgn_CG_path_ncbi_ver_spec_ko = fbgn_CG_path_ncbi_ver_spec_ko[["KEGG_genes_ID","Input_protein_ID","KEGG_KO","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_CG_path_ncbi_ver_spec_ko.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+        fbgn_CG_path_ncbi_ver_spec_ko.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+        fbgn_CG_path_ncbi_ver_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
+        fbpath = fbgn_CG_path_ncbi_ver_spec_ko[["Input_protein_ID","Flybase_pathway_ID"]]
+        prefix = 'FlyBase:'
+        fbpath['Flybase_pathway_ID'] = prefix + fbpath['Flybase_pathway_ID']
+        fbpath.columns = ['Input_protein_ID','pathway']
     elif flybase =="FB" and species != "dme":
         #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
@@ -84,24 +105,60 @@ if kofam == "no" and species != "NA":
         fbgn_fbpp_ortho_path_CG = pd.merge(fbgn_fbpp_ortho_path, fbgn_CG, on='Flybase_gene', how='inner')
         fbgn_fbpp_ortho_path_CG.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_fbpp_ortho_path_CG.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+        fbgn_fbpp_ortho_path_CG.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/Orthofinder_flybase.tsv", sep='\t', index=False)
+        fbpath = fbgn_fbpp_ortho_path_CG[["Input_protein_ID","Flybase_pathway_ID"]]
+        prefix = 'FlyBase:'
+        fbpath['Flybase_pathway_ID'] = prefix + fbpath['Flybase_pathway_ID']
+        fbpath.columns = ['Input_protein_ID','pathway']
     else:
         print("You have not requested Flybase annotations.")
+
+#CONCATENATE SUBSET OUTPUT DFS, MAKE ASSOCIATIVE ARRAYS AND PRINT TO ACC_PATHWAYS AND PATHWAYS_ACC FILES
+    concatforoutput = pd.concat([keggref, keggspec, fbpath], axis=1)
+    annotperaccess = {}
+    for key, value in zip(concatforoutput["Input_protein_ID"], concatforoutput["pathway"]):
+        if key in annotperaccess:
+            annotperaccess[key].append(value)
+        else:
+            annotperaccess[key] = [value]
+    return annotperaccess
+    concatforoutput.to_csv(f"{outdir}/pathannotator_pathways_acc.tsv", sep='\t', index=False)
+
+    accessperannot = {}
+    for key, value in zip(concatforoutput["pathway"], concatforoutput["Input_protein_ID"]):
+        if key in accessperannot:
+            accessperannot[key].append(value)
+        else:
+            accessperannot[key] = [value]
+    return accessperannot
+    concatforoutput.to_csv(f"{outdir}/pathannotator_acc_pathways.tsv", sep='\t', index=False)
+
 elif kofam == "yes" and species == "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
+    ncbi_ver = pd.read_table(f"{indir}/ncbiver.tsv", dtype=str)
     ncbi_ko = pd.read_table(f"{indir}/ko_ncbi.tsv", dtype=str)
     ko_pathway = pd.read_table(f"{indir}/link_ko_pathway.tsv", dtype=str)
     pathway = pd.read_table(f"{indir}/list_pathway.tsv", dtype=str)
 #ADD HEADERS TO DATAFRAME COLUMNS
+    ncbi_ver.columns = ['Input_protein_ID_version', 'Input_protein_ID']
     ncbi_ko.columns = ['KEGG_KO', 'Input_protein_ID']
     ko_pathway.columns = ['KEGG_ref_pathway', 'KEGG_KO']
     pathway.columns = ['KEGG_ref_pathway', 'KEGG_ref_pathway_name']
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
-    ncbi_ko_pathway = pd.merge(ncbi_ko, ko_pathway, on='KEGG_KO', how='inner')
-    ncbi_ko_pathway_pathname = pd.merge(ncbi_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
-    ncbi_ko_pathway_pathname.insert(0, 'KEGG_genes_ID','NA',allow_duplicates=True)
-    ncbi_ko_pathway_pathname = ncbi_ko_pathway_pathname[['KEGG_genes_ID', 'Input_protein_ID','KEGG_KO', 'KEGG_ref_pathway', 'KEGG_ref_pathway_name']]
-    ncbi_ko_pathway_pathname.to_csv(f"{outdir}/NA_KEGG_ref.tsv", sep='\t', index=False)
+    ncbi_ver_ko = pd.merge(ncbi_ver, ncbi_ko, on='Input_protein_ID', how='inner')
+    ncbi_ver_ko_pathway = pd.merge(ncbi_ver_ko, ko_pathway, on='KEGG_KO', how='inner')
+    ncbi_ver_ko_pathway_pathname = pd.merge(ncbi_ver_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
+    ncbi_ver_ko_pathway_pathname.insert(0, 'KEGG_genes_ID','NA',allow_duplicates=True)
+    ncbi_ver_ko_pathway_pathname = ncbi_ver_ko_pathway_pathname[['KEGG_genes_ID', 'Input_protein_ID','KEGG_KO', 'KEGG_ref_pathway', 'KEGG_ref_pathway_name']]
+    ncbi_ver_ko_pathway_pathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+    ncbi_ver_ko_pathway_pathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+    ncbi_ver_ko_pathway_pathname.to_csv(f"{outdir}/NA_KEGG_ref.tsv", sep='\t', index=False)
+    keggref = ncbi_ver_spec_ko_pathway_pathname[["Input_protein_ID","KEGG_ref_pathway"]]
+    prefix = 'KEGG:'
+    keggref['KEGG_ref_pathway'] = prefix + keggref['KEGG_ref_pathway']
+    keggref.columns = ['Input_protein_ID','pathway']
     if flybase == "FB":
         #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
@@ -127,9 +184,39 @@ elif kofam == "yes" and species == "NA":
         fbgn_fbpp_ortho_path_CG = pd.merge(fbgn_fbpp_ortho_path, fbgn_CG, on='Flybase_gene', how='inner')
         fbgn_fbpp_ortho_path_CG.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_fbpp_ortho_path_CG.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+        fbgn_fbpp_ortho_path_CG.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/Orthofinder_flybase.tsv", sep='\t', index=False)
+        fbpath = fbgn_fbpp_ortho_path_CG[["Input_protein_ID","Flybase_pathway_ID"]]
+        prefix = 'FlyBase:'
+        fbpath['Flybase_pathway_ID'] = prefix + fbpath['Flybase_pathway_ID']
+        fbpath.columns = ['Input_protein_ID','pathway']
+    else:
+        print("You have not requested Flybase annotations.")
+
+#CONCATENATE SUBSET OUTPUT DFS, MAKE ASSOCIATIVE ARRAYS AND PRINT TO ACC_PATHWAYS AND PATHWAYS_ACC FILES
+    concatforoutput = pd.concat([keggref, fbpath], axis=1)
+    annotperaccess = {}
+    for key, value in zip(concatforoutput["Input_protein_ID"], concatforoutput["pathway"]):
+        if key in annotperaccess:
+            annotperaccess[key].append(value)
+        else:
+            annotperaccess[key] = [value]
+    return annotperaccess
+    concatforoutput.to_csv(f"{outdir}/pathannotator_pathways_acc.tsv", sep='\t', index=False)
+
+    accessperannot = {}
+    for key, value in zip(concatforoutput["pathway"], concatforoutput["Input_protein_ID"]):
+        if key in accessperannot:
+            accessperannot[key].append(value)
+        else:
+            accessperannot[key] = [value]
+    return accessperannot
+    concatforoutput.to_csv(f"{outdir}/pathannotator_acc_pathways.tsv", sep='\t', index=False)
+
 elif kofam == "yes" and species != "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
+    ncbi_ver = pd.read_table(f"{indir}/ncbiver.tsv", dtype=str)
     ncbi_ko = pd.read_table(f"{indir}/ko_ncbi.tsv", dtype=str)
     ko_pathway = pd.read_table(f"{indir}/link_ko_pathway.tsv", dtype=str)
     pathway = pd.read_table(f"{indir}/list_pathway.tsv", dtype=str)
@@ -137,6 +224,7 @@ elif kofam == "yes" and species != "NA":
     spec_pathway = pd.read_table(f"{indir}/link_pathway_{species}.tsv", dtype=str)
     list_pathway_spec = pd.read_table(f"{indir}/list_pathway_{species}.tsv", dtype=str)
 #ADD HEADERS TO DATAFRAME COLUMNS
+    ncbi_ver.columns = ['Input_protein_ID_version', 'Input_protein_ID']
     ncbi_ko.columns = ['KEGG_KO', 'Input_protein_ID']
     spec_ko.columns = ['KEGG_KO', 'KEGG_genes_ID']
     ko_pathway.columns = ['KEGG_ref_pathway', 'KEGG_KO']
@@ -144,17 +232,30 @@ elif kofam == "yes" and species != "NA":
     spec_pathway.columns = ['KEGG_genes_ID', f"KEGG_{species}_pathway"]
     list_pathway_spec.columns = [f"KEGG_{species}_pathway", f"KEGG_{species}_pathway_name"]
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
-    ncbi_ko_pathway = pd.merge(ncbi_ko, ko_pathway, on='KEGG_KO', how='inner')
-    ncbi_ko_pathway_pathname = pd.merge(ncbi_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
-    ncbi_ko_pathway_pathname = ncbi_ko_pathway_pathname[["Input_protein_ID","KEGG_KO","KEGG_ref_pathway","KEGG_ref_pathway_name"]]
-    ncbi_ko_pathway_pathname.insert(0, 'KEGG_genes_ID','NA',allow_duplicates=True)
-    ncbi_ko_pathway_pathname.to_csv(f"{outdir}/{species}_KEGG_ref.tsv", sep='\t', index=False)
+    ncbi_ver_ko = pd.merge(ncbi_ver, ncbi_ko, on='Input_protein_ID', how='inner')
+    ncbi_ver_ko_pathway = pd.merge(ncbi_ver_ko, ko_pathway, on='KEGG_KO', how='inner')
+    ncbi_ver_ko_pathway_pathname = pd.merge(ncbi_ver_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
+    ncbi_ver_ko_pathway_pathname = ncbi_ver_ko_pathway_pathname[["Input_protein_ID","KEGG_KO","KEGG_ref_pathway","KEGG_ref_pathway_name"]]
+    ncbi_ver_ko_pathway_pathname.insert(0, 'KEGG_genes_ID','NA',allow_duplicates=True)
+    ncbi_ver_ko_pathway_pathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+    ncbi_ver_ko_pathway_pathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+    ncbi_ver_ko_pathway_pathname.to_csv(f"{outdir}/{species}_KEGG_ref.tsv", sep='\t', index=False)
+    keggref = ncbi_ver_spec_ko_pathway_pathname[["Input_protein_ID","KEGG_ref_pathway"]]
+    prefix = 'fruit_'
+    keggref['KEGG_ref_pathway'] = prefix + keggref['KEGG_ref_pathway']
+    keggref.columns = ['Input_protein_ID','pathway']
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
-    ncbi_spec_ko = pd.merge(ncbi_ko, spec_ko, on='KEGG_KO', how='inner')
-    ncbi_spec_ko_specpath = pd.merge(ncbi_spec_ko, spec_pathway, on='KEGG_genes_ID', how='inner')
-    ncbi_spec_ko_specpath_specpathname = pd.merge(ncbi_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
-    ncbi_spec_ko_specpath_specpathname = ncbi_spec_ko_specpath_specpathname[["KEGG_genes_ID","Input_protein_ID","KEGG_KO",f"KEGG_{species}_pathway",f"KEGG_{species}_pathway_name"]]
-    ncbi_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_KEGG_species.tsv", sep='\t', index=False)
+    ncbi_ver_spec_ko = pd.merge(ncbi_ver_ko, spec_ko, on='KEGG_KO', how='inner')
+    ncbi_ver_spec_ko_specpath = pd.merge(ncbi_ver_spec_ko, spec_pathway, on='KEGG_genes_ID', how='inner')
+    ncbi_ver_spec_ko_specpath_specpathname = pd.merge(ncbi_ver_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
+    ncbi_ver_spec_ko_specpath_specpathname = ncbi_ver_spec_ko_specpath_specpathname[["KEGG_genes_ID","Input_protein_ID","KEGG_KO",f"KEGG_{species}_pathway",f"KEGG_{species}_pathway_name"]]
+    ncbi_ver_spec_ko_specpath_specpathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+    ncbi_ver_spec_ko_specpath_specpathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+    ncbi_ver_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{species}_KEGG_species.tsv", sep='\t', index=False)
+    keggspec = ncbi_ver_spec_ko_specpath_specpathname[["Input_protein_ID","KEGG_{species}_pathway"]]
+    prefix = 'KEGG:'
+    keggspec['KEGG_{species}_pathway'] = prefix + keggspec['KEGG_{species}_pathway']
+    keggspec.columns = ['Input_protein_ID','pathway']
     #ADD FLYBASE ANNOTATIONS
     if flybase == "FB" and species == "dme":
         #READ INTO DATAFRAMES
@@ -165,11 +266,17 @@ elif kofam == "yes" and species != "NA":
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         #MERGE AND OUTPUT TO FILE
         fbgn_CG_path = pd.merge(fbgn_CG, fbgn_path, on='Flybase_gene', how='inner')
-        ncbi_spec_ko['KEGG_genes_ID'] = ncbi_spec_ko['KEGG_genes_ID'].str.replace('Dmel_', '')
-        fbgn_CG_path_ncbi_spec_ko = pd.merge(ncbi_spec_ko, fbgn_CG_path, on='KEGG_genes_ID', how='inner')
-        fbgn_CG_path_ncbi_spec_ko.drop('Flybase_gene', axis=1, inplace=True)
-        fbgn_CG_path_ncbi_spec_ko = fbgn_CG_path_ncbi_spec_ko[["KEGG_genes_ID","Input_protein_ID","KEGG_KO","Flybase_pathway_ID","Flybase_pathway_name"]]
-        fbgn_CG_path_ncbi_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
+        ncbi_ver_spec_ko['KEGG_genes_ID'] = ncbi_ver_spec_ko['KEGG_genes_ID'].str.replace('Dmel_', '')
+        fbgn_CG_path_ncbi_ver_spec_ko = pd.merge(ncbi_ver_spec_ko, fbgn_CG_path, on='KEGG_genes_ID', how='inner')
+        fbgn_CG_path_ncbi_ver_spec_ko.drop('Flybase_gene', axis=1, inplace=True)
+        fbgn_CG_path_ncbi_ver_spec_ko = fbgn_CG_path_ncbi_ver_spec_ko[["KEGG_genes_ID","Input_protein_ID","KEGG_KO","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_CG_path_ncbi_ver_spec_ko.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+        fbgn_CG_path_ncbi_ver_spec_ko.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+        fbgn_CG_path_ncbi_ver_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
+        fbpath = fbgn_CG_path_ncbi_ver_spec_ko[["Input_protein_ID","Flybase_pathway_ID"]]
+        prefix = 'KEGG:'
+        fbpath['Flybase_pathway_ID'] = prefix + fbpath['Flybase_pathway_ID']
+        fbpath.columns = ['Input_protein_ID','pathway']
     elif flybase =="FB" and species != "dme":
         #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
@@ -195,9 +302,35 @@ elif kofam == "yes" and species != "NA":
         fbgn_fbpp_ortho_path_CG = pd.merge(fbgn_fbpp_ortho_path, fbgn_CG, on='Flybase_gene', how='inner')
         fbgn_fbpp_ortho_path_CG.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
+        fbgn_fbpp_ortho_path_CG.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
+        fbgn_fbpp_ortho_path_CG.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/Orthofinder_flybase.tsv", sep='\t', index=False)
+        fbpath = fbgn_fbpp_ortho_path_CG[["Input_protein_ID","Flybase_pathway_ID"]]
+        prefix = 'KEGG:'
+        fbpath['Flybase_pathway_ID'] = prefix + fbpath['Flybase_pathway_ID']
+        fbpath.columns = ['Input_protein_ID','pathway']
     else:
         print("You have not requested Flybase annotations.")
+
+#CONCATENATE SUBSET OUTPUT DFS, MAKE ASSOCIATIVE ARRAYS AND PRINT TO ACC_PATHWAYS AND PATHWAYS_ACC FILES
+    concatforoutput = pd.concat([keggref, keggspec, fbpath], axis=1)
+    annotperaccess = {}
+    for key, value in zip(concatforoutput["Input_protein_ID"], concatforoutput["pathway"]):
+        if key in annotperaccess:
+            annotperaccess[key].append(value)
+        else:
+            annotperaccess[key] = [value]
+    return annotperaccess
+    concatforoutput.to_csv(f"{outdir}/pathannotator_pathways_acc.tsv", sep='\t', index=False)
+
+    accessperannot = {}
+    for key, value in zip(concatforoutput["pathway"], concatforoutput["Input_protein_ID"]):
+        if key in accessperannot:
+            accessperannot[key].append(value)
+        else:
+            accessperannot[key] = [value]
+    return accessperannot
+    concatforoutput.to_csv(f"{outdir}/pathannotator_acc_pathways.tsv", sep='\t', index=False)
+
 else:
     print("Not an acceptable combination of arguments.")
-
