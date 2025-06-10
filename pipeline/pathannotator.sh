@@ -220,7 +220,7 @@ then
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+			python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
 
 		fi
 
@@ -290,6 +290,14 @@ then
 else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 	echo "These are NOT NCBI protein IDs. Proceeding with KofamScan."
+	#THESE LINES ARE USED TO CREATE THE NCBIVER.TSV FILE USED BY MERGE.PY
+	# WORKS-TAKES FASTA AND CREATES ACCESSION LIST. ACCESSION IS EVERYTHING BEFORE THE FIRST SPACE
+	grep ">" $2 > $3/deflines.tmp
+	sed -i 's/>//g' $3/deflines.tmp
+	sed -i 's/\s.*$//' $3/deflines.tmp
+	# ADD A TWO COLUMN FILE OR ASSOC ARRAY OF WITH AND WITHOUT VERSION HERE THAT CAN BE USED TO MERGE LATER
+	awk 'BEGIN {OFS="\t"} {print $1, $1}' $3/deflines.tmp > $3/ncbiversion.tmp
+	awk 'BEGIN {OFS="\t"} { sub(/\.[0-9]+/, "", $2) }1' $3/ncbiversion.tmp > $3/ncbiver.tsv
 
 	if grep -q $1 $3/kegg_org_codes.txt;
 	then
