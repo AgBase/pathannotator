@@ -2,8 +2,6 @@
 
 #CHECK FOR OUTDIR. IF IT DOESN'T EXIST CREATE IT
 if [ ! -d "$3" ]; then mkdir "$3"; fi
-
-if [ ! -d "$3" ]; then mkdir "$3"; fi
 if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
 if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
 if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
@@ -105,6 +103,15 @@ then
 		echo "This is a KEGG species code. Pulling KEGG API data now."
 		bash /usr/bin/pull_data.sh $1 no $3 ncbi $4
 
+		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
+		if [[ -s "$3/link_ko_pathway.tsv" && -s "$3/conv_ncbi-proteinid_"$1".tsv" && -s "$3/list_pathway.tsv" && -s "$3/link_pathway_"$1".tsv" && -s "$3/list_pathway_"$1".tsv" && -s "$3/link_"$1"_ko.tsv" ]]
+		then
+    			echo "All KEGG files exist and are not empty."
+		else
+    			echo "One or more of the specified files are empty or do not exist."
+			exit
+		fi
+
 		#NEED TO COMPARE DEFLINES.TMP TO SPECIFIED SPECIES CODE AND DECIDE IF THEY ARE THE SAME SPECIES
 		echo "${defarray[0]}"
 		if grep -q "${defarray[0]}" $3/conv_ncbi-proteinid_"$1".tsv; #TESTING IF INPUT IDS ARE THE SAME SPECIES AS THE KEGG CODE
@@ -116,7 +123,16 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				mkdir $3/orthofinder
+				#mkdir $3/orthofinder
+
+				#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
+				if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+				then
+    					echo "All FlyBase files exist and are not empty."
+				else
+    					echo "One or more of the specified files are empty or do not exist."
+					exit
+				fi
 
 				ext="*.faa"
 				if [[ $2 == $ext ]];
@@ -176,11 +192,20 @@ then
 	        	awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        	sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-			#IF FB AND NOT DME RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
+			#IF FB AND NOT DME RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				mkdir $3/orthofinder
+				#mkdir $3/orthofinder
+
+				#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
+				if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+				then
+    					echo "All FlyBase files exist and are not empty."
+				else
+    					echo "One or more of the specified files are empty or do not exist."
+					exit
+				fi
 
 				ext="*.faa"
 				if [[ $2 == $ext ]];
@@ -230,6 +255,15 @@ then
 		echo "Pulling KEGG API data."
 		bash /usr/bin/pull_data.sh $1 yes $3 ncbi $4
 
+		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
+		if [[ -s "$3/link_ko_pathway.tsv" && -s "$3/list_pathway.tsv" ]]
+		then
+    			echo "All KEGG files exist and are not empty."
+		else
+    			echo "One or more of the specified files are empty or do not exist."
+			exit
+		fi
+
 		#RUN KOFAMSCAN
 		echo "This is not a KEGG species code. Running KofamScan now."
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
@@ -240,11 +274,21 @@ then
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-		#IF FB AND NOT DME RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
+		#IF FB AND NOT DME RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 		then
 			echo "Performing Flybase annotation".
-			mkdir $3/orthofinder
+			#mkdir $3/orthofinder
+
+			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
+			if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+			then
+				echo "All FlyBase files exist and are not empty."
+			else
+				echo "One or more of the specified files are empty or do not exist."
+				exit
+			fi
+
 
 			ext="*.faa"
 			if [[ $2 == $ext ]];
@@ -307,6 +351,16 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		echo "Pulling KEGG API data."
 		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
 
+		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
+		if [[ -s "$3/link_ko_pathway.tsv" && -s "$3/list_pathway.tsv" && -s "$3/link_pathway_"$1".tsv" && -s "$3/list_pathway_"$1".tsv" && -s "$3/link_"$1"_ko.tsv" ]]
+		then
+    			echo "All KEGG files exist and are not empty."
+		else
+    			echo "One or more of the specified files are empty or do not exist."
+			exit
+		fi
+
+
 		#RUN KOFAM HERE
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
@@ -316,11 +370,20 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-		#IF FB RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
+		#IF FB RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			mkdir $3/orthofinder
+			#mkdir $3/orthofinder
+
+			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
+			if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+			then
+				echo "All FlyBase files exist and are not empty."
+			else
+				echo "One or more of the specified files are empty or do not exist."
+				exit
+			fi
 
 			ext="*.faa"
 			if [[ $2 == $ext ]];
@@ -369,6 +432,15 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		echo "Pulling KEGG API data."
 		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
 
+		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
+		if [[ -s "$3/link_ko_pathway.tsv" && -s "$3/list_pathway.tsv" ]]
+		then
+    			echo "All KEGG files exist and are not empty."
+		else
+    			echo "One or more of the specified files are empty or do not exist."
+			exit
+		fi
+
 		#RUN KOFAM HERE
 		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
 
@@ -378,11 +450,20 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
 	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
 
-		#IF FB RUN DIAMOND AND PROCEED TO MERGE (INCLUDING FLYBASE)
+		#IF FB RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			mkdir $3/orthofinder
+			#mkdir $3/orthofinder
+
+			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
+			if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+			then
+    				echo "All FlyBase files exist and are not empty."
+			else
+    				echo "One or more of the specified files are empty or do not exist."
+				exit
+			fi
 
 			ext="*.faa"
 			if [[ $2 == $ext ]];
