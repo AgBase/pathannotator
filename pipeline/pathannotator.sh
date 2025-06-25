@@ -123,7 +123,7 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				#mkdir $3/orthofinder
+				mkdir $3/orthofinder
 
 				#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
 				if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
@@ -196,7 +196,7 @@ then
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				#mkdir $3/orthofinder
+				mkdir $3/orthofinder
 
 				#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
 				if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
@@ -278,7 +278,7 @@ then
 		if [ "$1" != "dme" ] && [ "$4" == "FB" ];
 		then
 			echo "Performing Flybase annotation".
-			#mkdir $3/orthofinder
+			mkdir $3/orthofinder
 
 			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
 			if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
@@ -374,7 +374,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			#mkdir $3/orthofinder
+			mkdir $3/orthofinder
 
 			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
 			if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
@@ -454,7 +454,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		if [ "$4" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			#mkdir $3/orthofinder
+			mkdir $3/orthofinder
 
 			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
 			if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
