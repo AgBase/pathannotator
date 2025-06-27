@@ -16,7 +16,7 @@ cp /AGAT/agat_config.yaml .
 #PULL FB GENOME FASTA AND GFF
 wget https://s3ftp.flybase.org/genomes/Drosophila_melanogaster/current/gff/dmel-all-r6.63.gff.gz -O dmel-all-r6.63.gff.gz
 wget https://s3ftp.flybase.org/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.63.fasta.gz -O dmel-all-chromosome-r6.63.fasta.gz
-wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_02.tsv.gz
+wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_02.tsv.gz -O fbgn_fbtr_fbpp_fb_2025_02.tsv.gz
 gunzip -f dmel-all-r6.63.gff.gz
 gunzip -f dmel-all-chromosome-r6.63.fasta.gz
 gunzip -f fbgn_fbtr_fbpp_fb_2025_02.tsv.gz
