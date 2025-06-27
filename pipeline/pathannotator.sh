@@ -525,7 +525,7 @@ if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
 if [ -d "$3"/orthofinder/ref_set ]; then rm -r "$3"/orthofinder/ref_set; fi
 if [ -f "$3"/orthofinder/*_cluster.fa* ]; then rm -r "$3"/orthofinder/*_cluster.fa*; fi
 if [ -f "$3"/ncbiversion.tmp ]; then rm "$3"/ncbiversion.tmp; fi
-if [ -f "$3"/ncbiver.tmp ]; then rm "$3"/ncbive.tmp*; fi
+if [ -f "$3"/ncbiver.tsv ]; then rm "$3"/ncbiver.tsv; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
