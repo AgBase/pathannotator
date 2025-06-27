@@ -101,19 +101,19 @@ if kofam == "no" and species != "NA":
         fbgn_CG_path_ncbi_ver_spec_ko.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
         fbgn_CG_path_ncbi_ver_spec_ko.to_csv(f"{outdir}/{species}_flybase.tsv", sep='\t', index=False)
     #MERGE FOR AGGREGATED OUTPUTS
-        fbpath = fbgn_CG_path_ncbi_ver_spec_ko[["Input_protein_ID","Flybase_pathway_ID"]] #MAKE A SUBSET WITH TWO COLS
-        fbpath.columns = ['Input_protein_ID','pathway'] #NAME THE TWO COLS SO THAT THEY ARE THE SAME AS THE KEGG DFS
-        fbpath.loc[:, 'pathway'] = 'Flybase:' + fbpath['pathway'].astype(str) #ADD FLYBASE: TO THE BEGINNING OF EACH PATHWAY NAME
-        accfbpath = fbpath.groupby('Input_protein_ID')['pathway'].agg(list).reset_index() #MAKE A SINGLE ID WITH A LIST OF PATHWAYS
-        annfbpath = fbpath.groupby('pathway')['Input_protein_ID'].agg(list).reset_index() #MAKE A PATHWAY WITH A LIST OF IDS
-        acckeggfb = pd.merge(acckegg, accfbpath, on='Input_protein_ID', how='outer') #MERGE KEGG AND FLYBASE BY ID
-        annkeggfb = pd.merge(annkegg, annfbpath, on='pathway', how='outer') #MERGE KEGG AND FLYBASE BY PATHWAY
-        acckeggfb['pathway'] = combine_series_lists(acckeggfb['pathway_x'], acckeggfb['pathway_y']) #COMBINE RESULTING X AND Y PATHWAY COLS INTO ONE COL
-        annkeggfb['Input_protein_ID'] = combine_series_lists(annkeggfb['Input_protein_ID_x'], annkeggfb['Input_protein_ID_y']) #COMBINE RESULTING X AND Y ID COLS INTO ONE COL
-        acckeggfb.drop(['pathway_x', 'pathway_y'], axis=1, inplace=True) #DROP X AND Y PATHWAY COLS
-        annkeggfb.drop(['Input_protein_ID_x', 'Input_protein_ID_y'], axis=1, inplace=True) #DROP X AND Y ID COLUMNS
-        acckeggfb['pathway'] = acckeggfb['pathway'].apply(lambda x: ','.join(map(str, x))) #CONVERT PATHWAY COL FROM LIST BACK TO STR
-        annkeggfb['Input_protein_ID'] = annkeggfb['Input_protein_ID'].apply(lambda x: ','.join(map(str, x))) #CONVERT ID COL FROM LIST BACK TO STR
+        fbpath = fbgn_CG_path_ncbi_ver_spec_ko[["Input_protein_ID","Flybase_pathway_ID"]]
+        fbpath.columns = ['Input_protein_ID','pathway']
+        fbpath.loc[:, 'pathway'] = 'Flybase:' + fbpath['pathway'].astype(str)
+        accfbpath = fbpath.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
+        annfbpath = fbpath.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
+        acckeggfb = pd.merge(acckegg, accfbpath, on='Input_protein_ID', how='outer')
+        annkeggfb = pd.merge(annkegg, annfbpath, on='pathway', how='outer')
+        acckeggfb['pathway'] = combine_series_lists(acckeggfb['pathway_x'], acckeggfb['pathway_y'])
+        annkeggfb['Input_protein_ID'] = combine_series_lists(annkeggfb['Input_protein_ID_x'], annkeggfb['Input_protein_ID_y'])
+        acckeggfb.drop(['pathway_x', 'pathway_y'], axis=1, inplace=True)
+        annkeggfb.drop(['Input_protein_ID_x', 'Input_protein_ID_y'], axis=1, inplace=True)
+        acckeggfb['pathway'] = acckeggfb['pathway'].apply(lambda x: ','.join(map(str, x)))
+        annkeggfb['Input_protein_ID'] = annkeggfb['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
         acckeggfb.to_csv(f"{outdir}/{species}_acc_pathways.tsv", sep='\t', index=False)
         annkeggfb.to_csv(f"{outdir}/{species}_pathways_acc.tsv", sep='\t', index=False)
         exit(0)
@@ -134,9 +134,7 @@ if kofam == "no" and species != "NA":
         fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #SPLIT AND EXPLODE TO EXPAND LISTS IN BOTH COLUMNS
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
-        #fbpp_ortho = fbpp_ortho.explode("Flybase_protein_ID")
         fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(", ")
-        #fbpp_ortho = fbpp_ortho.explode("Input_protein_ID")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
     #MERGE AND OUTPUT TO FILE
@@ -185,11 +183,10 @@ elif kofam == "yes" and species == "NA":
     ncbi_ver_ko = pd.merge(ncbi_ver, ncbi_ko, on='Input_protein_ID', how='inner')
     ncbi_ver_ko_pathway = pd.merge(ncbi_ver_ko, ko_pathway, on='KEGG_KO', how='inner')
     ncbi_ver_ko_pathway_pathname = pd.merge(ncbi_ver_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
-    ncbi_ver_ko_pathway_pathname.insert(0, 'KEGG_genes_ID','NA',allow_duplicates=True)
-    ncbi_ver_ko_pathway_pathname = ncbi_ver_ko_pathway_pathname[['KEGG_genes_ID', 'Input_protein_ID_version', 'Input_protein_ID','KEGG_KO', 'KEGG_ref_pathway', 'KEGG_ref_pathway_name']]
-    ncbi_ver_ko_pathway_pathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
-    ncbi_ver_ko_pathway_pathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
-    ncbi_ver_ko_pathway_pathname.to_csv(f"{outdir}/NA_KEGG_ref.tsv", sep='\t', index=False)
+    ncbi_ver_ko_pathway_pathname = ncbi_ver_ko_pathway_pathname[["Input_protein_ID_version","Input_protein_ID","KEGG_KO","KEGG_ref_pathway","KEGG_ref_pathway_name"]]
+    ncbi_ver_ko_pathway_pathname.drop('Input_protein_ID', axis=1, inplace=True)
+    ncbi_ver_ko_pathway_pathname.rename(columns={"Input_protein_ID_version": "Input_protein_ID"}, inplace=True)
+    ncbi_ver_ko_pathway_pathname.to_csv(f"{outdir}/{species}_KEGG_ref.tsv", sep='\t', index=False)
 #MERGE FOR AGGREGATED OUTPUTS
     keggref = ncbi_ver_ko_pathway_pathname[["Input_protein_ID","KEGG_ref_pathway"]]
     keggref.columns = ['Input_protein_ID','pathway']
@@ -204,18 +201,16 @@ elif kofam == "yes" and species == "NA":
         fbgn_fbpp = pd.read_table(f"{indir}/Fbgn_fbpp.tsv", dtype=str)
     #REMOVE ORTHOGROUP COLUMN
         fbpp_ortho.drop('Orthogroup', axis=1, inplace=True)
-    #SPLIT ID COLUMN IN FBPP_ORTHO INTO ID AND NAME, KEEP NAME
-        fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #ADD HEADERS
         fbgn_path.columns = ['Flybase_pathway_ID', 'Flybase_pathway_name', 'Flybase_gene']
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
         fbpp_ortho.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
+    #SPLIT ID COLUMN IN FBPP_ORTHO INTO ID AND NAME, KEEP NAME
+        fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #SPLIT AND EXPLODE TO EXPAND LISTS IN BOTH COLUMNS
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
-        #fbpp_ortho = fbpp_ortho.explode("Flybase_protein_ID")
         fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(", ")
-        #fbpp_ortho = fbpp_ortho.explode("Input_protein_ID")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
     #MERGE AND OUTPUT TO FILE
@@ -224,11 +219,10 @@ elif kofam == "yes" and species == "NA":
         fbgn_fbpp_ortho_path_CG = pd.merge(fbgn_fbpp_ortho_path, fbgn_CG, on='Flybase_gene', how='inner')
         fbgn_fbpp_ortho_path_CG.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
-        fbgn_fbpp_ortho_path_CG.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
-        fbgn_fbpp_ortho_path_CG.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+        fbgn_fbpp_ortho_path_CG.drop('KEGG_genes_ID', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/Orthofinder_flybase.tsv", sep='\t', index=False)
     #MERGE FOR AGGREGATED OUTPUTS
-        fbpath = fbgn_CG_path_ncbi_ver_spec_ko[["Input_protein_ID","Flybase_pathway_ID"]]
+        fbpath = fbgn_fbpp_ortho_path_CG[["Input_protein_ID","Flybase_pathway_ID"]]
         fbpath.columns = ['Input_protein_ID','pathway']
         fbpath.loc[:, 'pathway'] = 'Flybase:' + fbpath['pathway'].astype(str)
         accfbpath = fbpath.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
@@ -349,9 +343,7 @@ elif kofam == "yes" and species != "NA":
         fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #SPLIT AND EXPLODE TO EXPAND LISTS IN BOTH COLUMNS
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
-        #fbpp_ortho = fbpp_ortho.explode("Flybase_protein_ID")
         fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(", ")
-        #fbpp_ortho = fbpp_ortho.explode("Input_protein_ID")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
     #MERGE AND OUTPUT TO FILE
