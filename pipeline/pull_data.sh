@@ -77,7 +77,7 @@ fi
 if [ "$5" == "FB" ];
 then
 	echo "Pulling Flybase data now."
-	#THIS PULLS THE FLYBASE ANNOTATIONS
+	#THIS IS THE HARDCODED VERSION. IDEALLY WE COULD USE ftp:// AND A WILDCARD BUT THAT DOESN'T WORK WITH CURRENT FB SETUP (HTTPS)
 	wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/metabolic_pathway_group_data_fb_2025_02.tsv.gz -P $3/
 	wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/signaling_pathway_group_data_fb_2025_02.tsv.gz -P $3/
 	gunzip -f $3/signaling_pathway_group_data_fb_2025_02.tsv.gz
@@ -87,37 +87,48 @@ then
 	grep -h -v ^\# $3/metabolic_pathway_group_data_fb_2025_02.tsv >> $3/pathway_group_data_latest.tsv
 	cut -f 1,3,6 $3/pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
 
-	#THIS SHOULD PULL THE CURRENT FILE WITHOUT HAVING TO SPEC A VERSION. IT TIMES OUT--AWAITING FB REPLY
-#	wget ftp://ftp.flybase.net/releases/current/precomputed_files/genes/signaling_pathway_group_data*.gz -P $3/
-#	wget ftp://ftp.flybase.net/releases/current/precomputed_files/genes/metabolic_pathway_group_data*.gz -P $3/
-#	gunzip -f $3/signaling_pathway_group_data_*.gz
-#	gunzip -f $3/metabolic_pathway_group_data_*.gz
-
-#	grep -h -v ^\# $3/signaling_pathway_group_data_* > $3/pathway_group_data_latest.tsv
-#	grep -h -v ^\# $3/metabolic_pathway_group_data_* >> $3/pathway_group_data_latest.tsv
-#	cut -f 1,3,6 $3/pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
-
-
 	wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/fbgn_annotation_ID_fb_2025_02.tsv.gz -P $3
 	gunzip -f $3/fbgn_annotation_ID_fb_2025_02.tsv.gz
 	grep -h -v ^\# $3/fbgn_annotation_ID_fb_2025_02.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
-
-	#THIS SHOULD PULL THE CURRENT FILE WITHOUT HAVING TO SPEC A VERSION. IT TIMES OUT--AWAITING FB REPLY
-#	wget ftp://ftp.flybase.org/releases/current/precomputed_files/genes/fbgn_annotation_ID_fb*.gz -P $3/
-#	gunzip -f $3/fbgn_annotation_ID_fb*.gz
-#	grep -h -v ^\# $3/fbgn_annotation_ID_fb*.gz | cut -f 3,5 > $3/Fbgn_CG.tsv
-#	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
-
 
 	#PULL FBGN TO FBPP FILES
 	wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_02.tsv.gz -P $3/
 	gunzip -f $3/fbgn_fbtr_fbpp_fb_2025_02.tsv.gz
 	grep -v ^\# $3/fbgn_fbtr_fbpp_fb_2025_02.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 
-	#THIS SHOULD PULL THE CURRENT FILE WITHOUT HAVING TO SPEC A VERSION. IT TIMES OUT--AWAITING FB REPLY
-#	wget ftp://ftp.flybase.net/releases/current/precomputed_files/genes/fbgn_fbtr_fbpp_fb*.gz -P $3/
-#	gunzip -f $3/fbgn_fbtr_fbpp_fb_*.gz
-#	grep -v ^\# $3/fbgn_fbtr_fbpp_fb_* | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 
+	#THIS SYSTEM TRIES TO PULL THE FILES BY GUESSING THE CURRENT VERSION INSTEAD OF USING A WILDCARD.
+	#ONE FILE WORKS ONE TIME...THEN IT GETS BLOCKED BY THE SERVER I THINK
+	#styr=2025
+	#endyr=2025
+
+	#for year in $(seq $styr $endyr)
+	#do
+    		#for month in $(seq -w 1 12)
+		#do
+		        #echo "Processing: $year-$month"
+			#THIS PULLS THE FLYBASE ANNOTATIONS
+			#wget -P "$3" https://s3ftp.flybase.org/releases/current/precomputed_files/genes/metabolic_pathway_group_data_fb_"$year"_"$month".tsv.gz
+			#wget -P "$3" https://s3ftp.flybase.org/releases/current/precomputed_files/genes/signaling_pathway_group_data_fb_"$year"_"$month".tsv.gz
+                        #wget -P "$3" https://s3ftp.flybase.org/releases/current/precomputed_files/genes/fbgn_annotation_ID_fb_"$year"_"$month".tsv.gz
+                        #wget -P "$3" https://s3ftp.flybase.org/releases/current/precomputed_files/genes/fbgn_fbtr_fbpp_fb_"$year"_"$month".tsv.gz
+    		#done
+	#done
+	#THIS REMOVES THE EMPTY FILES FROM THE GENERIC DOWNLOADS AND PROCESSES THE REMAINING FILES
+	#find "$3"/ -size 0 -delete
+	#gunzip -f "$3"/signaling_pathway_group_data_fb_"$year"_"$month".tsv.gz
+	#gunzip -f "$3"/metabolic_pathway_group_data_fb_"$year"_"$month".tsv.gz
+	#grep -h -v ^\# $3/signaling_pathway_group_data_fb_"$year"_"$month".tsv > $3/pathway_group_data_latest.tsv
+	#grep -h -v ^\# $3/metabolic_pathway_group_data_fb_"$year"_"$month".tsv >> $3/pathway_group_data_latest.tsv
+	#cut -f 1,3,6 $3/pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
+
+	#gunzip -f $3/fbgn_annotation_ID_fb_"$year"_"$month".tsv.gz
+	#grep -h -v ^\# $3/fbgn_annotation_ID_fb_"$year"_"$month".tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
+	#sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
+
+	#gunzip -f $3/fbgn_fbtr_fbpp_fb_"$year"_"$month".tsv.gz
+	#grep -v ^\# $3/fbgn_fbtr_fbpp_fb_"$year"_"$month".tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 fi
+
+
