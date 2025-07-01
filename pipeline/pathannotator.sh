@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #CHECK FOR OUTDIR. IF IT DOESN'T EXIST CREATE IT
-if [ ! -d "$3" ]; then mkdir "$3"; fi
+if [ ! -d "$3" ]; then mkdir -p "$3"; fi
 if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
 if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
 if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
