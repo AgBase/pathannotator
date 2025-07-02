@@ -1,10 +1,10 @@
 ==========
 **Intro**
 ==========
-- Pathannotator annotates proteins with KEGG and Flybase pathways. It does this through the use of `KofamScan <https://github.com/takaram/kofam_scan>`_, `KEGG API <https://www.kegg.jp/kegg/rest/keggapi.html>`_ and `Flybase <https://flybase.org/>`_.
+- Pathannotator annotates proteins with KEGG and Flybase pathways. It does this through the use of `KofamScan <https://github.com/takaram/kofam_scan>`_, `KEGG API <https://www.kegg.jp/kegg/rest/keggapi.html>`_, `OrthoFinder <https://github.com/davidemms/OrthoFinder?>`_ and `Flybase <https://flybase.org/>`_.
 - KofamScan is a gene functional annotation tool based on KEGG Orthology and hidden Markov model (HMM). It is provided by the KEGG (Kyoto Encyclopedia of Genes and Genomes) project. The online version is available here: https://www.genome.jp/tools/kofamkoala/ .
 - This pipeline pulls annotation directly from the KEGG API when possible. When that isn't possible the pipeline impliments Kofamscan to identify homologous KEGG objects (KO). The pathways annotated to these KEGG objects can then be transfered to the corresponding proteins in your species of interest.
-- If specified, the pipeline will also provide annotations to Flybase pathways. To do this the pipeline uses Diamond to identify homologous *Drosophila melanogaster* proteins for your input proteins. Flybase `metabolic pathway <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/metabolic_pathway_group_data_fb_2024_06.tsv.gz>`_ and `signaling pathway annotations <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/signaling_pathway_group_data_fb_2024_06.tsv.gz>`_ are then transferred to your input proteins from these homologs.
+- If specified, the pipeline will also provide annotations to Flybase pathways. To do this the pipeline uses `OrthoFinder <https://github.com/davidemms/OrthoFinder?>`_to identify homologous *Drosophila melanogaster* proteins for your input proteins. Flybase `metabolic pathway <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/metabolic_pathway_group_data_fb_2024_06.tsv.gz>`_ and `signaling pathway annotations <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/signaling_pathway_group_data_fb_2024_06.tsv.gz>`_ are then transferred to your input proteins from these homologs.
 
 
 **Where to Find Pathannotator**
@@ -75,17 +75,7 @@ On the command line the following help statement can be displayed with 'help'.
         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
         SOFTWARE.
 
-        Flybase annotation is carried out using the Diamond Bioconda package:
-
-        Grüning, Björn, Ryan Dale, Andreas Sjödin, Brad A. Chapman, Jillian Rowe,
-        Christopher H. Tomkins-Tinch, Renan Valieris, the Bioconda Team, 
-        and Johannes Köster. 2018. Bioconda: Sustainable and Comprehensive Software 
-        Distribution for the Life Sciences. Nature Methods, 2018 doi:10.1038/s41592-018-0046-7.
-
-        Buchfink B, Reuter K, Drost HG, "Sensitive protein alignments at tree-of-life scale 
-        using DIAMOND", Nature Methods 18, 366–368 (2021). doi:10.1038/s41592-021-01101-x
-
-
+        Flybase annotation is carried out using OrthoFinder <https://github.com/davidemms/OrthoFinder?>`_.
 
 
 ======================================
@@ -103,17 +93,17 @@ The amount of time it takes to run this tool will vary greatly depending on seve
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
 | Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs | Time to run (minutes) |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|20,571                     | related species    | yes                  | yes                       | 2              | 553                   |
+|20,571                     | related species    | yes                  | yes                       | 2              |        > 12 hrs       |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|20,571                     | related species    | yes                  | no                        | 2              | 544                   |
+|20,571                     | related species    | yes                  | no                        | 2              |         533           |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|20,571                     | related species    | yes                  | yes                       | 12             | 190                   |
+|20,571                     | related species    | yes                  | yes                       | 12             |        192            |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|20,571                     | related species    | yes                  | no                        | 12             | 132                   |
+|20,571                     | related species    | yes                  | no                        | 12             |         86            |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|20,571                     | related species    | yes                  | yes                       | 48             | 27                    |
+|20,571                     | related species    | yes                  | yes                       | 48             |        95             |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|20,571                     | related species    | yes                  | no                        | 48             | 26                    |
+|20,571                     | related species    | yes                  | no                        | 48             |         25            |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
 
 
@@ -121,17 +111,17 @@ The amount of time it takes to run this tool will vary greatly depending on seve
 +---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
 | Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs| Time to run (minutes) |
 +---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
-|   22,272                  | same species       |  yes                 | yes                       | 2             | 1                     |
+|   22,272                  | same species       |  yes                 | yes                       | 2             |       428             |
 +---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
-|   22,272                  | same species       |  yes                 | no                        | 2             | < 1                   |
+|   22,272                  | same species       |  yes                 | no                        | 2             |         < 1           |
 +---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
-|   22,272                  | same species       |  yes                 | yes                       | 12            | < 1                   |
+|   22,272                  | same species       |  yes                 | yes                       | 12            |         96            |
 +---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
-|   22,272                  | same species       |  yes                 | no                        | 12            | < 1                   |
+|   22,272                  | same species       |  yes                 | no                        | 12            |        < 1            |
 +---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
-|   22,272                  | same species       |  yes                 | yes                       | 48            | < 1                   |
+|   22,272                  | same species       |  yes                 | yes                       | 48            |         62            |
 +---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
-|   22,272                  | same species       |  yes                 | no                        | 48            | < 1                   |
+|   22,272                  | same species       |  yes                 | no                        | 48            |          < 1          |
 +---------------------------+--------------------+----------------------+---------------------------+---------------+-----------------------+
 
 
@@ -139,17 +129,17 @@ The amount of time it takes to run this tool will vary greatly depending on seve
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
 | Number of input sequences | KEGG species code  | NCBI RefSeq protein  | Inlude Flybase annotation | Number of CPUs | Time to run (minutes) |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|  18,330                   | related species    | no                   | yes                       | 2              |  299                  |
+|  18,330                   | related species    | no                   | yes                       | 2              |       >12hrs          |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|  18,330                   | related species    | no                   | no                        | 2              |  299                  |
+|  18,330                   | related species    | no                   | no                        | 2              |       199             |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|  18,330                   | related species    | no                   | yes                       | 12             |  48                   |
+|  18,330                   | related species    | no                   | yes                       | 12             |       142             |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|  18,330                   | related species    | no                   | no                        | 12             |  48                   |
+|  18,330                   | related species    | no                   | no                        | 12             |        32             |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|  18,330                   | related species    | no                   | yes                       | 48             |  15                   |
+|  18,330                   | related species    | no                   | yes                       | 48             |        48             |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
-|  18,330                   | related species    | no                   | no                        | 48             |  14                   |
+|  18,330                   | related species    | no                   | no                        | 48             |        10             |
 +---------------------------+--------------------+----------------------+---------------------------+----------------+-----------------------+
 
 
@@ -187,13 +177,13 @@ The container can be pulled with this command:
 
 .. code-block:: bash
 
-    docker pull agbase/pathannotator:2.0
+    docker pull agbase/pathannotator:3.0
 
 .. admonition:: Remember
 
     You must have root permissions or use sudo, like so:
 
-    sudo docker pull agbase/pathannotator:2.0
+    sudo docker pull agbase/pathannotator:3.0
 
 
 
@@ -203,7 +193,7 @@ The container can be pulled with this command:
 
 .. code-block:: bash
 
-    sudo docker run --rm agbase/pathannotator:2.0 help
+    sudo docker run --rm agbase/pathannotator:3.0 help
 
 
 **TIP:**
@@ -222,7 +212,7 @@ The container can be pulled with this command:
     --rm \
     -v /path/to/your/input/files:/workdir \
     -v /path/to/kofam/databases/:/data \
-    agbase/pathannotator:2.0 \
+    agbase/pathannotator:3.0 \
     tca \
     GCF_031307605.1_icTriCast1.1_protein.faa \
     out_dir \
@@ -239,13 +229,13 @@ The container can be pulled with this command:
 
 **-v /path/to/kofam/databases/:/data:** mounts the directory with the Kofam database files (or where you want them to be stored) on the host machine to '/data' inside the container
 
-**agbase/pathannotator:2.0:** the name of the Docker image to use
+**agbase/pathannotator:3.0:** the name of the Docker image to use
 
 .. tip::
 
     All the options supplied after the image name are Pathannotator options
 
-**tca:** KEGG species code for Tribolium casteneum. Can be found here: https://www.genome.jp/brite/br08611 . If your species doesn't have a code choose a closely related species.
+**tca:** KEGG species code for Tribolium casteneum. Can be found here: https://www.genome.jp/brite/br08611 . If your species doesn't have a code choose a closely related species or 'NA'.
 
 **GCF_031307605.1_icTriCast1.1_protein.faa:** input file (protein FASTA, no header lines).
 
@@ -284,14 +274,14 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
     #SBATCH --job-name=pathannot
     #SBATCH --ntasks=8
     #SBATCH --time=2:00:00
-    #SBATCH --partition=short
+    #SBATCH --partition=ceres
     #SBATCH --account=nal_genomics
 
     module load apptainer
 
     cd /location/where/you/want/to/save/image/file
 
-    apptainer pull docker://agbase/pathannotator:2.0
+    apptainer pull docker://agbase/pathannotator:3.0
 
 
 **Running Pathannotator with Data**
@@ -313,7 +303,7 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
     #SBATCH --ntasks=48
     #SBATCH --time=12:00:00
     #SBATCH --nodes=1
-    #SBATCH --partition=short
+    #SBATCH --partition=ceres
     #SBATCH --account=nal_genomics
 
     module load apptainer
@@ -323,7 +313,7 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
     singularity run \
     -B /directory/you/want/to/work/in:/workdir \
     -B /directory/with/kofam/database/files:/data \
-    /path/with/image/file/pathannotator_2.0.sif \
+    /path/with/image/file/pathannotator_3.0.sif \
     tca \
     GCF_031307605.1_icTriCast1.1_protein.faa \
     out_dir \
@@ -340,13 +330,13 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
 
 **-B /directory/with/kofam/database/files:/data:** mounts the directory with the kofam database file (or where you want them stored) on the host machine to '/data' in the container
 
-**/path/with/image/file/pathannotator_2.0.sif:** the name of the Apptainer image to use
+**/path/with/image/file/pathannotator_3.0.sif:** the name of the Apptainer image to use
 
 .. tip::
 
     All the options supplied after the image name are Pathannotator options
 
-**tca:** KEGG species code for Tribolium casteneum. Can be found here: https://www.genome.jp/brite/br08611 . If you species doesn't have a code choose a closely related species.
+**tca:** KEGG species code for Tribolium casteneum. Can be found here: https://www.genome.jp/brite/br08611 . If you species doesn't have a code choose a closely related species or 'NA'.
 
 **GCF_031307605.1_icTriCast1.1_protein.faa:** input file (protein FASTA, no header lines)
 
@@ -371,57 +361,79 @@ The output files you can expect will differ depending on the circumstances of yo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 - **tca_KEGG_species.tsv:** These are KEGG's annotations of the NCBI-RefSeq proteins to the species-specific KEGG pathways. The filename will begin with the KEGG species code. The pathway identifiers will begin the KEGG species code. Note that for species-specific pathways, KEGG internally filters associations between the KO (KEGG Orthology) accession and the reference pathway. 
 
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |KEGG_genes_ID      |Input_protein_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |100141520          |XP_001813251        |K01540                |tca04820              |Cytoskeleton in muscle cells - Tribolium castaneum (red flour beetle) |
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |100141523          |XP_001812480        |K02268                |tca00190              |Oxidative phosphorylation - Tribolium castaneum (red flour beetle)    |
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |100141526          |XP_008195997        |K04676                |tca04350              |TGF-beta signaling pathway - Tribolium castaneum (red flour beetle)   |
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    |Input_protein_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    |XP_001813251.1      |K01540                |tca04820              |Cytoskeleton in muscle cells - Tribolium castaneum (red flour beetle) |
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    |XP_001812480.1      |K02268                |tca00190              |Oxidative phosphorylation - Tribolium castaneum (red flour beetle)    |
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    |XP_008195997.1      |K04676                |tca04350              |TGF-beta signaling pathway - Tribolium castaneum (red flour beetle)   |
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
 
 
 
 - **tca_KEGG_ref.tsv:** These are KEGG's annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'. You should expect more pathway annotations per protein than for the species-specific pathway.
 
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |KEGG_genes_ID   |  Input_protein_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |100141516       |  XP_015835225     |  K26207   |  map04024           |    cAMP signaling pathway                 |
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |100141516       |  XP_015835225     |  K26207   |  map04261           |    Adrenergic signaling in cardiomyocytes |
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |100141520       |  XP_001813251     |  K01540   |  map04022           |    cGMP-PKG signaling pathway             |
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
+    +-------------------+-----------+---------------------+-------------------------------------------+
+    |  Input_protein_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
+    +-------------------+-----------+---------------------+-------------------------------------------+
+    |  XP_015835225.1   |  K26207   |  map04024           |    cAMP signaling pathway                 |
+    +-------------------+-----------+---------------------+-------------------------------------------+
+    |  XP_015835225.1   |  K26207   |  map04261           |    Adrenergic signaling in cardiomyocytes |
+    +-------------------+-----------+---------------------+-------------------------------------------+
+    |  XP_001813251.1   |  K01540   |  map04022           |    cGMP-PKG signaling pathway             |
+    +-------------------+-----------+---------------------+-------------------------------------------+
+
+
+- **tca_acc_pathways.tsv:** This file contains the aggregation of all pathway annotations for each input identifier.
+
+    +-----------------+-----------------------------------------------------------------------+
+    |Input_protein_ID | pathway                                                               |
+    +-----------------+-----------------------------------------------------------------------+
+    |NP_001034488.1   | KEGG:map04013,KEGG:tca04013,Flybase:FBgg0000956,Flybase:FBgg0000950   |
+    +-----------------+-----------------------------------------------------------------------+
+    |NP_001034489.1   | KEGG:map04391,KEGG:tca04391                                           |
+    +-----------------+-----------------------------------------------------------------------+
+
+
+- **tca_pathways_acc.tsv:** This file contains the aggregation of all input identifiers annotated to each of the pathways.
+
+    +---------------------+-----------------------------------------------------------------------------------+
+    |pathway              |Input_protein_ID                                                                   |
+    +---------------------+-----------------------------------------------------------------------------------+
+    |Flybase:FBgg0000881  | XP_008196394.1,XP_008194025.1,XP_001807060.1,XP_015839080.1                       |
+    +---------------------+-----------------------------------------------------------------------------------+
+    |KEGG:tca03273        | XP_008192998.2,XP_009105448.1,XP_008196990.1                                      |
+    +---------------------+-----------------------------------------------------------------------------------+
+
+
+- **OrthoFinder_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |NP_001034540.1   |FBpp0077451        |FBgg0001085        |BMP Signaling Pathway Core Components                  |
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |NP_001034503.2   |FBpp0084690        |FBgg0000904        |Insulin-like Receptor Signaling Pathway Core Components|
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |NP_001034492.1   |FBpp0078442        |FBgg0002045        |CHITIN BIOSYNTHESIS                                    |
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
 
 
 
-- **Diamond_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+- **dme_flybase.tsv:** This is an alternative to 'OrthoFinder_flybase.tsv' if you are annotating Drosophila melanogaster.
 
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
-    | KEGG_genes_ID   |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
-    | CG9885          |NP_001034540.1   |FBpp0077451        |FBgg0001085        |BMP Signaling Pathway Core Components                  |
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
-    |CG10002          |NP_001034503.2   |FBpp0084690        |FBgg0000904        |Insulin-like Receptor Signaling Pathway Core Components|
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
-    |CG2666           |NP_001034492.1   |FBpp0078442        |FBgg0002045        |CHITIN BIOSYNTHESIS                                    |
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
+    | Input_protein_ID         | KEGG_KO         | Flybase_pathway_ID          | Flybase_pathway_name                       |
+    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
+    | NP_001034490.1           | K04491          | FBgg0000890                 | Wnt-TCF Signaling Pathway Core Components  |
+    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
+    | NP_001034491.1           | K00698          | FBgg0002045                 | CHITIN BIOSYNTHESIS                        |
+    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
+    | NP_001034491.1           | K00698          | FBgg0002045                 | CHITIN BIOSYNTHESIS                        |
+    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
 
-
-
-- **dme_flybase.tsv:** This is an alternative to 'Diamond_flybase.tsv' if you are annotating Drosophila melanogaster.
-
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
-    |KEGG_genes_ID       |Input_protein_ID         |KEGG_KO         |Flybase_pathway_ID          |Flybase_pathway_name                     |
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------
-    |CG34403             |NP_001034490             |K04491          |FBgg0000890                 |Wnt-TCF Signaling Pathway Core Components|
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
-    |CG2666              |NP_001034491             |K00698          |FBgg0002045                 |CHITIN BIOSYNTHESIS                      |
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
-    |CG7464              |NP_001034491             |K00698          |FBgg0002045                 |CHITIN BIOSYNTHESIS                      |
-    +--------------------+-------------------------+----------------+----------------------------+-----------------------------------------+
 
 
 **KEGG code for a related species**
@@ -435,51 +447,73 @@ The output files you can expect will differ depending on the circumstances of yo
     +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
     |# gene name        |   KO            |thrshld          |score                |E-value              |KO definition      |
     +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
-    |NP_001034280.2     | K10180          |417.47           | 374.4               |1.2e-113             |T-box protein 6    |
+    | NP_001034280.2    | K10180          |417.47           | 374.4               |1.2e-113             |T-box protein 6    |
     +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
     | NP_001034280.2    | K10177          |886.07           |309.5                |7.2e-94              |T-box protein 3    |
     +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
-    |  NP_001034280.2   |   K10176        |750.77           |300.4                |4.6e-91              |T-box protein 2    |
+    | NP_001034280.2    | K10176          |750.77           |300.4                |4.6e-91              |T-box protein 2    |
     +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
 
 
-- **tca_KEGG_species.tsv:** These are annotations to the species-specific KEGG pathway. The pathway identifiers will begin the KEGG species code.
+- **tca_KEGG_species.tsv:** These are annotations to the species-specific KEGG pathway. The pathway identifiers will begin with the KEGG species code.
 
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |KEGG_genes_ID      |Input_protein_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |100141520          |XP_001813251        |K01540                |tca04820              |Cytoskeleton in muscle cells - Tribolium castaneum (red flour beetle) |
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |100141523          |XP_001812480        |K02268                |tca00190              |Oxidative phosphorylation - Tribolium castaneum (red flour beetle)    |
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
-    |100141526          |XP_008195997        |K04676                |tca04350              |TGF-beta signaling pathway - Tribolium castaneum (red flour beetle)   |
-    +-------------------+--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    |Input_protein_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    |XP_001813251.1      |K01540                |tca04820              |Cytoskeleton in muscle cells - Tribolium castaneum (red flour beetle) |
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    |XP_001812480.1      |K02268                |tca00190              |Oxidative phosphorylation - Tribolium castaneum (red flour beetle)    |
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
+    |XP_008195997.1      |K04676                |tca04350              |TGF-beta signaling pathway - Tribolium castaneum (red flour beetle)   |
+    +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
 
 
 - **tca_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'.
 
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |KEGG_genes_ID   |  Input_protein_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |100141516       |  XP_015835225     |  K26207   |  map04024           |    cAMP signaling pathway                 |
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |100141516       |  XP_015835225     |  K26207   |  map04261           |    Adrenergic signaling in cardiomyocytes |
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
-    |100141520       |  XP_001813251     |  K01540   |  map04022           |    cGMP-PKG signaling pathway             |
-    +----------------+-------------------+-----------+---------------------+-------------------------------------------+
+    +-------------------+-----------+---------------------+-------------------------------------------+
+    |  Input_protein_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
+    +-------------------+-----------+---------------------+-------------------------------------------+
+    |  XP_015835225.1   |  K26207   |  map04024           |    cAMP signaling pathway                 |
+    +-------------------+-----------+---------------------+-------------------------------------------+
+    |  XP_015835225.1   |  K26207   |  map04261           |    Adrenergic signaling in cardiomyocytes |
+    +-------------------+-----------+---------------------+-------------------------------------------+
+    |  XP_001813251.1   |  K01540   |  map04022           |    cGMP-PKG signaling pathway             |
+    +-------------------+-----------+---------------------+-------------------------------------------+
 
 
-- **Diamond_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+- **tca_acc_pathways.tsv:** This file contains the aggregation of all pathway annotations for each input identifier.
 
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
-    | KEGG_genes_ID   |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
-    | CG9885          |NP_001034540.1   |FBpp0077451        |FBgg0001085        |BMP Signaling Pathway Core Components                  |
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
-    |CG10002          |NP_001034503.2   |FBpp0084690        |FBgg0000904        |Insulin-like Receptor Signaling Pathway Core Components|
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
-    |CG2666           |NP_001034492.1   |FBpp0078442        |FBgg0002045        |CHITIN BIOSYNTHESIS                                    |
-    +-----------------+-----------------+-------------------+-------------------+-------------------------------------------------------+
+    +-----------------+-----------------------------------------------------------------------+
+    |Input_protein_ID | pathway                                                               |
+    +-----------------+-----------------------------------------------------------------------+
+    | XP044222590.1   | KEGG:map04141,KEGG:tca04141                                           |
+    +-----------------+-----------------------------------------------------------------------+
+    | XP_044252330.1  | KEGG:map04919,Flybase:FBgg0000892                                           |
+    +-----------------+-----------------------------------------------------------------------+
+
+
+- **tca_pathways_acc.tsv:** This file contains the aggregation of all input identifiers annotated to each of the pathways.
+
+    +---------------------+-----------------------------------------------------------------------------------+
+    |pathway              |Input_protein_ID                                                                   |
+    +---------------------+-----------------------------------------------------------------------------------+
+    |Flybase:FBgg0000918  | XP044254039.1,XP_044272825.1                                                      |
+    +---------------------+-----------------------------------------------------------------------------------+
+    |KEGG:tca00780        | XP_044253000.1,XP_044261349.1,XP_044272235.1                                      |
+    +---------------------+-----------------------------------------------------------------------------------+
+
+
+- **OrthoFinder_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |NP_001034540.1   |FBpp0077451        |FBgg0001085        |BMP Signaling Pathway Core Components                  |
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |NP_001034503.2   |FBpp0084690        |FBgg0000904        |Insulin-like Receptor Signaling Pathway Core Components|
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
+    |NP_001034492.1   |FBpp0078442        |FBgg0002045        |CHITIN BIOSYNTHESIS                                    |
+    +-----------------+-------------------+-------------------+-------------------------------------------------------+
 
 
 
@@ -505,30 +539,51 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
 
 - **NA_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers wil begin with 'map'.
 
-    +------------------+---------------------+-----------------------+----------------------+------------------------------+
-    |KEGG_genes_ID     |Input_protein_ID     |  KEGG_KO              |KEGG_ref_pathway      | KEGG_ref_pathway_name        |
-    +------------------+---------------------+-----------------------+----------------------+------------------------------+
-    |NA                |NP_001034489         |K16672                 |map04391              |Hippo signaling pathway - fly |
-    +------------------+---------------------+-----------------------+----------------------+------------------------------+
-    |NA                |NP_001034490         |K04491                 |map04310              |Wnt signaling pathway         |
-    +------------------+---------------------+-----------------------+----------------------+------------------------------+
-    |NA                |NP_001034490         |K04491                 |map04390              |Hippo signaling pathway       |
-    +------------------+---------------------+-----------------------+----------------------+------------------------------+
+    +---------------------+-----------------------+----------------------+------------------------------+
+    |Input_protein_ID     |  KEGG_KO              |KEGG_ref_pathway      | KEGG_ref_pathway_name        |
+    +---------------------+-----------------------+----------------------+------------------------------+
+    |NP_001034489.1       |K16672                 |map04391              |Hippo signaling pathway - fly |
+    +---------------------+-----------------------+----------------------+------------------------------+
+    |NP_001034490.1       |K04491                 |map04310              |Wnt signaling pathway         |
+    +---------------------+-----------------------+----------------------+------------------------------+
+    |NP_001034490.1       |K04491                 |map04390              |Hippo signaling pathway       |
+    +---------------------+-----------------------+----------------------+------------------------------+
+
+- **tca_acc_pathways.tsv:** This file contains the aggregation of all pathway annotations for each input identifier.
+
+    +-----------------+-----------------------------------------------------------------------+
+    |Input_protein_ID | pathway                                                               |
+    +-----------------+-----------------------------------------------------------------------+
+    |NP_001034488.1   | KEGG:map04013,KEGG:tca04013,Flybase:FBgg0000956,Flybase:FBgg0000950   |
+    +-----------------+-----------------------------------------------------------------------+
+    |NP_001034489.1   | KEGG:map04391,KEGG:tca04391                                           |
+    +-----------------+-----------------------------------------------------------------------+
 
 
-- **Diamond_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+- **tca_pathways_acc.tsv:** This file contains the aggregation of all input identifiers annotated to each of the pathways.
 
-    +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
-    |KEGG_genes_ID    |Input_protein_ID          |Flybase_protein_ID     |Flybase_pathway_ID       |Flybase_pathway_name                                    |
-    +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
-    |CG9885           |NP_001034540.1            |FBpp0077451            |FBgg0001085              |BMP Signaling Pathway Core Components                   |
-    +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
-    |CG10002          |NP_001034503.2            |FBpp0084690            |FBgg0000904              |Insulin-like Receptor Signaling Pathway Core Components |
-    +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
-    |CG2666           |NP_001034492.1            |FBpp0078442            |FBgg0002045              |CHITIN BIOSYNTHESIS                                     |
-    +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
-    |CG2666           |NP_001034491.1            |FBpp0290640            |FBgg0002045              |CHITIN BIOSYNTHESIS                                     |
-    +-----------------+--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
+    +---------------------+-----------------------------------------------------------------------------------+
+    |pathway              |Input_protein_ID                                                                   |
+    +---------------------+-----------------------------------------------------------------------------------+
+    |Flybase:FBgg0000881  | XP_008196394.1,XP_008194025.1,XP_001807060.1,XP_015839080.1                       |
+    +---------------------+-----------------------------------------------------------------------------------+
+    |KEGG:tca03273        | XP_008192998.2,XP_009105448.1,XP_008196990.1                                      |
+    +---------------------+-----------------------------------------------------------------------------------+
+
+
+- **OrthoFinder_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+
+    +--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
+    |Input_protein_ID          |Flybase_protein_ID     |Flybase_pathway_ID       |Flybase_pathway_name                                    |
+    +--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
+    |NP_001034540.1            |FBpp0077451            |FBgg0001085              |BMP Signaling Pathway Core Components                   |
+    +--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
+    |NP_001034503.2            |FBpp0084690            |FBgg0000904              |Insulin-like Receptor Signaling Pathway Core Components |
+    +--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
+    |NP_001034492.1            |FBpp0078442            |FBgg0002045              |CHITIN BIOSYNTHESIS                                     |
+    +--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
+    |NP_001034491.1            |FBpp0290640            |FBgg0002045              |CHITIN BIOSYNTHESIS                                     |
+    +--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
 
 
 `Contact us <agbase@email.arizona.edu>`_
