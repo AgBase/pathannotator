@@ -189,7 +189,7 @@ then
 			echo "Filtering KofamScan results"
 			grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
 	        	awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
-	        	sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
+	        	sed -i 's/\..*$//' $3/ko_ncbi.tsv
 
 			#IF FB AND NOT 'DME' RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
@@ -270,7 +270,7 @@ then
 		echo "Filtering KofamScan results"
 		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
-	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
+	        sed -i 's/\..*$//' $3/ko_ncbi.tsv
 
 		#IF FB AND NOT 'DME' RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$1" != "dme" ] && [ "$4" == "FB" ];
@@ -364,7 +364,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		echo "Filtering KofamScan results"
 		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
-	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
+	        sed -i 's/\..*$//' $3/ko_ncbi.tsv
 
 		#IF FB RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$4" == FB ];
@@ -443,7 +443,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		echo "Filtering KofamScan results"
 		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
 	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
-	        sed -i 's/.[0-9]$//' $3/ko_ncbi.tsv
+	        sed -i 's/\..*$//' $3/ko_ncbi.tsv
 
 		#IF FB RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$4" == FB ];
@@ -512,6 +512,7 @@ if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
 if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
 if [ -f "$3"/pathway_group_data_latest.tsv ]; then rm $3/pathway_group_data_latest.tsv; fi
 if [ -f "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
+if [ -f "$3"/kofam_result_full.txt ]; then rm "$3"/kofam_result_full.txt; fi
 if [ -f "$3"/kegg_organisms.txt ]; then rm "$3"/kegg_organisms.txt; fi
 if [ -f "$3"/kegg_org_codes.txt ]; then rm "$3"/kegg_org_codes.txt; fi
 if [ -f "$3"/kegg_orgs_with_codes.txt ]; then rm "$3"/kegg_orgs_with_codes.txt; fi
@@ -522,8 +523,9 @@ if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_f
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-if [ -d "$3"/orthofinder/ref_set ]; then rm -r "$3"/orthofinder/ref_set; fi
-if [ -f "$3"/orthofinder/*_cluster.fa* ]; then rm -r "$3"/orthofinder/*_cluster.fa*; fi
+#if [ -d "$3"/orthofinder/ref_set ]; then rm -r "$3"/orthofinder/ref_set; fi
+#if [ -f "$3"/orthofinder/*_cluster.fa* ]; then rm -r "$3"/orthofinder/*_cluster.fa*; fi
+if [ -d "$3"/orthofinder/ ]; then rm -r "$3"/orthofinder/; fi
 if [ -f "$3"/ncbiversion.tmp ]; then rm "$3"/ncbiversion.tmp; fi
 if [ -f "$3"/ncbiver.tsv ]; then rm "$3"/ncbiver.tsv; fi
 

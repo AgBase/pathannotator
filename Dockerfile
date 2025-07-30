@@ -83,7 +83,7 @@ WORKDIR /usr/bin
 
 RUN git clone https://github.com/takaram/kofam_scan.git
 
-RUN wget http://github.com/bbuchfink/diamond/releases/download/v2.1.11/diamond-linux64.tar.gz && tar xzf diamond-linux64.tar.gz
+RUN wget http://github.com/bbuchfink/diamond/releases/download/v2.1.13/diamond-linux64.tar.gz && tar xzf diamond-linux64.tar.gz
 
 # Change the permissions and the path for the wrapper script
 RUN chmod +x /usr/bin/pathannotator.sh build_ref_set.sh
