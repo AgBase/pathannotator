@@ -38,6 +38,7 @@ then
 	2: input file (protein FASTA without header lines)
 	3: output directory (must be an existing directory)
 	4: 'FB' for flybase annotations, 'NA' for none
+	5: outbase (file basename to use for output files)
 
 	KofamScan is used under an MIT License:
 
@@ -171,7 +172,7 @@ then
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
 
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
@@ -243,7 +244,7 @@ then
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+			python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
 
 		fi
 
@@ -324,7 +325,7 @@ then
 
 		#MERGE DATA
 		echo "Creating annotations output."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
 
 	fi
 
@@ -417,7 +418,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -496,7 +497,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv #FOR CD-HIT ON ALL FILES
+		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
 	fi
 fi
 
@@ -523,8 +524,8 @@ if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_f
 if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
 if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
 if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-#if [ -d "$3"/orthofinder/ref_set ]; then rm -r "$3"/orthofinder/ref_set; fi
-#if [ -f "$3"/orthofinder/*_cluster.fa* ]; then rm -r "$3"/orthofinder/*_cluster.fa*; fi
+if [ -d "$3"/orthofinder/ref_set ]; then rm -r "$3"/orthofinder/ref_set; fi
+if [ -f "$3"/orthofinder/*_cluster.fa* ]; then rm -r "$3"/orthofinder/*_cluster.fa*; fi
 if [ -d "$3"/orthofinder/ ]; then rm -r "$3"/orthofinder/; fi
 if [ -f "$3"/ncbiversion.tmp ]; then rm "$3"/ncbiversion.tmp; fi
 if [ -f "$3"/ncbiver.tsv ]; then rm "$3"/ncbiver.tsv; fi
