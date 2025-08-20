@@ -52,6 +52,7 @@ On the command line the following help statement can be displayed with 'help'.
         2: input file (protein FASTA without header lines)
         3: output directory (must be an existing directory; the file path should be  relative to, and inside of, your working directory)
         4: 'FB' for flybase annotations, 'NA' for none
+        5: outbase (file basename to use for output files)
 
         KofamScan is used under an MIT License:
 
@@ -216,7 +217,8 @@ The container can be pulled with this command:
     tca \
     GCF_031307605.1_icTriCast1.1_protein.faa \
     out_dir \
-    FB
+    FB \
+    test_output
 
 **Command Explained**
 """"""""""""""""""""""
@@ -243,11 +245,13 @@ The container can be pulled with this command:
 
 **FB:** FB indicates that we want to get Flybase pathways annotations in addition to KEGG annotations.
 
+**test_output:** 'test_output' will be the prefix used to name all the output files
+
 Reference `Understanding results`_.
 
 
 **Running Pathannotator using Apptainer (formerly Singularity)**
-============================================================
+================================================================
 .. admonition:: About Apptainer
 
     - does not require ‘root’ permissions
@@ -262,7 +266,7 @@ Reference `Understanding results`_.
     Although Apptainer can be installed on any computer this documentation assumes it will be run on an HPC system. The tool was tested on a Slurm system and the job submission scripts below reflect that. Submission scripts will need to be modified for use with other job scheduler systems.
 
 **Getting the Pathannotator container**
-------------------------------------
+----------------------------------------
 The Pathannotator tool is available as a Docker container on Docker Hub:
 `Pathannotator container <https://hub.docker.com/r/agbase/Pathannotator>`_
 
@@ -285,7 +289,7 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
 
 
 **Running Pathannotator with Data**
---------------------------------
+------------------------------------
 
 .. tip::
 
@@ -317,7 +321,8 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
     tca \
     GCF_031307605.1_icTriCast1.1_protein.faa \
     out_dir \
-    FB
+    FB \
+    test_output
 
 
 
@@ -344,6 +349,8 @@ The Pathannotator tool is available as a Docker container on Docker Hub:
 
 **FB:** FB indicates that you want Flybase pathways annotations in addition to KEGG annotations
 
+**test_output:** 'test_output' will be the prefix used to name all the output files
+
 Reference `Understanding results`_.
 
 .. _Understanding results:
@@ -359,7 +366,7 @@ The output files you can expect will differ depending on the circumstances of yo
 
 **Expected output files:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-- **tca_KEGG_species.tsv:** These are KEGG's annotations of the NCBI-RefSeq proteins to the species-specific KEGG pathways. The filename will begin with the KEGG species code. The pathway identifiers will begin the KEGG species code. Note that for species-specific pathways, KEGG internally filters associations between the KO (KEGG Orthology) accession and the reference pathway. 
+- **test_output_KEGG_species.tsv:** These are KEGG's annotations of the NCBI-RefSeq proteins to the species-specific KEGG pathways. The filename will begin with the KEGG species code. The pathway identifiers will begin the KEGG species code. Note that for species-specific pathways, KEGG internally filters associations between the KO (KEGG Orthology) accession and the reference pathway.
 
     +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
     |Input_protein_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
@@ -373,7 +380,7 @@ The output files you can expect will differ depending on the circumstances of yo
 
 
 
-- **tca_KEGG_ref.tsv:** These are KEGG's annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'. You should expect more pathway annotations per protein than for the species-specific pathway.
+- **test_output_KEGG_ref.tsv:** These are KEGG's annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'. You should expect more pathway annotations per protein than for the species-specific pathway.
 
     +-------------------+-----------+---------------------+-------------------------------------------+
     |  Input_protein_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
@@ -386,7 +393,7 @@ The output files you can expect will differ depending on the circumstances of yo
     +-------------------+-----------+---------------------+-------------------------------------------+
 
 
-- **tca_acc_pathways.tsv:** This file contains the aggregation of all pathway annotations for each input identifier.
+- **test_output_acc_pathways.tsv:** This file contains the aggregation of all pathway annotations for each input identifier.
 
     +-----------------+-----------------------------------------------------------------------+
     |Input_protein_ID | pathway                                                               |
@@ -397,7 +404,7 @@ The output files you can expect will differ depending on the circumstances of yo
     +-----------------+-----------------------------------------------------------------------+
 
 
-- **tca_pathways_acc.tsv:** This file contains the aggregation of all input identifiers annotated to each of the pathways.
+- **test_output_pathways_acc.tsv:** This file contains the aggregation of all input identifiers annotated to each of the pathways.
 
     +---------------------+-----------------------------------------------------------------------------------+
     |pathway              |Input_protein_ID                                                                   |
@@ -408,7 +415,7 @@ The output files you can expect will differ depending on the circumstances of yo
     +---------------------+-----------------------------------------------------------------------------------+
 
 
-- **OrthoFinder_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+- **test_output_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
 
     +-----------------+-------------------+-------------------+-------------------------------------------------------+
     |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
@@ -421,41 +428,13 @@ The output files you can expect will differ depending on the circumstances of yo
     +-----------------+-------------------+-------------------+-------------------------------------------------------+
 
 
-
-- **dme_flybase.tsv:** This is an alternative to 'OrthoFinder_flybase.tsv' if you are annotating Drosophila melanogaster.
-
-    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
-    | Input_protein_ID         | KEGG_KO         | Flybase_pathway_ID          | Flybase_pathway_name                       |
-    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
-    | NP_001034490.1           | K04491          | FBgg0000890                 | Wnt-TCF Signaling Pathway Core Components  |
-    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
-    | NP_001034491.1           | K00698          | FBgg0002045                 | CHITIN BIOSYNTHESIS                        |
-    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
-    | NP_001034491.1           | K00698          | FBgg0002045                 | CHITIN BIOSYNTHESIS                        |
-    +--------------------------+-----------------+-----------------------------+--------------------------------------------+
-
-
-
 **KEGG code for a related species**
 -----------------------------------
 
 **Expected output files:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- **kofam_result_full.txt:** This is the full output from KofamScan. According to KEGG: "K number assignments with scores above the predefined thresholds for individual KOs are more reliable than other proposed assignments. Such high score assignments are highlighted with asterisks '*' in the output." Pathways annotations have not yet been identified.
-
-    +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
-    |# gene name        |   KO            |thrshld          |score                |E-value              |KO definition      |
-    +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
-    | NP_001034280.2    | K10180          |417.47           | 374.4               |1.2e-113             |T-box protein 6    |
-    +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
-    | NP_001034280.2    | K10177          |886.07           |309.5                |7.2e-94              |T-box protein 3    |
-    +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
-    | NP_001034280.2    | K10176          |750.77           |300.4                |4.6e-91              |T-box protein 2    |
-    +-------------------+-----------------+-----------------+---------------------+---------------------+-------------------+
-
-
-- **tca_KEGG_species.tsv:** These are annotations to the species-specific KEGG pathway. The pathway identifiers will begin with the KEGG species code.
+- **test_output_KEGG_species.tsv:** These are annotations to the species-specific KEGG pathway. The pathway identifiers will begin with the KEGG species code.
 
     +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
     |Input_protein_ID    |KEGG_KO               |KEGG_tca_pathway      | KEGG_tca_pathway_name                                                |
@@ -468,7 +447,7 @@ The output files you can expect will differ depending on the circumstances of yo
     +--------------------+----------------------+----------------------+----------------------------------------------------------------------+
 
 
-- **tca_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'.
+- **test_output_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'.
 
     +-------------------+-----------+---------------------+-------------------------------------------+
     |  Input_protein_ID |  KEGG_KO  |   KEGG_ref_pathway  |    KEGG_ref_pathway_name                  |
@@ -481,7 +460,7 @@ The output files you can expect will differ depending on the circumstances of yo
     +-------------------+-----------+---------------------+-------------------------------------------+
 
 
-- **tca_acc_pathways.tsv:** This file contains the aggregation of all pathway annotations for each input identifier.
+- **test_output_acc_pathways.tsv:** This file contains the aggregation of all pathway annotations for each input identifier.
 
     +-----------------+-----------------------------------------------------------------------+
     |Input_protein_ID | pathway                                                               |
@@ -492,7 +471,7 @@ The output files you can expect will differ depending on the circumstances of yo
     +-----------------+-----------------------------------------------------------------------+
 
 
-- **tca_pathways_acc.tsv:** This file contains the aggregation of all input identifiers annotated to each of the pathways.
+- **test_output_pathways_acc.tsv:** This file contains the aggregation of all input identifiers annotated to each of the pathways.
 
     +---------------------+-----------------------------------------------------------------------------------+
     |pathway              |Input_protein_ID                                                                   |
@@ -503,7 +482,7 @@ The output files you can expect will differ depending on the circumstances of yo
     +---------------------+-----------------------------------------------------------------------------------+
 
 
-- **OrthoFinder_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+- **test_output_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
 
     +-----------------+-------------------+-------------------+-------------------------------------------------------+
     |Input_protein_ID |Flybase_protein_ID |Flybase_pathway_ID |Flybase_pathway_name                                   |
@@ -524,20 +503,7 @@ The output files you can expect will differ depending on the circumstances of yo
 
 If you did not specify a KEGG species code (used 'NA') then no species-specific annotations file will be generated.
 
-- **kofam_result_full.txt:** This is the full output from KofamScan. According to KEGG: "K number assignments with scores above the predefined thresholds for individual KOs are more reliable than other proposed assignments. Such high score assignments are highlighted with asterisks '*' in the output." Pathways annotations have not yet been identified.
-
-    +--------------------+----------------------+----------------------+-------------------------+--------------------------+----------------+
-    |# gene name         |  KO                  |thrshld               |score                    |E-value                   |KO definition   |
-    +--------------------+----------------------+----------------------+-------------------------+--------------------------+----------------+
-    |  NP_001034280.2    |  K10180              | 417.47               |374.4                    |1.2e-113                  |T-box protein 6 |
-    +--------------------+----------------------+----------------------+-------------------------+--------------------------+----------------+
-    |  NP_001034280.2    |  K10177              |886.07                |309.5                    |7.2e-94                   |T-box protein 3 |
-    +--------------------+----------------------+----------------------+-------------------------+--------------------------+----------------+
-    |  NP_001034280.2    |  K10176              |750.77                |300.4                    |4.6e-91                   |T-box protein 2 |
-    +--------------------+----------------------+----------------------+-------------------------+--------------------------+----------------+
-
-
-- **NA_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers wil begin with 'map'.
+- **test_ouptut_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers wil begin with 'map'.
 
     +---------------------+-----------------------+----------------------+------------------------------+
     |Input_protein_ID     |  KEGG_KO              |KEGG_ref_pathway      | KEGG_ref_pathway_name        |
@@ -549,7 +515,7 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
     |NP_001034490.1       |K04491                 |map04390              |Hippo signaling pathway       |
     +---------------------+-----------------------+----------------------+------------------------------+
 
-- **tca_acc_pathways.tsv:** This file contains the aggregation of all pathway annotations for each input identifier.
+- **test_output_acc_pathways.tsv:** This file contains the aggregation of all pathway annotations for each input identifier.
 
     +-----------------+-----------------------------------------------------------------------+
     |Input_protein_ID | pathway                                                               |
@@ -560,7 +526,7 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
     +-----------------+-----------------------------------------------------------------------+
 
 
-- **tca_pathways_acc.tsv:** This file contains the aggregation of all input identifiers annotated to each of the pathways.
+- **test_output_pathways_acc.tsv:** This file contains the aggregation of all input identifiers annotated to each of the pathways.
 
     +---------------------+-----------------------------------------------------------------------------------+
     |pathway              |Input_protein_ID                                                                   |
@@ -571,7 +537,7 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
     +---------------------+-----------------------------------------------------------------------------------+
 
 
-- **OrthoFinder_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
+- **test_output_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
 
     +--------------------------+-----------------------+-------------------------+--------------------------------------------------------+
     |Input_protein_ID          |Flybase_protein_ID     |Flybase_pathway_ID       |Flybase_pathway_name                                    |
