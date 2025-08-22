@@ -14,19 +14,21 @@ parser.add_argument('outdir')
 parser.add_argument('flybase')
 parser.add_argument('orthologs')
 parser.add_argument('outbase')
+parser.add_argument('reactome')
 args = parser.parse_args()
 species = args.species # kegg speicies code, NA or related species if species not in KEGG
 kofam = args.kofam # yes or no
 indir = args.indir # directory with outputs from pull_data.sh
-outdir = args.outdir # directory where outputs this will go
-flybase = args.flybase #FB for Flybase annotations, NA for none
+outdir = args.outdir # (default is '.') directory where outputs from this will go
+flybase = args.flybase # (default if 'NA') FB for Flybase annotations, NA for none
 orthologs = args.orthologs # $3/orthofinder/Orthologues_"$noext"-cluster/"$noext"-cluster__v__dromel-cluster.tsv from pathannotator.sh script
 outbase = args.outbase # file basename for output files suppliec to the pathannotator.sh wrapper script
+reactome = args.reactome # (default is 'ALL') comma separated list of Reactome species; one or more of: HSA,MMU,RNO,CFA,SSC,XTR,DRE,GGA,SCE,SPO,DDI,PFA,CEL,BTA,DME
 
 pd.set_option('display.max_columns', None)
-#################
+####################
 #FUNCTIONS
-#################
+####################
 def combine_series_lists(s1, s2):
     combined = []
     for val1, val2 in zip(s1, s2):
@@ -34,8 +36,21 @@ def combine_series_lists(s1, s2):
         list2 = val2 if isinstance(val2, list) else []
         combined.append(list1 + list2)
     return pd.Series(combined)
-#####################
 ####################
+####################
+##RIGHT NOW I HAVE TWO FILES THAT ALLOW ME TO RELATE FLYBASE TO UNIPROT IN THE CONTAINER
+##I CAN USE THE COMPARISON FROM FLYBASE TO RELATE THIS INFO TO MY SPECIES BUT FB NEEDS TO BE STANDARD, NOT OPTIONAL
+##ALSO, I NEED TO THINK ABOUT HOW I WOULD DO THIS FOR NON-ARTHROPOD SPECIES
+##MAYBE I SHOULD SET IT UP SPECIFICALLY FOR BEENOME AS FAST AS POSSIBLE THEN ADD CAPABILITY LATER...
+
+#READ REACTOME TABLES INTO DATAFRAMES
+#ADD HEADERS TO DATARAME COLUMNS
+#DROP UNWANTED COLUMNS
+#DROP ROWS FOR UNDESIRED SPECIES PER 'REACTOME' OPTION
+#MERGE DATAFRAMES FOR REACTOME
+#WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
+###BOTTOM OF EACH IF/ELIF SHOULD INCLUDE A MERGE OF REACTOME DATA INTO THE AGGREGATED OUTPUTS###
+
 
 #READ API TABLES INTO PANDAS DATAFRAMES
 if kofam == "no" and species != "NA":
@@ -170,6 +185,7 @@ if kofam == "no" and species != "NA":
     annkegg['Input_protein_ID'] = annkegg['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
     acckegg.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
     annkegg.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
+###BOTTOM OF EACH IF/ELIF SHOULD INCLUDE A MERGE OF REACTOME DATA INTO THE AGGREGATED OUTPUTS###
 elif kofam == "yes" and species == "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
     ncbi_ver = pd.read_table(f"{indir}/ncbiver.tsv", dtype=str)
@@ -246,6 +262,7 @@ elif kofam == "yes" and species == "NA":
     annkegg['Input_protein_ID'] = annkegg['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
     acckegg.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
     annkegg.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
+###BOTTOM OF EACH IF/ELIF SHOULD INCLUDE A MERGE OF REACTOME DATA INTO THE AGGREGATED OUTPUTS###
 elif kofam == "yes" and species != "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
     ncbi_ver = pd.read_table(f"{indir}/ncbiver.tsv", dtype=str)
@@ -379,6 +396,7 @@ elif kofam == "yes" and species != "NA":
     annkegg['Input_protein_ID'] = annkegg['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
     acckegg.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
     annkegg.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
+###BOTTOM OF EACH IF/ELIF SHOULD INCLUDE A MERGE OF REACTOME DATA INTO THE AGGREGATED OUTPUTS###
 else:
     print("Not an acceptable combination of arguments.")
 

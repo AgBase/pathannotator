@@ -1,44 +1,63 @@
 #! /bin/bash
 
 #CHECK FOR OUTDIR. IF IT DOESN'T EXIST CREATE IT
-if [ ! -d "$3" ]; then mkdir -p "$3"; fi
-if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
-if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
-if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
-if [ -f "$3"/link_"$1"_ko.tsv ]; then rm "$3"/link_"$1"_ko.tsv; fi
-if [ -f "$3"/link_pathway_"$1".tsv ]; then rm "$3"/link_pathway_"$1".tsv; fi
-if [ -f "$3"/list_pathway_"$1".tsv ]; then rm "$3"/list_pathway_"$1".tsv; fi
-if [ -f "$3"/deflines.tmp ]; then rm "$3"/deflines.tmp; fi
-if [ -f "$3"/ko_ncbi.tsv ]; then rm "$3"/ko_ncbi.tsv; fi
-if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
-if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
-if [ -f "$3"/pathway_group_data_latest.tsv ]; then rm $3/pathway_group_data_latest.tsv; fi
-if [ -f "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
-if [ -f "$3"/kegg_organisms.txt ]; then rm "$3"/kegg_organisms.txt; fi
-if [ -f "$3"/kegg_org_codes.txt ]; then rm "$3"/kegg_org_codes.txt; fi
-if [ -f "$3"/kegg_orgs_with_codes.txt ]; then rm "$3"/kegg_orgs_with_codes.txt; fi
-if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_group_data_fb*; fi
-if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
-if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
-if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
-if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
-if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
-if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-if [ -d "$3"/orthofinder/ref_set ]; then rm -r "$3"/orthofinder/ref_set; fi
-if [ -f "$3"/orthofinder/*_cluster.fa* ]; then rm -r "$3"/orthofinder/*_cluster.fa*; fi
+if [ -f "$outdir"/link_ko_pathway.tsv ]; then rm "$outdir"/link_ko_pathway.tsv; fi
+if [ -f "$outdir"/list_pathway.tsv ]; then rm "$outdir"/list_pathway.tsv; fi
+if [ -f "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv ]; then rm "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv; fi
+if [ -f "$outdir"/link_"$keggcode"_ko.tsv ]; then rm "$outdir"/link_"$keggcode"_ko.tsv; fi
+if [ -f "$outdir"/link_pathway_"$keggcode".tsv ]; then rm "$outdir"/link_pathway_"$keggcode".tsv; fi
+if [ -f "$outdir"/list_pathway_"$keggcode".tsv ]; then rm "$outdir"/list_pathway_"$keggcode".tsv; fi
+if [ -f "$outdir"/deflines.tmp ]; then rm "$outdir"/deflines.tmp; fi
+if [ -f "$outdir"/ko_ncbi.tsv ]; then rm "$outdir"/ko_ncbi.tsv; fi
+if [ -f "$outdir"/Fbgn_CG.tsv ]; then rm "$outdir"/Fbgn_CG.tsv; fi
+if [ -f "$outdir"/Fbgn_groupid.tsv ]; then rm "$outdir"/Fbgn_groupid.tsv; fi
+if [ -f "$outdir"/pathway_group_data_latest.tsv ]; then rm $outdir/pathway_group_data_latest.tsv; fi
+if [ -f "$outdir"/kofam_filtered_asterisk.txt ]; then rm "$outdir"/kofam_filtered_asterisk.txt; fi
+if [ -f "$outdir"/kegg_organisms.txt ]; then rm "$outdir"/kegg_organisms.txt; fi
+if [ -f "$outdir"/kegg_org_codes.txt ]; then rm "$outdir"/kegg_org_codes.txt; fi
+if [ -f "$outdir"/kegg_orgs_with_codes.txt ]; then rm "$outdir"/kegg_orgs_with_codes.txt; fi
+if [ -n "$(ls $outdir/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $outdir/*pathway_group_data_fb*; fi
+if [ -n "$(ls $outdir/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_annotation_ID_fb*; fi
+if [ -n "$(ls $outdir/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $outdir/dmel-all-translation*.fasta*; fi
+if [ -n "$(ls $outdir/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_fbtr_fbpp_fb*; fi
+if [ -f "$outdir"/Fbgn_fbpp.tsv ]; then rm "$outdir"/Fbgn_fbpp.tsv; fi
+if [ -d "$outdir"/tmp ]; then rm -r "$outdir"/tmp; fi
+if [ -f "$outdir"/tmp.txt ]; then rm  "$outdir"/tmp.txt; fi
+if [ -d "$outdir"/orthofinder/ref_set ]; then rm -r "$outdir"/orthofinder/ref_set; fi
+if [ -f "$outdir"/orthofinder/*_cluster.fa* ]; then rm -r "$outdir"/orthofinder/*_cluster.fa*; fi
 
 starttime=$(date +%s)
 
-if [ $1 == "help" ];
+############################################################################################################################
+#SETUP ARGS
+
+while getopts 'd:f:i:k:o:r:h' option
+do
+  case "${option}" in
+    k) keggcode=${OPTARG};;
+    i) input=${OPTARG};;
+    d) outdir=${OPTARG};;
+    f) flybase=${OPTARG};;
+    o) outbase=${OPTARG};;
+    r) reactome=${OPTARG};;
+    h) help=true;;
+    \?) echo "No legal parameters were passed. Please run with -h parameter to see help"; exit 1;;
+esac
+done
+
+##############################################################################################################################
+
+if [[ "$help" = "true" ]]
 then
 	echo "Help and Usage:
-	There are 4 positional arguments.
-	1: KEGG species code (NA or related species code if species not in KEGG; 'help' to see this help and usage statement)
+	-k KEGG species code (NA or related species code if species not in KEGG; 'help' to see this help and usage statement)
 	   KEGG species codes can be found here: https://www.genome.jp/brite/br08611
-	2: input file (protein FASTA without header lines)
-	3: output directory (must be an existing directory)
-	4: 'FB' for flybase annotations, 'NA' for none
-	5: outbase (file basename to use for output files)
+	-i input file (protein FASTA without header lines)
+	-d (optional: default is '.') output directory
+	-f (optional: default is 'NA') Must be either: 'FB' for flybase annotations or 'NA' for none
+	-o outbase (file basename to use for output files)
+	-r (optional: default is ALL). Comma separated list of species pathways to include. 
+	   List must be one or more of these: HSA,MMU,RNO,CFA,SSC,XTR,DRE,GGA,SCE,SPO,DDI,PFA,CEL,BTA,DME
 
 	KofamScan is used under an MIT License:
 
@@ -64,13 +83,21 @@ then
 
 	exit 0
 fi
+#######################################################################################################
+#SET DEFAULTS IF OPTIONS NOT PROVIDED
+if [ -z "${flybase}" ]; then $flybase == 'NA'; fi
+if [ -z "${outdir}" ]; then $outdir == '.'; fi
+if [ -z "${reactome}" ]; then $reactome == 'ALL'; fi
+
+if [ ! -d "$outdir" ]; then mkdir -p "$outdir"; fi
+
 #GETTING NUMBER OF AVAILABLE PROCESSORS FOR USE IN THREADING
 avail=$(getconf _NPROCESSORS_ONLN)
 cpus=$(( $avail - 1 ))
 
 
 #TESTS WHETHER ACCESSIONS ARE NCBI PROTEIN IDS
-acc1=$(head -n1 $2 | sed 's/>//g' | sed 's/\s.*$//')
+acc1=$(head -n1 $input | sed 's/>//g' | sed 's/\s.*$//')
 if  [[ $acc1 == NP_* ]] || [[ $acc1 == XP_* ]] || [[ $acc1 == YP_* ]];
 then
 	ncbi=true
@@ -81,31 +108,35 @@ fi
 
 
 #PULLS THE KEGG ORG CODES FILE (NEEDS TO BE IN HERE, NOT PULL_DATA.SH BECAUSE PULL DATA ONLY RUNS IN THE IF STATEMENTS BELOW)
-wget https://rest.kegg.jp/list/genome -O $3/kegg_organisms.txt
-grep ';' $3/kegg_organisms.txt > $3/kegg_orgs_with_codes.txt
-cut -f 2 $3/kegg_orgs_with_codes.txt > $3/kegg_org_codes.txt
-sed -i 's/;.*$//g' $3/kegg_org_codes.txt
+wget https://rest.kegg.jp/list/genome -O $outdir/kegg_organisms.txt
+grep ';' $outdir/kegg_organisms.txt > $outdir/kegg_orgs_with_codes.txt
+cut -f 2 $outdir/kegg_orgs_with_codes.txt > $outdir/kegg_org_codes.txt
+sed -i 's/;.*$//g' $outdir/kegg_org_codes.txt
+
+#GUNZIP FOR REACTOME MATCHES
+gunzip gp_information.fb.gz UniProt2Reactome_All_Levels.txt.gz
+
 
 if [ "$ncbi" == true ] ;
 then
 	#TAKES FASTA AND CREATES ACCESSION LIST. ACCESSION IS EVERYTHING BEFORE THE FIRST SPACE
-	grep ">" $2 > $3/deflines.tmp
-	sed -i 's/>//g' $3/deflines.tmp
-	sed -i 's/\s.*$//' $3/deflines.tmp
+	grep ">" $input > $outdir/deflines.tmp
+	sed -i 's/>//g' $outdir/deflines.tmp
+	sed -i 's/\s.*$//' $outdir/deflines.tmp
 	# ADD A TWO COLUMN FILE OR ASSOC ARRAY OF WITH AND WITHOUT VERSION HERE THAT CAN BE USED TO MERGE LATER
-	awk 'BEGIN {OFS="\t"} {print $1, $1}' $3/deflines.tmp > $3/ncbiversion.tmp
-	awk 'BEGIN {OFS="\t"} { sub(/\.[0-9]+/, "", $2) }1' $3/ncbiversion.tmp > $3/ncbiver.tsv
-	sed -i 's/.[0-9]$//' $3/deflines.tmp
-	readarray -t defarray < $3/deflines.tmp
+	awk 'BEGIN {OFS="\t"} {print $1, $1}' $outdir/deflines.tmp > $outdir/ncbiversion.tmp
+	awk 'BEGIN {OFS="\t"} { sub(/\.[0-9]+/, "", $2) }1' $outdir/ncbiversion.tmp > $outdir/ncbiver.tsv
+	sed -i 's/.[0-9]$//' $outdir/deflines.tmp
+	readarray -t defarray < $outdir/deflines.tmp
 
-	if grep -q $1 $3/kegg_org_codes.txt; #IF THIS IS A KEGG SPECIES
+	if grep -q $keggcode $outdir/kegg_org_codes.txt; #IF THIS IS A KEGG SPECIES
 	then
 		#PULL DATA
 		echo "This is a KEGG species code. Pulling KEGG API data now."
-		bash /usr/bin/pull_data.sh $1 no $3 ncbi $4
+		bash /usr/bin/pull_data.sh $keggcode no $outdir ncbi $flybase
 
 		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-		if [[ -s "$3/link_ko_pathway.tsv" && -s "$3/conv_ncbi-proteinid_"$1".tsv" && -s "$3/list_pathway.tsv" && -s "$3/link_pathway_"$1".tsv" && -s "$3/list_pathway_"$1".tsv" && -s "$3/link_"$1"_ko.tsv" ]]
+		if [[ -s "$outdir/link_ko_pathway.tsv" && -s "$outdir/conv_ncbi-proteinid_"$keggcode".tsv" && -s "$outdir/list_pathway.tsv" && -s "$outdir/link_pathway_"$keggcode".tsv" && -s "$outdir/list_pathway_"$keggcode".tsv" && -s "$outdir/link_"$keggcode"_ko.tsv" ]]
 		then
     			echo "All KEGG files exist and are not empty."
 		else
@@ -115,19 +146,19 @@ then
 
 		#NEED TO COMPARE DEFLINES.TMP TO SPECIFIED SPECIES CODE AND DECIDE IF THEY ARE THE SAME SPECIES
 		echo "${defarray[0]}"
-		if grep -q "${defarray[0]}" $3/conv_ncbi-proteinid_"$1".tsv; #TESTING IF INPUT IDS ARE THE SAME SPECIES AS THE KEGG CODE
+		if grep -q "${defarray[0]}" $outdir/conv_ncbi-proteinid_"$keggcode".tsv; #TESTING IF INPUT IDS ARE THE SAME SPECIES AS THE KEGG CODE
 		then
 			#IF YES, MERGE FROM API DATA
-			echo "IDs are $1 species IDs"
+			echo "IDs are $keggcode species IDs"
 
 			#IF FB AND NOT 'DME' RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
-			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
+			if [ "$keggcode" != "dme" ] && [ "$flybase" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				mkdir $3/orthofinder
+				mkdir $outdir/orthofinder
 
 				#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-				if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+				if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
 				then
     					echo "All FlyBase files exist and are not empty."
 				else
@@ -136,22 +167,22 @@ then
 				fi
 
 				ext="*.faa"
-				if [[ $2 == $ext ]];
+				if [[ $input == $ext ]];
 				then
 					echo FAA
-					noext=$(basename "$2" .faa)
+					noext=$(basename "$input" .faa)
 				else
 					ext="*.fasta"
-					if [[ $2 == $ext ]];
+					if [[ $input == $ext ]];
 					then
 						echo FASTA
-						noext=$(basename "$2" .fasta)
+						noext=$(basename "$input" .fasta)
 					else
 						ext="*.fa"
-						if [[ $2 == $ext ]];
+						if [[ $input == $ext ]];
 						then
 							echo FA
-                                       			noext=$(basename "$2" .fa)
+                                       			noext=$(basename "$input" .fa)
 						else
 							echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
 						fi
@@ -159,47 +190,47 @@ then
 				fi
 				echo -e "noext is: $noext"
 
-				cp $2 $3/orthofinder/"$noext"_cluster.fa
+				cp $input $outdir/orthofinder/"$noext"_cluster.fa
 
 				#RUN ORTHOFINDER WITH FASTAS FROM INPUT SPECIES AND REFERENCE SET
-				tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
-				orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
+				tar -xvzf /OF/ref_set.tgz -C $outdir/orthofinder
+				orthofinder -f $outdir/orthofinder -t $cpus -b $outdir/orthofinder/ref_set
 
 				#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
-				mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
+				mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
 
 			fi
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 no $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
+			python /usr/bin/merge_data.py $keggcode no $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
 
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
-			echo "IDs are NOT $1 species IDs"
+			echo "IDs are NOT $keggcode species IDs"
 
 			#PULL ADDITIONAL DATA FOR KOFAMSCAN
 			echo "Pulling more KEGG API data now."
-			bash /usr/bin/pull_data.sh $1 yes $3 ncbi $4
+			bash /usr/bin/pull_data.sh $keggcode yes $outdir ncbi $flybase
 
 			#RUN KOFAMSCAN
 			echo "Running KofamScan now."
-			/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+			/usr/bin/kofam_scan/exec_annotation -o $outdir/kofam_result_full.txt -f detail --tmp-dir $outdir/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $input
 
 			#FILTER KOFAM HERE
 			echo "Filtering KofamScan results"
-			grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
-	        	awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
-	        	sed -i 's/\..*$//' $3/ko_ncbi.tsv
+			grep -P "^\*" $outdir/kofam_result_full.txt >> $outdir/kofam_filtered_asterisk.txt
+	        	awk '{ print $3"\t"$2 }' $outdir/kofam_filtered_asterisk.txt > $outdir/ko_ncbi.tsv
+	        	sed -i 's/\..*$//' $outdir/ko_ncbi.tsv
 
 			#IF FB AND NOT 'DME' RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
-			if [ "$1" != "dme" ] && [ "$4" == "FB" ];
+			if [ "$keggcode" != "dme" ] && [ "$flybase" == "FB" ];
 			then
 				echo "Performing Flybase annotation".
-				mkdir $3/orthofinder
+				mkdir $outdir/orthofinder
 
 				#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-				if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+				if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
 				then
     					echo "All FlyBase files exist and are not empty."
 				else
@@ -208,22 +239,22 @@ then
 				fi
 
 				ext="*.faa"
-				if [[ $2 == $ext ]];
+				if [[ $input == $ext ]];
 				then
 					echo FAA
-					noext=$(basename "$2" .faa)
+					noext=$(basename "$input" .faa)
 				else
 					ext="*.fasta"
-					if [[ $2 == $ext ]];
+					if [[ $input == $ext ]];
 					then
 						echo FASTA
-						noext=$(basename "$2" .fasta)
+						noext=$(basename "$input" .fasta)
 					else
 						ext="*.fa"
-						if [[ $2 == $ext ]];
+						if [[ $input == $ext ]];
 						then
 							echo FA
-                                        		noext=$(basename "$2" .fa)
+                                        		noext=$(basename "$input" .fa)
 						else
 							echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
 						fi
@@ -231,20 +262,20 @@ then
 				fi
 				echo -e "noext is: $noext"
 
-				cp $2 $3/orthofinder/"$noext"_cluster.fa
+				cp $input $outdir/orthofinder/"$noext"_cluster.fa
 
 				#RUN ORTHOFINDER WITH FASTA FROM INPUT SPECIES AND REFERENCE SET
-				tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
-				orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
+				tar -xvzf /OF/ref_set.tgz -C $outdir/orthofinder
+				orthofinder -f $outdir/orthofinder -t $cpus -b $outdir/orthofinder/ref_set
 
 				#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
-				mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
+				mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
 
 			fi
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
+			python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
 
 		fi
 
@@ -252,10 +283,10 @@ then
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash /usr/bin/pull_data.sh $1 yes $3 ncbi $4
+		bash /usr/bin/pull_data.sh $keggcode yes $outdir ncbi $flybase
 
 		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-		if [[ -s "$3/link_ko_pathway.tsv" && -s "$3/list_pathway.tsv" ]]
+		if [[ -s "$outdir/link_ko_pathway.tsv" && -s "$outdir/list_pathway.tsv" ]]
 		then
     			echo "All KEGG files exist and are not empty."
 		else
@@ -265,22 +296,22 @@ then
 
 		#RUN KOFAMSCAN
 		echo "This is not a KEGG species code. Running KofamScan now."
-		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+		/usr/bin/kofam_scan/exec_annotation -o $outdir/kofam_result_full.txt -f detail --tmp-dir $outdir/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $input
 
 		#FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
-		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
-	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
-	        sed -i 's/\..*$//' $3/ko_ncbi.tsv
+		grep -P "^\*" $outdir/kofam_result_full.txt >> $outdir/kofam_filtered_asterisk.txt
+	        awk '{ print $3"\t"$2 }' $outdir/kofam_filtered_asterisk.txt > $outdir/ko_ncbi.tsv
+	        sed -i 's/\..*$//' $outdir/ko_ncbi.tsv
 
 		#IF FB AND NOT 'DME' RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
-		if [ "$1" != "dme" ] && [ "$4" == "FB" ];
+		if [ "$keggcode" != "dme" ] && [ "$flybase" == "FB" ];
 		then
 			echo "Performing Flybase annotation".
-			mkdir $3/orthofinder
+			mkdir $outdir/orthofinder
 
 			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-			if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+			if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
 			then
 				echo "All FlyBase files exist and are not empty."
 			else
@@ -290,22 +321,22 @@ then
 
 
 			ext="*.faa"
-			if [[ $2 == $ext ]];
+			if [[ $input == $ext ]];
 			then
 				echo FAA
-				noext=$(basename "$2" .faa)
+				noext=$(basename "$input" .faa)
 			else
 				ext="*.fasta"
-				if [[ $2 == $ext ]];
+				if [[ $input == $ext ]];
 				then
 					echo FASTA
-					noext=$(basename "$2" .fasta)
+					noext=$(basename "$input" .fasta)
 				else
 					ext="*.fa"
-					if [[ $2 == $ext ]];
+					if [[ $input == $ext ]];
 					then
 						echo FA
-                                       		noext=$(basename "$2" .fa)
+                                       		noext=$(basename "$input" .fa)
 					else
 						echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
 					fi
@@ -313,19 +344,19 @@ then
 			fi
 			echo -e "noext is: $noext"
 
-			cp $2 $3/orthofinder/"$noext"_cluster.fa
+			cp $input $outdir/orthofinder/"$noext"_cluster.fa
 
 			#RUN ORTHOFINDER WITH FASTA FROM INPUT SPECIES AND REFERENCE SET
-			tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
-			orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
+			tar -xvzf /OF/ref_set.tgz -C $outdir/orthofinder
+			orthofinder -f $outdir/orthofinder -t $cpus -b $outdir/orthofinder/ref_set
 
 			#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
-			mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
+			mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
 		fi
 
 		#MERGE DATA
 		echo "Creating annotations output."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
+		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
 
 	fi
 
@@ -333,23 +364,23 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 	echo "These are NOT NCBI protein IDs. Proceeding with KofamScan."
 	#TAKES FASTA AND CREATES ACCESSION LIST. ACCESSION IS EVERYTHING BEFORE THE FIRST SPACE
-	grep ">" $2 > $3/deflines.tmp
-	sed -i 's/>//g' $3/deflines.tmp
-	sed -i 's/\s.*$//' $3/deflines.tmp
+	grep ">" $input > $outdir/deflines.tmp
+	sed -i 's/>//g' $outdir/deflines.tmp
+	sed -i 's/\s.*$//' $outdir/deflines.tmp
 	#ADD A TWO COLUMN FILE OF WITH AND WITHOUT VERSION THAT CAN BE USED TO MERGE LATER
-	awk 'BEGIN {OFS="\t"} {print $1, $1}' $3/deflines.tmp > $3/ncbiversion.tmp
-	awk 'BEGIN {OFS="\t"} { sub(/\.[0-9]+/, "", $2) }1' $3/ncbiversion.tmp > $3/ncbiver.tsv
+	awk 'BEGIN {OFS="\t"} {print $1, $1}' $outdir/deflines.tmp > $outdir/ncbiversion.tmp
+	awk 'BEGIN {OFS="\t"} { sub(/\.[0-9]+/, "", $2) }1' $outdir/ncbiversion.tmp > $outdir/ncbiver.tsv
 
-	if grep -q $1 $3/kegg_org_codes.txt;
+	if grep -q $keggcode $outdir/kegg_org_codes.txt;
 	then
 		echo "This is a KEGG species".
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
+		bash /usr/bin/pull_data.sh $keggcode yes $outdir non-ncbi $flybase
 
 		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-		if [[ -s "$3/link_ko_pathway.tsv" && -s "$3/list_pathway.tsv" && -s "$3/link_pathway_"$1".tsv" && -s "$3/list_pathway_"$1".tsv" && -s "$3/link_"$1"_ko.tsv" ]]
+		if [[ -s "$outdir/link_ko_pathway.tsv" && -s "$outdir/list_pathway.tsv" && -s "$outdir/link_pathway_"$keggcode".tsv" && -s "$outdir/list_pathway_"$keggcode".tsv" && -s "$outdir/link_"$keggcode"_ko.tsv" ]]
 		then
     			echo "All KEGG files exist and are not empty."
 		else
@@ -359,22 +390,22 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 
 		#RUN KOFAM HERE
-		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+		/usr/bin/kofam_scan/exec_annotation -o $outdir/kofam_result_full.txt -f detail --tmp-dir $outdir/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $input
 
 		#FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
-		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
-	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
-	        sed -i 's/\..*$//' $3/ko_ncbi.tsv
+		grep -P "^\*" $outdir/kofam_result_full.txt >> $outdir/kofam_filtered_asterisk.txt
+	        awk '{ print $3"\t"$2 }' $outdir/kofam_filtered_asterisk.txt > $outdir/ko_ncbi.tsv
+	        sed -i 's/\..*$//' $outdir/ko_ncbi.tsv
 
 		#IF FB RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
-		if [ "$4" == FB ];
+		if [ "$flybase" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			mkdir $3/orthofinder
+			mkdir $outdir/orthofinder
 
 			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-			if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+			if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
 			then
 				echo "All FlyBase files exist and are not empty."
 			else
@@ -383,22 +414,22 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			fi
 
 			ext="*.faa"
-			if [[ $2 == $ext ]];
+			if [[ $input == $ext ]];
 			then
 				echo FAA
-				noext=$(basename "$2" .faa)
+				noext=$(basename "$input" .faa)
 			else
 				ext="*.fasta"
-				if [[ $2 == $ext ]];
+				if [[ $input == $ext ]];
 				then
 					echo FASTA
-					noext=$(basename "$2" .fasta)
+					noext=$(basename "$input" .fasta)
 				else
 					ext="*.fa"
-					if [[ $2 == $ext ]];
+					if [[ $input == $ext ]];
 					then
 						echo FA
-                                 		noext=$(basename "$2" .fa)
+                                 		noext=$(basename "$input" .fa)
 					else
 						echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
 					fi
@@ -406,19 +437,19 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			fi
 			echo -e "noext is: $noext"
 
-			cp $2 $3/orthofinder/"$noext"_cluster.fa
+			cp $input $outdir/orthofinder/"$noext"_cluster.fa
 
 			#RUN ORTHOFINDER WITH FASTA FROM INPUT SPECIES AND REFSET
-			tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
-			orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
+			tar -xvzf /OF/ref_set.tgz -C $outdir/orthofinder
+			orthofinder -f $outdir/orthofinder -t $cpus -b $outdir/orthofinder/ref_set
 
 			#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
-			mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
+			mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
 		fi
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
+		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -426,10 +457,10 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
-		bash /usr/bin/pull_data.sh $1 yes $3 non-ncbi $4
+		bash /usr/bin/pull_data.sh $keggcode yes $outdir non-ncbi $flybase
 
 		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-		if [[ -s "$3/link_ko_pathway.tsv" && -s "$3/list_pathway.tsv" ]]
+		if [[ -s "$outdir/link_ko_pathway.tsv" && -s "$outdir/list_pathway.tsv" ]]
 		then
     			echo "All KEGG files exist and are not empty."
 		else
@@ -438,22 +469,22 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		fi
 
 		#RUN KOFAM HERE
-		/usr/bin/kofam_scan/exec_annotation -o $3/kofam_result_full.txt -f detail --tmp-dir $3/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $2
+		/usr/bin/kofam_scan/exec_annotation -o $outdir/kofam_result_full.txt -f detail --tmp-dir $outdir/tmp --cpu $cpus -k /data/ko_list -p /data/profiles/eukaryote.hal $input
 
 		#FILTER KOFAM HERE
 		echo "Filtering KofamScan results"
-		grep -P "^\*" $3/kofam_result_full.txt >> $3/kofam_filtered_asterisk.txt
-	        awk '{ print $3"\t"$2 }' $3/kofam_filtered_asterisk.txt > $3/ko_ncbi.tsv
-	        sed -i 's/\..*$//' $3/ko_ncbi.tsv
+		grep -P "^\*" $outdir/kofam_result_full.txt >> $outdir/kofam_filtered_asterisk.txt
+	        awk '{ print $3"\t"$2 }' $outdir/kofam_filtered_asterisk.txt > $outdir/ko_ncbi.tsv
+	        sed -i 's/\..*$//' $outdir/ko_ncbi.tsv
 
 		#IF FB RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
-		if [ "$4" == FB ];
+		if [ "$flybase" == FB ];
 		then
 			echo "Performing Flybase annotation".
-			mkdir $3/orthofinder
+			mkdir $outdir/orthofinder
 
 			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-			if [[ -s "$3/Fbgn_groupid.tsv" && -s "$3/Fbgn_CG.tsv" && -s "$3/Fbgn_fbpp.tsv" ]]
+			if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
 			then
     				echo "All FlyBase files exist and are not empty."
 			else
@@ -462,22 +493,22 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			fi
 
 			ext="*.faa"
-			if [[ $2 == $ext ]];
+			if [[ $input == $ext ]];
 			then
 				echo FAA
-				noext=$(basename "$2" .faa)
+				noext=$(basename "$input" .faa)
 			else
 				ext="*.fasta"
-				if [[ $2 == $ext ]];
+				if [[ $input == $ext ]];
 				then
 					echo FASTA
-					noext=$(basename "$2" .fasta)
+					noext=$(basename "$input" .fasta)
 				else
 					ext="*.fa"
-					if [[ $2 == $ext ]];
+					if [[ $input == $ext ]];
 					then
 						echo FA
-                                 		noext=$(basename "$2" .fa)
+                                 		noext=$(basename "$input" .fa)
 					else
 						echo -e "This FASTA input file does not have an appropriate extension (.fa, .faa, .fasta)"
 					fi
@@ -485,50 +516,50 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			fi
 			echo -e "noext is: $noext"
 
-			cp $2 $3/orthofinder/"$noext"_cluster.fa
+			cp $input $outdir/orthofinder/"$noext"_cluster.fa
 
 			#RUN ORTHOFINDER WITH FASTAS FROM INPUT SPECIES AND REFERENCE SET
-			tar -xvzf /OF/ref_set.tgz -C $3/orthofinder
-			orthofinder -f $3/orthofinder -t $cpus -b $3/orthofinder/ref_set
+			tar -xvzf /OF/ref_set.tgz -C $outdir/orthofinder
+			orthofinder -f $outdir/orthofinder -t $cpus -b $outdir/orthofinder/ref_set
 
 			#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
-			mv $3/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $3/orthofinder/
+			mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
 		fi
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $1 yes $3 $3 $4 $3/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $5
+		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
 	fi
 fi
 
-if [ -f "$3"/link_ko_pathway.tsv ]; then rm "$3"/link_ko_pathway.tsv; fi
-if [ -f "$3"/list_pathway.tsv ]; then rm "$3"/list_pathway.tsv; fi
-if [ -f "$3"/conv_ncbi-proteinid_"$1".tsv ]; then rm "$3"/conv_ncbi-proteinid_"$1".tsv; fi
-if [ -f "$3"/link_"$1"_ko.tsv ]; then rm "$3"/link_"$1"_ko.tsv; fi
-if [ -f "$3"/link_pathway_"$1".tsv ]; then rm "$3"/link_pathway_"$1".tsv; fi
-if [ -f "$3"/list_pathway_"$1".tsv ]; then rm "$3"/list_pathway_"$1".tsv; fi
-if [ -f "$3"/deflines.tmp ]; then rm "$3"/deflines.tmp; fi
-if [ -f "$3"/ko_ncbi.tsv ]; then rm "$3"/ko_ncbi.tsv; fi
-if [ -f "$3"/Fbgn_CG.tsv ]; then rm "$3"/Fbgn_CG.tsv; fi
-if [ -f "$3"/Fbgn_groupid.tsv ]; then rm "$3"/Fbgn_groupid.tsv; fi
-if [ -f "$3"/pathway_group_data_latest.tsv ]; then rm $3/pathway_group_data_latest.tsv; fi
-if [ -f "$3"/kofam_filtered_asterisk.txt ]; then rm "$3"/kofam_filtered_asterisk.txt; fi
-if [ -f "$3"/kofam_result_full.txt ]; then rm "$3"/kofam_result_full.txt; fi
-if [ -f "$3"/kegg_organisms.txt ]; then rm "$3"/kegg_organisms.txt; fi
-if [ -f "$3"/kegg_org_codes.txt ]; then rm "$3"/kegg_org_codes.txt; fi
-if [ -f "$3"/kegg_orgs_with_codes.txt ]; then rm "$3"/kegg_orgs_with_codes.txt; fi
-if [ -n "$(ls $3/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $3/*pathway_group_data_fb*; fi
-if [ -n "$(ls $3/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $3/fbgn_annotation_ID_fb*; fi
-if [ -n "$(ls $3/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $3/dmel-all-translation*.fasta*; fi
-if [ -n "$(ls $3/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $3/fbgn_fbtr_fbpp_fb*; fi
-if [ -f "$3"/Fbgn_fbpp.tsv ]; then rm "$3"/Fbgn_fbpp.tsv; fi
-if [ -d "$3"/tmp ]; then rm -r "$3"/tmp; fi
-if [ -f "$3"/tmp.txt ]; then rm  "$3"/tmp.txt; fi
-if [ -d "$3"/orthofinder/ref_set ]; then rm -r "$3"/orthofinder/ref_set; fi
-if [ -f "$3"/orthofinder/*_cluster.fa* ]; then rm -r "$3"/orthofinder/*_cluster.fa*; fi
-if [ -d "$3"/orthofinder/ ]; then rm -r "$3"/orthofinder/; fi
-if [ -f "$3"/ncbiversion.tmp ]; then rm "$3"/ncbiversion.tmp; fi
-if [ -f "$3"/ncbiver.tsv ]; then rm "$3"/ncbiver.tsv; fi
+if [ -f "$outdir"/link_ko_pathway.tsv ]; then rm "$outdir"/link_ko_pathway.tsv; fi
+if [ -f "$outdir"/list_pathway.tsv ]; then rm "$outdir"/list_pathway.tsv; fi
+if [ -f "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv ]; then rm "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv; fi
+if [ -f "$outdir"/link_"$keggcode"_ko.tsv ]; then rm "$outdir"/link_"$keggcode"_ko.tsv; fi
+if [ -f "$outdir"/link_pathway_"$keggcode".tsv ]; then rm "$outdir"/link_pathway_"$keggcode".tsv; fi
+if [ -f "$outdir"/list_pathway_"$keggcode".tsv ]; then rm "$outdir"/list_pathway_"$keggcode".tsv; fi
+if [ -f "$outdir"/deflines.tmp ]; then rm "$outdir"/deflines.tmp; fi
+if [ -f "$outdir"/ko_ncbi.tsv ]; then rm "$outdir"/ko_ncbi.tsv; fi
+if [ -f "$outdir"/Fbgn_CG.tsv ]; then rm "$outdir"/Fbgn_CG.tsv; fi
+if [ -f "$outdir"/Fbgn_groupid.tsv ]; then rm "$outdir"/Fbgn_groupid.tsv; fi
+if [ -f "$outdir"/pathway_group_data_latest.tsv ]; then rm $outdir/pathway_group_data_latest.tsv; fi
+if [ -f "$outdir"/kofam_filtered_asterisk.txt ]; then rm "$outdir"/kofam_filtered_asterisk.txt; fi
+if [ -f "$outdir"/kofam_result_full.txt ]; then rm "$outdir"/kofam_result_full.txt; fi
+if [ -f "$outdir"/kegg_organisms.txt ]; then rm "$outdir"/kegg_organisms.txt; fi
+if [ -f "$outdir"/kegg_org_codes.txt ]; then rm "$outdir"/kegg_org_codes.txt; fi
+if [ -f "$outdir"/kegg_orgs_with_codes.txt ]; then rm "$outdir"/kegg_orgs_with_codes.txt; fi
+if [ -n "$(ls $outdir/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $outdir/*pathway_group_data_fb*; fi
+if [ -n "$(ls $outdir/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_annotation_ID_fb*; fi
+if [ -n "$(ls $outdir/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $outdir/dmel-all-translation*.fasta*; fi
+if [ -n "$(ls $outdir/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_fbtr_fbpp_fb*; fi
+if [ -f "$outdir"/Fbgn_fbpp.tsv ]; then rm "$outdir"/Fbgn_fbpp.tsv; fi
+if [ -d "$outdir"/tmp ]; then rm -r "$outdir"/tmp; fi
+if [ -f "$outdir"/tmp.txt ]; then rm  "$outdir"/tmp.txt; fi
+if [ -d "$outdir"/orthofinder/ref_set ]; then rm -r "$outdir"/orthofinder/ref_set; fi
+if [ -f "$outdir"/orthofinder/*_cluster.fa* ]; then rm -r "$outdir"/orthofinder/*_cluster.fa*; fi
+if [ -d "$outdir"/orthofinder/ ]; then rm -r "$outdir"/orthofinder/; fi
+if [ -f "$outdir"/ncbiversion.tmp ]; then rm "$outdir"/ncbiversion.tmp; fi
+if [ -f "$outdir"/ncbiver.tsv ]; then rm "$outdir"/ncbiver.tsv; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
