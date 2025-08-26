@@ -23,15 +23,18 @@ if [ -n "$(ls $outdir/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_f
 if [ -f "$outdir"/Fbgn_fbpp.tsv ]; then rm "$outdir"/Fbgn_fbpp.tsv; fi
 if [ -d "$outdir"/tmp ]; then rm -r "$outdir"/tmp; fi
 if [ -f "$outdir"/tmp.txt ]; then rm  "$outdir"/tmp.txt; fi
-if [ -d "$outdir"/orthofinder/ref_set ]; then rm -r "$outdir"/orthofinder/ref_set; fi
-if [ -f "$outdir"/orthofinder/*_cluster.fa* ]; then rm -r "$outdir"/orthofinder/*_cluster.fa*; fi
+if [ -f "$outdir"/ncbiversion.tmp ]; then rm "$outdir"/ncbiversion.tmp; fi
+if [ -f "$outdir"/ncbiver.tsv ]; then rm "$outdir"/ncbiver.tsv; fi
+if [ -d "$outdir"/orthofinder ]; then rm -r "$outdir"/orthofinder; fi
+if [ -f "$outdir"/UniProt2Reactome_DME.txt ]; then rm "$outdir"/UniProt2Reactome_DME.txt; fi
+if [ -n "$(ls $outdir/gp_information.* 2>/dev/null)" ]; then rm "$outdir"/gp_information.*; fi
 
 starttime=$(date +%s)
 
 ############################################################################################################################
 #SETUP ARGS
 
-while getopts 'd:f:i:k:o:r:h' option
+while getopts 'd:f:i:k:o:h' option
 do
   case "${option}" in
     k) keggcode=${OPTARG};;
@@ -39,7 +42,6 @@ do
     d) outdir=${OPTARG};;
     f) flybase=${OPTARG};;
     o) outbase=${OPTARG};;
-    r) reactome=${OPTARG};;
     h) help=true;;
     \?) echo "No legal parameters were passed. Please run with -h parameter to see help"; exit 1;;
 esac
@@ -54,10 +56,8 @@ then
 	   KEGG species codes can be found here: https://www.genome.jp/brite/br08611
 	-i input file (protein FASTA without header lines)
 	-d (optional: default is '.') output directory
-	-f (optional: default is 'NA') Must be either: 'FB' for flybase annotations or 'NA' for none
+	-f (optional: default is 'NA') Must be either: 'FB' for flybase and DME Reactome annotations or 'NA' for none
 	-o outbase (file basename to use for output files)
-	-r (optional: default is ALL). Comma separated list of species pathways to include. 
-	   List must be one or more of these: HSA,MMU,RNO,CFA,SSC,XTR,DRE,GGA,SCE,SPO,DDI,PFA,CEL,BTA,DME
 
 	KofamScan is used under an MIT License:
 
@@ -87,7 +87,6 @@ fi
 #SET DEFAULTS IF OPTIONS NOT PROVIDED
 if [ -z "${flybase}" ]; then $flybase == 'NA'; fi
 if [ -z "${outdir}" ]; then $outdir == '.'; fi
-if [ -z "${reactome}" ]; then $reactome == 'ALL'; fi
 
 if [ ! -d "$outdir" ]; then mkdir -p "$outdir"; fi
 
@@ -112,9 +111,6 @@ wget https://rest.kegg.jp/list/genome -O $outdir/kegg_organisms.txt
 grep ';' $outdir/kegg_organisms.txt > $outdir/kegg_orgs_with_codes.txt
 cut -f 2 $outdir/kegg_orgs_with_codes.txt > $outdir/kegg_org_codes.txt
 sed -i 's/;.*$//g' $outdir/kegg_org_codes.txt
-
-#GUNZIP FOR REACTOME MATCHES
-gunzip gp_information.fb.gz UniProt2Reactome_All_Levels.txt.gz
 
 
 if [ "$ncbi" == true ] ;
@@ -203,7 +199,7 @@ then
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $keggcode no $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
+			python /usr/bin/merge_data.py $keggcode no $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
 
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
@@ -275,7 +271,7 @@ then
 
 			#MERGE DATA HERE
 			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
+			python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
 
 		fi
 
@@ -356,7 +352,7 @@ then
 
 		#MERGE DATA
 		echo "Creating annotations output."
-		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
+		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
 
 	fi
 
@@ -449,7 +445,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
+		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
 
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
@@ -528,7 +524,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#MERGE DATA
 		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase $reactome
+		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
 	fi
 fi
 
@@ -555,11 +551,11 @@ if [ -n "$(ls $outdir/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_f
 if [ -f "$outdir"/Fbgn_fbpp.tsv ]; then rm "$outdir"/Fbgn_fbpp.tsv; fi
 if [ -d "$outdir"/tmp ]; then rm -r "$outdir"/tmp; fi
 if [ -f "$outdir"/tmp.txt ]; then rm  "$outdir"/tmp.txt; fi
-if [ -d "$outdir"/orthofinder/ref_set ]; then rm -r "$outdir"/orthofinder/ref_set; fi
-if [ -f "$outdir"/orthofinder/*_cluster.fa* ]; then rm -r "$outdir"/orthofinder/*_cluster.fa*; fi
 if [ -d "$outdir"/orthofinder/ ]; then rm -r "$outdir"/orthofinder/; fi
 if [ -f "$outdir"/ncbiversion.tmp ]; then rm "$outdir"/ncbiversion.tmp; fi
 if [ -f "$outdir"/ncbiver.tsv ]; then rm "$outdir"/ncbiver.tsv; fi
+if [ -f "$outdir"/UniProt2Reactome_DME.txt ]; then rm "$outdir"/UniProt2Reactome_DME.txt; fi
+if [ -n "$(ls $outdir/gp_information.* 2>/dev/null)" ]; then rm "$outdir"/gp_information.*; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))

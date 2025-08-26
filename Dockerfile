@@ -94,7 +94,7 @@ RUN mkdir /workdir /data
 
 RUN chmod a+w /workdir /data /OF /AGAT /reactome
 
-ADD pipeline/gp_information.fb.gz pipeline/UniProt2Reactome_All_Levels.txt.gz /reactome/
+ADD pipeline/gp_information.fb.gz pipeline/UniProt2Reactome_DME_20250822.txt.gz /reactome/
 
 # Entrypoint
 ENTRYPOINT ["/usr/bin/pathannotator.sh"]

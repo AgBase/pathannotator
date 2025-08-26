@@ -98,6 +98,14 @@ then
 	grep -v ^\# $3/fbgn_fbtr_fbpp_fb_2025_02.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 
 
+	#PULL FILE FOR DME REACTOME ANNOTATIONS
+	wget https://s3ftp.flybase.org/releases/FB2025_03/precomputed_files/collaborators/gp_information.fb.gz -P $3/
+	wget https://reactome.org/download/current/UniProt2Reactome_All_Levels.txt -P $3/
+	gunzip -f $3/gp_information.fb.gz
+	sed -i '1,5d' $3/gp_information.fb 
+	grep 'R-DME-' $3/UniProt2Reactome_All_Levels.txt > $3/UniProt2Reactome_DME.txt
+	rm $3/UniProt2Reactome_All_Levels.txt
+
 	#THIS SYSTEM TRIES TO PULL THE FILES BY GUESSING THE CURRENT VERSION INSTEAD OF USING A WILDCARD.
 	#ONE FILE WORKS ONE TIME...THEN IT GETS BLOCKED BY THE SERVER I THINK
 	#styr=2025

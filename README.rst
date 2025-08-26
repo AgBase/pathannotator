@@ -51,7 +51,7 @@ On the command line the following help statement can be displayed with 'help'.
            KEGG species codes can be found here: https://www.genome.jp/brite/br08611
         2: input file (protein FASTA without header lines)
         3: output directory (must be an existing directory; the file path should be  relative to, and inside of, your working directory)
-        4: 'FB' for flybase annotations, 'NA' for none
+        4: 'FB' for Flybase and DME Reactome annotations, 'NA' for none
         5: outbase (file basename to use for output files)
 
         KofamScan is used under an MIT License:
