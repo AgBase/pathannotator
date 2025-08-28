@@ -24,18 +24,6 @@ orthologs = args.orthologs # $3/orthofinder/Orthologues_"$noext"-cluster/"$noext
 outbase = args.outbase # file basename for output files suppliec to the pathannotator.sh wrapper script
 
 pd.set_option('display.max_columns', None)
-####################
-#FUNCTIONS
-####################
-#def combine_series_lists(s1, s2):
-#    combined = []
-#    for val1, val2 in zip(s1, s2):
-#        list1 = val1 if isinstance(val1, list) else []
-#        list2 = val2 if isinstance(val2, list) else []
-#        combined.append(list1 + list2)
-#    return pd.Series(combined)
-####################
-####################
 
 #READ API TABLES INTO PANDAS DATAFRAMES
 if kofam == "no" and species != "NA":
@@ -73,19 +61,7 @@ if kofam == "no" and species != "NA":
     ncbi_ver_spec_ko_specpath_specpathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
     ncbi_ver_spec_ko_specpath_specpathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
     ncbi_ver_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{outbase}_KEGG_species.tsv", sep='\t', index=False)
-#MERGE FOR AGGREGATED OUTPUTS
-#    keggspec = ncbi_ver_spec_ko_specpath_specpathname[["Input_protein_ID",f"KEGG_{species}_pathway"]]
-#    keggspec.columns = ['Input_protein_ID','pathway']
-#    keggspec.loc[:, 'pathway'] = 'KEGG:' + keggspec['pathway'].astype(str)
-#    acckeggspec = keggspec.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-#    annkeggspec = keggspec.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
-#    acckegg = pd.merge(acckeggref, acckeggspec, on='Input_protein_ID', how='outer')
-#    annkegg = pd.merge(annkeggref, annkeggspec, on='pathway', how='outer')
-#    acckegg['pathway'] = combine_series_lists(acckegg['pathway_x'], acckegg['pathway_y'])
-#    annkegg['Input_protein_ID'] = combine_series_lists(annkegg['Input_protein_ID_x'], annkegg['Input_protein_ID_y'])
-#    acckegg.drop(['pathway_x', 'pathway_y'], axis=1, inplace=True)
-#    annkegg.drop(['Input_protein_ID_x', 'Input_protein_ID_y'], axis=1, inplace=True)
-#ADD FLYBASE ANNOTATIONS WHEN DME IS THE SPECIFIED SPECIES
+#ADD FLYBASE AND REACTOME ANNOTATIONS WHEN DME IS THE SPECIFIED SPECIES
     if flybase == "FB" and species == "dme":
     #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
@@ -103,22 +79,6 @@ if kofam == "no" and species != "NA":
         fbgn_CG_path_ncbi_ver_spec_ko.drop(['Input_protein_ID','KEGG_genes_ID'], axis=1, inplace=True)
         fbgn_CG_path_ncbi_ver_spec_ko.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
         fbgn_CG_path_ncbi_ver_spec_ko.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
-    #MERGE FOR AGGREGATED OUTPUTS
-#        fbpath = fbgn_CG_path_ncbi_ver_spec_ko[["Input_protein_ID","Flybase_pathway_ID"]]
-#        fbpath.columns = ['Input_protein_ID','pathway']
-#        fbpath.loc[:, 'pathway'] = 'Flybase:' + fbpath['pathway'].astype(str)
-#        accfbpath = fbpath.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-#        annfbpath = fbpath.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
-#        acckeggfb = pd.merge(acckegg, accfbpath, on='Input_protein_ID', how='outer')
-#        annkeggfb = pd.merge(annkegg, annfbpath, on='pathway', how='outer')
-#        acckeggfb['pathway'] = combine_series_lists(acckeggfb['pathway_x'], acckeggfb['pathway_y'])
-#        annkeggfb['Input_protein_ID'] = combine_series_lists(annkeggfb['Input_protein_ID_x'], annkeggfb['Input_protein_ID_y'])
-#        acckeggfb.drop(['pathway_x', 'pathway_y'], axis=1, inplace=True)
-#        annkeggfb.drop(['Input_protein_ID_x', 'Input_protein_ID_y'], axis=1, inplace=True)
-#        acckeggfb['pathway'] = acckeggfb['pathway'].apply(lambda x: ','.join(map(str, x)))
-#        annkeggfb['Input_protein_ID'] = annkeggfb['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
-#        acckeggfb.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
-#        annkeggfb.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
         unireact = pd.read_table(f"{indir}/UniProt2Reactome_DME.txt", dtype=str, header=None, on_bad_lines='warn')
@@ -141,7 +101,6 @@ if kofam == "no" and species != "NA":
         fbuniforreact = fbuniforreact.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'})
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
-#        exit(0)
     elif flybase =="FB" and species != "dme":
     #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
@@ -171,22 +130,6 @@ if kofam == "no" and species != "NA":
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
         fbgn_fbpp_ortho_path_CG.drop('KEGG_genes_ID', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
-    #MERGE FOR AGGREGATED OUTPUTS
-#        fbpath = fbgn_fbpp_ortho_path_CG[["Input_protein_ID","Flybase_pathway_ID"]]
-#        fbpath.columns = ['Input_protein_ID','pathway']
-#        fbpath.loc[:, 'pathway'] = 'Flybase:' + fbpath['pathway'].astype(str)
-#        accfbpath = fbpath.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-#        annfbpath = fbpath.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
-#        acckeggfb = pd.merge(acckegg, accfbpath, on='Input_protein_ID', how='outer')
-#        annkeggfb = pd.merge(annkegg, annfbpath, on='pathway', how='outer')
-#        acckeggfb['pathway'] = combine_series_lists(acckeggfb['pathway_x'], acckeggfb['pathway_y'])
-#        annkeggfb['Input_protein_ID'] = combine_series_lists(annkeggfb['Input_protein_ID_x'], annkeggfb['Input_protein_ID_y'])
-#        acckeggfb.drop(['pathway_x', 'pathway_y'], axis=1, inplace=True)
-#        annkeggfb.drop(['Input_protein_ID_x', 'Input_protein_ID_y'], axis=1, inplace=True)
-#        acckeggfb['pathway'] = acckeggfb['pathway'].apply(lambda x: ','.join(map(str, x)))
-#        annkeggfb['Input_protein_ID'] = annkeggfb['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
-#        acckeggfb.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
-#        annkeggfb.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
         unireact = pd.read_table(f"{indir}/UniProt2Reactome_DME.txt", dtype=str, header=None, on_bad_lines='warn')
@@ -205,17 +148,11 @@ if kofam == "no" and species != "NA":
     #MERGE DATAFRAMES FOR REACTOME
         fbunireact = pd.merge(fbuni, unireact, on='UniProt_ID', how='inner')
         fbuniforreact = pd.merge(fbunireact, fbforreact, on='Flybase_gene', how='inner')
-        fbuniforreact = fbuniforreact[["Input_protein_ID_version","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
-        fbuniforreact = fbuniforreact.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'})
+        fbuniforreact = fbuniforreact[["Input_protein_ID","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
-#        exit(0)
     else:
         print("You have not requested Flybase annotations.")
-#    acckegg['pathway'] = acckegg['pathway'].apply(lambda x: ','.join(map(str, x)))
-#    annkegg['Input_protein_ID'] = annkegg['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
-#    acckegg.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
-#    annkegg.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
 elif kofam == "yes" and species == "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
     ncbi_ver = pd.read_table(f"{indir}/ncbiver.tsv", dtype=str)
@@ -235,12 +172,6 @@ elif kofam == "yes" and species == "NA":
     ncbi_ver_ko_pathway_pathname.drop('Input_protein_ID', axis=1, inplace=True)
     ncbi_ver_ko_pathway_pathname.rename(columns={"Input_protein_ID_version": "Input_protein_ID"}, inplace=True)
     ncbi_ver_ko_pathway_pathname.to_csv(f"{outdir}/{outbase}_KEGG_ref.tsv", sep='\t', index=False)
-#MERGE FOR AGGREGATED OUTPUTS
-#    keggref = ncbi_ver_ko_pathway_pathname[["Input_protein_ID","KEGG_ref_pathway"]]
-#    keggref.columns = ['Input_protein_ID','pathway']
-#    keggref.loc[:, 'pathway'] = 'KEGG:' + keggref['pathway'].astype(str)
-#    acckegg = keggref.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-#    annkegg = keggref.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
     if flybase == "FB":
     #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
@@ -270,22 +201,6 @@ elif kofam == "yes" and species == "NA":
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
         fbgn_fbpp_ortho_path_CG.drop('KEGG_genes_ID', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
-    #MERGE FOR AGGREGATED OUTPUTS
-#        fbpath = fbgn_fbpp_ortho_path_CG[["Input_protein_ID","Flybase_pathway_ID"]]
-#        fbpath.columns = ['Input_protein_ID','pathway']
-#        fbpath.loc[:, 'pathway'] = 'Flybase:' + fbpath['pathway'].astype(str)
-#        accfbpath = fbpath.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-#        annfbpath = fbpath.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
-#        acckeggfb = pd.merge(acckegg, accfbpath, on='Input_protein_ID', how='outer')
-#        annkeggfb = pd.merge(annkegg, annfbpath, on='pathway', how='outer')
-#        acckeggfb['pathway'] = combine_series_lists(acckeggfb['pathway_x'], acckeggfb['pathway_y'])
-#        annkeggfb['Input_protein_ID'] = combine_series_lists(annkeggfb['Input_protein_ID_x'], annkeggfb['Input_protein_ID_y'])
-#        acckeggfb.drop(['pathway_x', 'pathway_y'], axis=1, inplace=True)
-#        annkeggfb.drop(['Input_protein_ID_x', 'Input_protein_ID_y'], axis=1, inplace=True)
-#        acckeggfb['pathway'] = acckeggfb['pathway'].apply(lambda x: ','.join(map(str, x)))
-#        annkeggfb['Input_protein_ID'] = annkeggfb['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
-#        acckeggfb.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
-#        annkeggfb.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
         unireact = pd.read_table(f"{indir}/UniProt2Reactome_DME.txt", dtype=str, header=None, on_bad_lines='warn')
@@ -304,17 +219,11 @@ elif kofam == "yes" and species == "NA":
     #MERGE DATAFRAMES FOR REACTOME
         fbunireact = pd.merge(fbuni, unireact, on='UniProt_ID', how='inner')
         fbuniforreact = pd.merge(fbunireact, fbforreact, on='Flybase_gene', how='inner')
-        fbuniforreact = fbuniforreact[["Input_protein_ID_version","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
-        fbuniforreact = fbuniforreact.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'})
+        fbuniforreact = fbuniforreact[["Input_protein_ID","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
-#        exit(0)
     else:
         print("You have not requested Flybase annotations.")
-#    acckegg['pathway'] = acckegg['pathway'].apply(lambda x: ','.join(map(str, x)))
-#    annkegg['Input_protein_ID'] = annkegg['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
-#    acckegg.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
-#    annkegg.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
 elif kofam == "yes" and species != "NA":
 #READ API TABLES INTO PANDAS DATAFRAMES
     ncbi_ver = pd.read_table(f"{indir}/ncbiver.tsv", dtype=str)
@@ -340,11 +249,6 @@ elif kofam == "yes" and species != "NA":
     ncbi_ver_ko_pathway_pathname.drop('Input_protein_ID', axis=1, inplace=True)
     ncbi_ver_ko_pathway_pathname.rename(columns={"Input_protein_ID_version": "Input_protein_ID"}, inplace=True)
     ncbi_ver_ko_pathway_pathname.to_csv(f"{outdir}/{outbase}_KEGG_ref.tsv", sep='\t', index=False)
-    keggref = ncbi_ver_ko_pathway_pathname[["Input_protein_ID", "KEGG_ref_pathway"]]
-    keggref.columns = ['Input_protein_ID','pathway']
-    keggref.loc[:, 'pathway'] = 'KEGG:' + keggref['pathway'].astype(str)
-    acckeggref = keggref.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-    annkeggref = keggref.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
     ncbi_ver_spec_ko = pd.merge(ncbi_ver_ko, spec_ko, on='KEGG_KO', how='inner')
     ncbi_ver_spec_ko_specpath = pd.merge(ncbi_ver_spec_ko, spec_pathway, on='KEGG_genes_ID', how='inner')
@@ -353,19 +257,7 @@ elif kofam == "yes" and species != "NA":
     ncbi_ver_spec_ko_specpath_specpathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
     ncbi_ver_spec_ko_specpath_specpathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
     ncbi_ver_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{outbase}_KEGG_species.tsv", sep='\t', index=False)
-#MERGE FOR AGGREGATED OUTPUTS
-#    keggspec = ncbi_ver_spec_ko_specpath_specpathname[["Input_protein_ID",f"KEGG_{species}_pathway"]]
-#    keggspec.columns = ['Input_protein_ID','pathway']
-#    keggspec.loc[:, 'pathway'] = 'KEGG:' + keggspec['pathway'].astype(str)
-#    acckeggspec = keggspec.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-#    annkeggspec = keggspec.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
-#    acckegg = pd.merge(acckeggref, acckeggspec, on='Input_protein_ID', how='outer')
-#    annkegg = pd.merge(annkeggref, annkeggspec, on='pathway', how='outer')
-#    acckegg['pathway'] = combine_series_lists(acckegg['pathway_x'], acckegg['pathway_y'])
-#    annkegg['Input_protein_ID'] = combine_series_lists(annkegg['Input_protein_ID_x'], annkegg['Input_protein_ID_y'])
-#    acckegg.drop(['pathway_x', 'pathway_y'], axis=1, inplace=True)
-#    annkegg.drop(['Input_protein_ID_x', 'Input_protein_ID_y'], axis=1, inplace=True)
-#ADD FLYBASE ANNOTATIONS
+#ADD FLYBASE AND REACTOME ANNOTATIONS
     if flybase == "FB" and species == "dme":
     #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
@@ -381,22 +273,6 @@ elif kofam == "yes" and species != "NA":
         fbgn_CG_path_ncbi_ver_spec_ko.drop(['Input_protein_ID', 'KEGG_genes_ID', 'Flybase_gene'], axis=1, inplace=True)
         fbgn_CG_path_ncbi_ver_spec_ko.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
         fbgn_CG_path_ncbi_ver_spec_ko.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
-    #MERGE FOR AGGREGATED OUTPUTS
-#        fbpath = fbgn_CG_path_ncbi_ver_spec_ko[["Input_protein_ID","Flybase_pathway_ID"]]
-#        fbpath.columns = ['Input_protein_ID','pathway']
-#        fbpath.loc[:, 'pathway'] = 'Flybase:' + fbpath['pathway'].astype(str)
-#        accfbpath = fbpath.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-#        annfbpath = fbpath.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
-#        acckeggfb = pd.merge(acckegg, accfbpath, on='Input_protein_ID', how='outer')
-#        annkeggfb = pd.merge(annkegg, annfbpath, on='pathway', how='outer')
-#        acckeggfb['pathway'] = combine_series_lists(acckeggfb['pathway_x'], acckeggfb['pathway_y'])
-#        annkeggfb['Input_protein_ID'] = combine_series_lists(annkeggfb['Input_protein_ID_x'], annkeggfb['Input_protein_ID_y'])
-#        acckeggfb.drop(['pathway_x', 'pathway_y'], axis=1, inplace=True)
-#        annkeggfb.drop(['Input_protein_ID_x', 'Input_protein_ID_y'], axis=1, inplace=True)
-#        acckeggfb['pathway'] = acckeggfb['pathway'].apply(lambda x: ','.join(map(str, x)))
-#        annkeggfb['Input_protein_ID'] = annkeggfb['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
-#        acckeggfb.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
-#        annkeggfb.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
         unireact = pd.read_table(f"{indir}/UniProt2Reactome_DME.txt", dtype=str, header=None, on_bad_lines='warn')
@@ -419,7 +295,6 @@ elif kofam == "yes" and species != "NA":
         fbuniforreact = fbuniforreact.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'})
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
-#        exit(0)
     elif flybase =="FB" and species != "dme":
     #READ INTO DATAFRAMES
         fbgn_CG = pd.read_table(f"{indir}/Fbgn_CG.tsv", dtype=str)
@@ -449,22 +324,6 @@ elif kofam == "yes" and species != "NA":
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
         fbgn_fbpp_ortho_path_CG.drop('KEGG_genes_ID', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
-    #MERGE FOR AGGREGATED OUTPUTS
-#        fbpath = fbgn_fbpp_ortho_path_CG[["Input_protein_ID","Flybase_pathway_ID"]]
-#        fbpath.columns = ['Input_protein_ID','pathway']
-#        fbpath.loc[:, 'pathway'] = 'Flybase:' + fbpath['pathway'].astype(str)
-#        accfbpath = fbpath.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-#        annfbpath = fbpath.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
-#        acckeggfb = pd.merge(acckegg, accfbpath, on='Input_protein_ID', how='outer')
-#        annkeggfb = pd.merge(annkegg, annfbpath, on='pathway', how='outer')
-#        acckeggfb['pathway'] = combine_series_lists(acckeggfb['pathway_x'], acckeggfb['pathway_y'])
-#        annkeggfb['Input_protein_ID'] = combine_series_lists(annkeggfb['Input_protein_ID_x'], annkeggfb['Input_protein_ID_y'])
-#        acckeggfb.drop(['pathway_x', 'pathway_y'], axis=1, inplace=True)
-#        annkeggfb.drop(['Input_protein_ID_x', 'Input_protein_ID_y'], axis=1, inplace=True)
-#        acckeggfb['pathway'] = acckeggfb['pathway'].apply(lambda x: ','.join(map(str, x)))
-#        annkeggfb['Input_protein_ID'] = annkeggfb['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
-#        acckeggfb.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
-#        annkeggfb.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
         unireact = pd.read_table(f"{indir}/UniProt2Reactome_DME.txt", dtype=str, header=None, on_bad_lines='warn')
@@ -483,17 +342,11 @@ elif kofam == "yes" and species != "NA":
     #MERGE DATAFRAMES FOR REACTOME
         fbunireact = pd.merge(fbuni, unireact, on='UniProt_ID', how='inner')
         fbuniforreact = pd.merge(fbunireact, fbforreact, on='Flybase_gene', how='inner')
-        fbuniforreact = fbuniforreact[["Input_protein_ID_version","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
-        fbuniforreact = fbuniforreact.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'})
+        fbuniforreact = fbuniforreact[["Input_protein_ID","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
-#        exit(0)
     else:
         print("You have not requested Flybase annotations.")
-#    acckegg['pathway'] = acckegg['pathway'].apply(lambda x: ','.join(map(str, x)))
-#    annkegg['Input_protein_ID'] = annkegg['Input_protein_ID'].apply(lambda x: ','.join(map(str, x)))
-#    acckegg.to_csv(f"{outdir}/{outbase}_acc_pathways.tsv", sep='\t', index=False)
-#    annkegg.to_csv(f"{outdir}/{outbase}_pathways_acc.tsv", sep='\t', index=False)
 else:
     print("Not an acceptable combination of arguments.")
 

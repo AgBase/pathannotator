@@ -78,31 +78,32 @@ if [ "$5" == "FB" ];
 then
 	echo "Pulling Flybase data now."
 	#THIS IS THE HARDCODED VERSION. IDEALLY WE COULD USE ftp:// AND A WILDCARD BUT THAT DOESN'T WORK WITH CURRENT FB SETUP (HTTPS)
-	wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/metabolic_pathway_group_data_fb_2025_02.tsv.gz -P $3/
-	wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/signaling_pathway_group_data_fb_2025_02.tsv.gz -P $3/
-	gunzip -f $3/signaling_pathway_group_data_fb_2025_02.tsv.gz
-	gunzip -f $3/metabolic_pathway_group_data_fb_2025_02.tsv.gz
+	wget https://s3ftp.flybase.org/releases/FB2025_03/precomputed_files/genes/metabolic_pathway_group_data_fb_2025_03.tsv.gz -P $3/
+	wget https://s3ftp.flybase.org/releases/FB2025_03/precomputed_files/genes/signaling_pathway_group_data_fb_2025_03.tsv.gz -P $3/
+	gunzip -f $3/signaling_pathway_group_data_fb_2025_03.tsv.gz
+	gunzip -f $3/metabolic_pathway_group_data_fb_2025_03.tsv.gz
 
-	grep -h -v ^\# $3/signaling_pathway_group_data_fb_2025_02.tsv > $3/pathway_group_data_latest.tsv
-	grep -h -v ^\# $3/metabolic_pathway_group_data_fb_2025_02.tsv >> $3/pathway_group_data_latest.tsv
+	grep -h -v ^\# $3/signaling_pathway_group_data_fb_2025_03.tsv > $3/pathway_group_data_latest.tsv
+	grep -h -v ^\# $3/metabolic_pathway_group_data_fb_2025_03.tsv >> $3/pathway_group_data_latest.tsv
 	cut -f 1,3,6 $3/pathway_group_data_latest.tsv > $3/Fbgn_groupid.tsv
 
-	wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/fbgn_annotation_ID_fb_2025_02.tsv.gz -P $3
-	gunzip -f $3/fbgn_annotation_ID_fb_2025_02.tsv.gz
-	grep -h -v ^\# $3/fbgn_annotation_ID_fb_2025_02.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
+	wget https://s3ftp.flybase.org/releases/FB2025_03/precomputed_files/genes/fbgn_annotation_ID_fb_2025_03.tsv.gz -P $3
+	gunzip -f $3/fbgn_annotation_ID_fb_2025_03.tsv.gz
+	grep -h -v ^\# $3/fbgn_annotation_ID_fb_2025_03.tsv | cut -f 3,5 > $3/Fbgn_CG.tsv
 	sed -i 's/Dmel_//g' $3/Fbgn_CG.tsv
 
 	#PULL FBGN TO FBPP FILES
-	wget https://s3ftp.flybase.org/releases/FB2025_02/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_02.tsv.gz -P $3/
-	gunzip -f $3/fbgn_fbtr_fbpp_fb_2025_02.tsv.gz
-	grep -v ^\# $3/fbgn_fbtr_fbpp_fb_2025_02.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
+	wget https://s3ftp.flybase.org/releases/FB2025_03/precomputed_files/genes/fbgn_fbtr_fbpp_fb_2025_03.tsv.gz -P $3/
+	gunzip -f $3/fbgn_fbtr_fbpp_fb_2025_03.tsv.gz
+	grep -v ^\# $3/fbgn_fbtr_fbpp_fb_2025_03.tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
 
+	sleep 120
 
 	#PULL FILE FOR DME REACTOME ANNOTATIONS
 	wget https://s3ftp.flybase.org/releases/FB2025_03/precomputed_files/collaborators/gp_information.fb.gz -P $3/
 	wget https://reactome.org/download/current/UniProt2Reactome_All_Levels.txt -P $3/
 	gunzip -f $3/gp_information.fb.gz
-	sed -i '1,5d' $3/gp_information.fb 
+	sed -i '1,5d' $3/gp_information.fb
 	grep 'R-DME-' $3/UniProt2Reactome_All_Levels.txt > $3/UniProt2Reactome_DME.txt
 	rm $3/UniProt2Reactome_All_Levels.txt
 

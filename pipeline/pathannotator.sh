@@ -52,7 +52,8 @@ done
 if [[ "$help" = "true" ]]
 then
 	echo "Help and Usage:
-	-k KEGG species code (NA or related species code if species not in KEGG; 'help' to see this help and usage statement)
+	-h to see this help and usage statement
+	-k KEGG species code (NA or related species code if species not in KEGG; default is 'NA')
 	   KEGG species codes can be found here: https://www.genome.jp/brite/br08611
 	-i input file (protein FASTA without header lines)
 	-d (optional: default is '.') output directory
@@ -87,6 +88,7 @@ fi
 #SET DEFAULTS IF OPTIONS NOT PROVIDED
 if [ -z "${flybase}" ]; then $flybase == 'NA'; fi
 if [ -z "${outdir}" ]; then $outdir == '.'; fi
+if [ -z "${keggcode}" ]; then $keggcode == 'NA'; fi
 
 if [ ! -d "$outdir" ]; then mkdir -p "$outdir"; fi
 
@@ -201,6 +203,8 @@ then
 			echo "Creating annotations output."
 			python /usr/bin/merge_data.py $keggcode no $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
 
+			#CREATE GMT FILE
+			python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
 		else
 			#IF NO, THEN RUN KOFAM, FILTER, FB, MERGE FROM KOFAM DATA
 			echo "IDs are NOT $keggcode species IDs"
@@ -272,6 +276,9 @@ then
 			#MERGE DATA HERE
 			echo "Creating annotations output."
 			python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
+
+			#CREATE GMT FILE
+			python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
 
 		fi
 
@@ -353,6 +360,9 @@ then
 		#MERGE DATA
 		echo "Creating annotations output."
 		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
+
+		#CREATE GMT FILE
+		python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
 
 	fi
 
@@ -447,6 +457,9 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		echo "Creating annotation outputs."
 		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
 
+		#CREATE GMT FILE
+		python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
+
 	else #ELSE MEANS THIS IS NOT A KEGG SPECIES
 
 		echo "This is not a KEGG species".
@@ -525,6 +538,9 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 		#MERGE DATA
 		echo "Creating annotation outputs."
 		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
+
+		#CREATE GMT FILE
+		python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
 	fi
 fi
 
