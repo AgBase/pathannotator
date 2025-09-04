@@ -82,6 +82,7 @@ Flybase annotation is carried out using `OrthoFinder <https://github.com/davidem
 **Benchmarking**
 ======================================
 The amount of time it takes to run this tool will vary greatly depending on several factors:
+
 1. the number of sequences in your protein FASTA input file
 2. whether your species has a KEGG species code
 3. whether your input IDs are NCBI RefSeq protein IDs
