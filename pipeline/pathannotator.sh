@@ -156,9 +156,9 @@ then
 				mkdir $outdir/orthofinder
 
 				#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-				if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
+				if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" && -s "$outdir/gp_information.fb" && -s "$outdir/UniProt2Reactome_DME.txt" ]]
 				then
-    					echo "All FlyBase files exist and are not empty."
+    					echo "All FlyBase and Reactome files exist and are not empty."
 				else
     					echo "One or more of the specified files are empty or do not exist."
 					exit
@@ -230,9 +230,9 @@ then
 				mkdir $outdir/orthofinder
 
 				#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-				if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
+				if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" && -s "$outdir/gp_information.fb" && -s "$outdir/UniProt2Reactome_DME.txt" ]]
 				then
-    					echo "All FlyBase files exist and are not empty."
+    					echo "All FlyBase and Reactome files exist and are not empty."
 				else
     					echo "One or more of the specified files are empty or do not exist."
 					exit
@@ -314,9 +314,9 @@ then
 			mkdir $outdir/orthofinder
 
 			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-			if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
+			if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" && -s "$outdir/gp_information.fb" && -s "$outdir/UniProt2Reactome_DME.txt" ]]
 			then
-				echo "All FlyBase files exist and are not empty."
+				echo "All FlyBase and Reactome files exist and are not empty."
 			else
 				echo "One or more of the specified files are empty or do not exist."
 				exit
@@ -411,9 +411,9 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			mkdir $outdir/orthofinder
 
 			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-			if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
+			if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" && -s "$outdir/gp_information.fb" && -s "$outdir/UniProt2Reactome_DME.txt" ]]
 			then
-				echo "All FlyBase files exist and are not empty."
+				echo "All FlyBase and Reactome files exist and are not empty."
 			else
 				echo "One or more of the specified files are empty or do not exist."
 				exit
@@ -493,9 +493,9 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			mkdir $outdir/orthofinder
 
 			#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
-			if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" ]]
+			if [[ -s "$outdir/Fbgn_groupid.tsv" && -s "$outdir/Fbgn_CG.tsv" && -s "$outdir/Fbgn_fbpp.tsv" && -s "$outdir/gp_information.fb" && -s "$outdir/UniProt2Reactome_DME.txt" ]]
 			then
-    				echo "All FlyBase files exist and are not empty."
+    				echo "All FlyBase and Reactome files exist and are not empty."
 			else
     				echo "One or more of the specified files are empty or do not exist."
 				exit
