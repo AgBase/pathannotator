@@ -49,17 +49,14 @@ if kofam == "no" and species != "NA":
     ncbi_ver_spec_ko_pathway_pathname = pd.merge(ncbi_ver_spec_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
     ncbi_ver_spec_ko_pathway_pathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
     ncbi_ver_spec_ko_pathway_pathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+    ncbi_ver_spec_ko_pathway_pathname = ncbi_ver_spec_ko_pathway_pathname.drop_duplicates()
     ncbi_ver_spec_ko_pathway_pathname.to_csv(f"{outdir}/{outbase}_KEGG_ref.tsv", sep='\t', index=False)
-    keggref = ncbi_ver_spec_ko_pathway_pathname[["Input_protein_ID","KEGG_ref_pathway"]]
-    keggref.columns = ['Input_protein_ID','pathway']
-    keggref.loc[:, 'pathway'] = 'KEGG:' + keggref['pathway'].astype(str)
-    acckeggref = keggref.groupby('Input_protein_ID')['pathway'].agg(list).reset_index()
-    annkeggref = keggref.groupby('pathway')['Input_protein_ID'].agg(list).reset_index()
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
     ncbi_ver_spec_ko_specpath = pd.merge(ncbi_ver_spec_ko, spec_pathway, on='KEGG_genes_ID', how='inner')
     ncbi_ver_spec_ko_specpath_specpathname = pd.merge(ncbi_ver_spec_ko_specpath, list_pathway_spec, on=f"KEGG_{species}_pathway", how='left')
     ncbi_ver_spec_ko_specpath_specpathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
     ncbi_ver_spec_ko_specpath_specpathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+    ncbi_ver_spec_ko_specpath_specpathname = ncbi_ver_spec_ko_specpath_specpathname.drop_duplicates()
     ncbi_ver_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{outbase}_KEGG_species.tsv", sep='\t', index=False)
 #ADD FLYBASE AND REACTOME ANNOTATIONS WHEN DME IS THE SPECIFIED SPECIES
     if flybase == "FB" and species == "dme":
@@ -78,6 +75,7 @@ if kofam == "no" and species != "NA":
         fbgn_CG_path_ncbi_ver_spec_ko = fbgn_CG_path_ncbi_ver_spec_ko[["KEGG_genes_ID","Input_protein_ID_version","Input_protein_ID","KEGG_KO","Flybase_pathway_ID","Flybase_pathway_name"]]
         fbgn_CG_path_ncbi_ver_spec_ko.drop(['Input_protein_ID','KEGG_genes_ID'], axis=1, inplace=True)
         fbgn_CG_path_ncbi_ver_spec_ko.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+        fbgn_CG_path_ncbi_ver_spec_ko = fbgn_CG_path_ncbi_ver_spec_ko.drop_duplicates()
         fbgn_CG_path_ncbi_ver_spec_ko.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
@@ -99,6 +97,7 @@ if kofam == "no" and species != "NA":
         fbuniforreact = pd.merge(fbunireact, fbforreact, on='Flybase_gene', how='inner')
         fbuniforreact = fbuniforreact[["Input_protein_ID_version","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
         fbuniforreact = fbuniforreact.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'})
+        fbuniforreact = fbuniforreact.drop_duplicates()
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
     elif flybase =="FB" and species != "dme":
@@ -129,6 +128,7 @@ if kofam == "no" and species != "NA":
         fbgn_fbpp_ortho_path_CG.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
         fbgn_fbpp_ortho_path_CG.drop('KEGG_genes_ID', axis=1, inplace=True)
+        fbgn_fbpp_ortho_path_CG =fbgn_fbpp_ortho_path_CG.drop_duplicates()
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
@@ -149,6 +149,7 @@ if kofam == "no" and species != "NA":
         fbunireact = pd.merge(fbuni, unireact, on='UniProt_ID', how='inner')
         fbuniforreact = pd.merge(fbunireact, fbforreact, on='Flybase_gene', how='inner')
         fbuniforreact = fbuniforreact[["Input_protein_ID","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
+        fbuniforreact = fbuniforreact.drop_duplicates()
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
     else:
@@ -171,6 +172,7 @@ elif kofam == "yes" and species == "NA":
     ncbi_ver_ko_pathway_pathname = ncbi_ver_ko_pathway_pathname[["Input_protein_ID_version","Input_protein_ID","KEGG_KO","KEGG_ref_pathway","KEGG_ref_pathway_name"]]
     ncbi_ver_ko_pathway_pathname.drop('Input_protein_ID', axis=1, inplace=True)
     ncbi_ver_ko_pathway_pathname.rename(columns={"Input_protein_ID_version": "Input_protein_ID"}, inplace=True)
+    ncbi_ver_ko_pathway_pathname = ncbi_ver_ko_pathway_pathname.drop_duplicates()
     ncbi_ver_ko_pathway_pathname.to_csv(f"{outdir}/{outbase}_KEGG_ref.tsv", sep='\t', index=False)
     if flybase == "FB":
     #READ INTO DATAFRAMES
@@ -200,6 +202,7 @@ elif kofam == "yes" and species == "NA":
         fbgn_fbpp_ortho_path_CG.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
         fbgn_fbpp_ortho_path_CG.drop('KEGG_genes_ID', axis=1, inplace=True)
+        fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG.drop_duplicates()
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
@@ -220,6 +223,7 @@ elif kofam == "yes" and species == "NA":
         fbunireact = pd.merge(fbuni, unireact, on='UniProt_ID', how='inner')
         fbuniforreact = pd.merge(fbunireact, fbforreact, on='Flybase_gene', how='inner')
         fbuniforreact = fbuniforreact[["Input_protein_ID","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
+        fbuniforreact = fbuniforreact.drop_duplicates()
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
     else:
@@ -248,6 +252,7 @@ elif kofam == "yes" and species != "NA":
     ncbi_ver_ko_pathway_pathname = ncbi_ver_ko_pathway_pathname[["Input_protein_ID_version","Input_protein_ID","KEGG_KO","KEGG_ref_pathway","KEGG_ref_pathway_name"]]
     ncbi_ver_ko_pathway_pathname.drop('Input_protein_ID', axis=1, inplace=True)
     ncbi_ver_ko_pathway_pathname.rename(columns={"Input_protein_ID_version": "Input_protein_ID"}, inplace=True)
+    ncbi_ver_ko_pathway_pathname = ncbi_ver_ko_pathway_pathname.drop_duplicates()
     ncbi_ver_ko_pathway_pathname.to_csv(f"{outdir}/{outbase}_KEGG_ref.tsv", sep='\t', index=False)
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
     ncbi_ver_spec_ko = pd.merge(ncbi_ver_ko, spec_ko, on='KEGG_KO', how='inner')
@@ -256,6 +261,7 @@ elif kofam == "yes" and species != "NA":
     ncbi_ver_spec_ko_specpath_specpathname = ncbi_ver_spec_ko_specpath_specpathname[["KEGG_genes_ID","Input_protein_ID_version","Input_protein_ID","KEGG_KO",f"KEGG_{species}_pathway",f"KEGG_{species}_pathway_name"]]
     ncbi_ver_spec_ko_specpath_specpathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
     ncbi_ver_spec_ko_specpath_specpathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+    ncbi_ver_spec_ko_specpath_specpathname = ncbi_ver_spec_ko_specpath_specpathname.drop_duplicates()
     ncbi_ver_spec_ko_specpath_specpathname.to_csv(f"{outdir}/{outbase}_KEGG_species.tsv", sep='\t', index=False)
 #ADD FLYBASE AND REACTOME ANNOTATIONS
     if flybase == "FB" and species == "dme":
@@ -272,6 +278,7 @@ elif kofam == "yes" and species != "NA":
         fbforreact = fbgn_CG_path_ncbi_ver_spec_ko.copy()
         fbgn_CG_path_ncbi_ver_spec_ko.drop(['Input_protein_ID', 'KEGG_genes_ID', 'Flybase_gene'], axis=1, inplace=True)
         fbgn_CG_path_ncbi_ver_spec_ko.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
+        fbgn_CG_path_ncbi_ver_spec_ko = fbgn_CG_path_ncbi_ver_spec_ko.drop_duplicates()
         fbgn_CG_path_ncbi_ver_spec_ko.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
@@ -293,6 +300,7 @@ elif kofam == "yes" and species != "NA":
         fbuniforreact = pd.merge(fbunireact, fbforreact, on='Flybase_gene', how='inner')
         fbuniforreact = fbuniforreact[["Input_protein_ID_version","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
         fbuniforreact = fbuniforreact.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'})
+        fbuniforreact = fbuniforreact.drop_duplicates()
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
     elif flybase =="FB" and species != "dme":
@@ -323,6 +331,7 @@ elif kofam == "yes" and species != "NA":
         fbgn_fbpp_ortho_path_CG.drop('Flybase_gene', axis=1, inplace=True)
         fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG[["KEGG_genes_ID","Input_protein_ID","Flybase_protein_ID","Flybase_pathway_ID","Flybase_pathway_name"]]
         fbgn_fbpp_ortho_path_CG.drop('KEGG_genes_ID', axis=1, inplace=True)
+        fbgn_fbpp_ortho_path_CG = fbgn_fbpp_ortho_path_CG.drop_duplicates()
         fbgn_fbpp_ortho_path_CG.to_csv(f"{outdir}/{outbase}_flybase.tsv", sep='\t', index=False)
     #READ REACTOME TABLES INTO DATAFRAMES
         fbuni = pd.read_table(f"{indir}/gp_information.fb", dtype=str, on_bad_lines='warn')
@@ -343,6 +352,7 @@ elif kofam == "yes" and species != "NA":
         fbunireact = pd.merge(fbuni, unireact, on='UniProt_ID', how='inner')
         fbuniforreact = pd.merge(fbunireact, fbforreact, on='Flybase_gene', how='inner')
         fbuniforreact = fbuniforreact[["Input_protein_ID","UniProt_ID","Reactome_pathway_ID","Reactome_pathway_name"]]
+        fbuniforreact = fbuniforreact.drop_duplicates()
     #WRITE TABULAR OUTPUT FOR REACTOME PATHWAYS
         fbuniforreact.to_csv(f"{outdir}/{outbase}_reactome.tsv", sep='\t', index=False)
     else:
