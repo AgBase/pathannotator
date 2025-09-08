@@ -1,10 +1,10 @@
 ==========
 **Intro**
 ==========
-- Pathannotator annotates proteins with KEGG, Flybase and Reactome 'DME' pathways. It does this through the use of `KofamScan <https://github.com/takaram/kofam_scan>`_, `KEGG API <https://www.kegg.jp/kegg/rest/keggapi.html>`_, `OrthoFinder <https://github.com/davidemms/OrthoFinder?>`_ `Flybase <https://flybase.org/>`_ and `Reactome <https://reactome.org/>`_.
+- Pathannotator annotates proteins with KEGG, Flybase and Reactome Drosophila melanogaster pathways. It does this through the use of `KofamScan <https://github.com/takaram/kofam_scan>`_, `KEGG API <https://www.kegg.jp/kegg/rest/keggapi.html>`_, `OrthoFinder <https://github.com/davidemms/OrthoFinder?>`_ `Flybase <https://flybase.org/>`_ and `Reactome <https://reactome.org/>`_.
 - KofamScan is a gene functional annotation tool based on KEGG Orthology and hidden Markov model (HMM). It is provided by the KEGG (Kyoto Encyclopedia of Genes and Genomes) project. The online version is available here: https://www.genome.jp/tools/kofamkoala/ .
 - This pipeline pulls annotation directly from the KEGG API when possible. When that isn't possible the pipeline impliments Kofamscan to identify homologous KEGG objects (KO). The pathways annotated to these KEGG objects are then transferred to the corresponding proteins in your species of interest.
-- If specified, the pipeline will also provide annotations to Flybase pathways and Reactome 'DME' (*Drosophila melanogaster*). To do this the pipeline uses `OrthoFinder <https://github.com/davidemms/OrthoFinder?>`_ to identify homologous *Drosophila melanogaster* proteins for your input proteins. Flybase `metabolic pathways <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/metabolic_pathway_group_data_fb_2024_06.tsv.gz>`_ and `signaling pathway annotations <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/signaling_pathway_group_data_fb_2024_06.tsv.gz>`_ and `Reactome DME pathways <https://reactome.org/download/current/UniProt2Reactome_All_Levels.txt>`_ are then transferred to your input proteins from these homologs.
+- If specified, the pipeline will also provide annotations to Flybase pathways and Reactome Drosophila melanogaster. To do this the pipeline uses `OrthoFinder <https://github.com/davidemms/OrthoFinder?>`_ to identify homologous *Drosophila melanogaster* proteins for your input proteins. Flybase `metabolic pathways <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/metabolic_pathway_group_data_fb_2024_06.tsv.gz>`_ and `signaling pathway annotations <http://ftp.flybase.org/releases/FB2024_06/precomputed_files/genes/signaling_pathway_group_data_fb_2024_06.tsv.gz>`_ and `Reactome DME pathways <https://reactome.org/download/current/UniProt2Reactome_All_Levels.txt>`_ are then transferred to your input proteins from these homologs.
 
 
 **Where to Find Pathannotator**
@@ -362,7 +362,7 @@ Reference `Understanding results`_.
 **Understanding Your Results**
 ==============================
 
-The output files you can expect will differ depending on the circumstances of your run. If you are using a KEGG species code you will get both KEGG reference and KEGG species pathways. Without a KEGG code (NA) you will only get KEGG reference pathway annotations. Under all circumstances you may specify whether or not you want to receive Flybase and Reactome 'DME' pathways annotations as well. Whatever your options, the pathways will all be output into a single GMT formatted file.
+The output files you can expect will differ depending on the circumstances of your run. If you are using a KEGG species code you will get both KEGG reference and KEGG species pathways. Without a KEGG code (NA) you will only get KEGG reference pathway annotations. Under all circumstances you may specify whether or not you want to receive Flybase and Reactome Drosophila melanogaster pathways annotations as well. Whatever your options, the pathways will all be output into a single GMT formatted file.
 
 **Expected output files:**
 --------------------------
@@ -373,7 +373,7 @@ The output files you can expect will differ depending on the circumstances of yo
 - **test_output_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers will begin with 'map'.
 - **test_output_KEGG_species.tsv:** These are annotations to the species-specific KEGG pathway. The pathway identifiers will begin with the KEGG species code.
 - **test_output_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
-- **test_output_reactome.tsv:** If you used the 'FB' option for Flybase pathways you will get this output containg Reactome 'DME' pathways annotations.
+- **test_output_reactome.tsv:** If you used the 'FB' option for Flybase pathways you will get this output containg Reactome Drosophila melanogaster pathways annotations.
 - **test_output_all_pathways.gmt:** This file contains all of the pathways annotations (KEGG ref, KEGG species, Flybase and Reactome) in GMT format.
 
 **'NA' as KEGG code**
@@ -385,7 +385,7 @@ If you did not specify a KEGG species code (used 'NA') then no species-specific 
 
 - **test_ouptut_KEGG_ref.tsv:** These are annotations to the KEGG reference pathways. The pathway identifiers wil begin with 'map'.
 - **test_output_flybase.tsv:** If you used the 'FB' option for Flybase pathways annotations you will get this output.
-- **test_output_reactome.tsv:** If you used the 'FB' option for Flybase pathways you will get this output containg Reactome 'DME' pathways annotations.
+- **test_output_reactome.tsv:** If you used the 'FB' option for Flybase pathways you will get this output containg Reactome Drosophila melanogaster pathways annotations.
 - **test_output_all_pathways.gmt:** This file contains all of the pathways annotations (KEGG ref, KEGG species, Flybase and Reactome) in GMT format.
 
 **Expected output files:**
