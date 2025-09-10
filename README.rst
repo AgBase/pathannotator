@@ -36,7 +36,7 @@ If you want to download them beforehand they are available from the KEGG website
 KEGG updates their annotations approximately once a month. If your profiles and ko_list files are older than this then your annotations will not be up-to-date. Just delete them and the new versions will be downloaded with your first annotation run.
 
 If your species of interest has been annotated by the KEGG project you can provide this tool with the corresponding KEGG species code to pull those annotations directly. If your species of interest is not listed you should choose a closely related species and use that code.
-KEGG species codes can be found here: https://www.genome.jp/brite/br08611
+KEGG species codes can be found here: https://www.kegg.jp/brite/br08601
 
 
 **Help and Usage Statement**
