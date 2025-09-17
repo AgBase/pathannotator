@@ -131,6 +131,7 @@ then
 	then
 		#PULL DATA
 		echo "This is a KEGG species code. Pulling KEGG API data now."
+		cp /FB/* $outdir/
 		bash /usr/bin/pull_data.sh $keggcode no $outdir ncbi $flybase
 
 		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
@@ -211,6 +212,7 @@ then
 
 			#PULL ADDITIONAL DATA FOR KOFAMSCAN
 			echo "Pulling more KEGG API data now."
+			cp /FB/* $outdir/
 			bash /usr/bin/pull_data.sh $keggcode yes $outdir ncbi $flybase
 
 			#RUN KOFAMSCAN
@@ -286,6 +288,7 @@ then
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
+		cp /FB/* $outdir/
 		bash /usr/bin/pull_data.sh $keggcode yes $outdir ncbi $flybase
 
 		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
@@ -383,6 +386,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
+		cp /FB/* $outdir/
 		bash /usr/bin/pull_data.sh $keggcode yes $outdir non-ncbi $flybase
 
 		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
@@ -466,6 +470,7 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 		#PULL DATA
 		echo "Pulling KEGG API data."
+		cp /FB/* $outdir/
 		bash /usr/bin/pull_data.sh $keggcode yes $outdir non-ncbi $flybase
 
 		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING

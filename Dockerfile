@@ -73,11 +73,15 @@ ADD pipeline/merge_data.py /usr/bin
 
 ADD pipeline/build_ref_set.sh /usr/bin
 
-RUN mkdir /AGAT /OF /reactome
+ADD pipeline/pathannot_to_gmt.py /usr/bin
+
+RUN mkdir /AGAT /OF /FB
 
 ADD pipeline/agat_config.yaml /AGAT
 
 COPY pipeline/ref_set.tgz /OF
+
+COPY pipeline/fbgn_annotation_ID_fb_2025_03.tsv.gz pipeline/fbgn_fbtr_fbpp_fb_2025_03.tsv.gz pipeline/metabolic_pathway_group_data_fb_2025_03.tsv.gz pipeline/signaling_pathway_group_data_fb_2025_03.tsv.gz pipeline/gp_information.fb.gz /FB/
 
 WORKDIR /usr/bin
 
@@ -92,9 +96,7 @@ WORKDIR /root
 
 RUN mkdir /workdir /data 
 
-RUN chmod a+w /workdir /data /OF /AGAT /reactome
-
-ADD pipeline/gp_information.fb.gz pipeline/UniProt2Reactome_DME_20250822.txt.gz /reactome/
+RUN chmod a+w /workdir /data /OF /AGAT /FB
 
 # Entrypoint
 ENTRYPOINT ["/usr/bin/pathannotator.sh"]
