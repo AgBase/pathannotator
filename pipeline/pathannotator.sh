@@ -1,6 +1,10 @@
 #! /bin/bash
 
 #CHECK FOR OUTDIR. IF IT DOESN'T EXIST CREATE IT
+if [ -z "$outdir" ]; then outdir=="."; fi
+if [ ! -d "$outdir" ]; then mkdir -p "$outdir"; fi
+
+
 if [ -f "$outdir"/link_ko_pathway.tsv ]; then rm "$outdir"/link_ko_pathway.tsv; fi
 if [ -f "$outdir"/list_pathway.tsv ]; then rm "$outdir"/list_pathway.tsv; fi
 if [ -f "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv ]; then rm "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv; fi
@@ -87,10 +91,8 @@ fi
 #######################################################################################################
 #SET DEFAULTS IF OPTIONS NOT PROVIDED
 if [ -z "${flybase}" ]; then $flybase == 'NA'; fi
-if [ -z "${outdir}" ]; then $outdir == '.'; fi
 if [ -z "${keggcode}" ]; then $keggcode == 'NA'; fi
 
-if [ ! -d "$outdir" ]; then mkdir -p "$outdir"; fi
 
 #GETTING NUMBER OF AVAILABLE PROCESSORS FOR USE IN THREADING
 avail=$(getconf _NPROCESSORS_ONLN)
