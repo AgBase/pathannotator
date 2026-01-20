@@ -575,34 +575,34 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 	fi
 fi
 
-#if [ -f "$outdir"/link_ko_pathway.tsv ]; then rm "$outdir"/link_ko_pathway.tsv; fi
-#if [ -f "$outdir"/list_pathway.tsv ]; then rm "$outdir"/list_pathway.tsv; fi
-#if [ -f "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv ]; then rm "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv; fi
-#if [ -f "$outdir"/link_"$keggcode"_ko.tsv ]; then rm "$outdir"/link_"$keggcode"_ko.tsv; fi
-#if [ -f "$outdir"/link_pathway_"$keggcode".tsv ]; then rm "$outdir"/link_pathway_"$keggcode".tsv; fi
-#if [ -f "$outdir"/list_pathway_"$keggcode".tsv ]; then rm "$outdir"/list_pathway_"$keggcode".tsv; fi
-#if [ -f "$outdir"/deflines.tmp ]; then rm "$outdir"/deflines.tmp; fi
-#if [ -f "$outdir"/ko_ncbi.tsv ]; then rm "$outdir"/ko_ncbi.tsv; fi
-#if [ -f "$outdir"/Fbgn_CG.tsv ]; then rm "$outdir"/Fbgn_CG.tsv; fi
-#if [ -f "$outdir"/Fbgn_groupid.tsv ]; then rm "$outdir"/Fbgn_groupid.tsv; fi
-#if [ -f "$outdir"/pathway_group_data_latest.tsv ]; then rm $outdir/pathway_group_data_latest.tsv; fi
-#if [ -f "$outdir"/kofam_filtered_asterisk.txt ]; then rm "$outdir"/kofam_filtered_asterisk.txt; fi
-#if [ -f "$outdir"/kofam_result_full.txt ]; then rm "$outdir"/kofam_result_full.txt; fi
-#if [ -f "$outdir"/kegg_organisms.txt ]; then rm "$outdir"/kegg_organisms.txt; fi
-#if [ -f "$outdir"/kegg_org_codes.txt ]; then rm "$outdir"/kegg_org_codes.txt; fi
-#if [ -f "$outdir"/kegg_orgs_with_codes.txt ]; then rm "$outdir"/kegg_orgs_with_codes.txt; fi
-#if [ -n "$(ls $outdir/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $outdir/*pathway_group_data_fb*; fi
-#if [ -n "$(ls $outdir/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_annotation_ID_fb*; fi
-#if [ -n "$(ls $outdir/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $outdir/dmel-all-translation*.fasta*; fi
-#if [ -n "$(ls $outdir/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_fbtr_fbpp_fb*; fi
-#if [ -f "$outdir"/Fbgn_fbpp.tsv ]; then rm "$outdir"/Fbgn_fbpp.tsv; fi
-#if [ -d "$outdir"/tmp ]; then rm -r "$outdir"/tmp; fi
-#if [ -f "$outdir"/tmp.txt ]; then rm  "$outdir"/tmp.txt; fi
-#if [ -d "$outdir"/orthofinder/ ]; then rm -r "$outdir"/orthofinder/; fi
-#if [ -f "$outdir"/ncbiversion.tmp ]; then rm "$outdir"/ncbiversion.tmp; fi
-#if [ -f "$outdir"/ncbiver.tsv ]; then rm "$outdir"/ncbiver.tsv; fi
-#if [ -f "$outdir"/UniProt2Reactome_DME.txt ]; then rm "$outdir"/UniProt2Reactome_DME.txt; fi
-#if [ -n "$(ls $outdir/gp_information.* 2>/dev/null)" ]; then rm "$outdir"/gp_information.*; fi
+if [ -f "$outdir"/link_ko_pathway.tsv ]; then rm "$outdir"/link_ko_pathway.tsv; fi
+if [ -f "$outdir"/list_pathway.tsv ]; then rm "$outdir"/list_pathway.tsv; fi
+if [ -f "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv ]; then rm "$outdir"/conv_ncbi-proteinid_"$keggcode".tsv; fi
+if [ -f "$outdir"/link_"$keggcode"_ko.tsv ]; then rm "$outdir"/link_"$keggcode"_ko.tsv; fi
+if [ -f "$outdir"/link_pathway_"$keggcode".tsv ]; then rm "$outdir"/link_pathway_"$keggcode".tsv; fi
+if [ -f "$outdir"/list_pathway_"$keggcode".tsv ]; then rm "$outdir"/list_pathway_"$keggcode".tsv; fi
+if [ -f "$outdir"/deflines.tmp ]; then rm "$outdir"/deflines.tmp; fi
+if [ -f "$outdir"/ko_ncbi.tsv ]; then rm "$outdir"/ko_ncbi.tsv; fi
+if [ -f "$outdir"/Fbgn_CG.tsv ]; then rm "$outdir"/Fbgn_CG.tsv; fi
+if [ -f "$outdir"/Fbgn_groupid.tsv ]; then rm "$outdir"/Fbgn_groupid.tsv; fi
+if [ -f "$outdir"/pathway_group_data_latest.tsv ]; then rm $outdir/pathway_group_data_latest.tsv; fi
+if [ -f "$outdir"/kofam_filtered_asterisk.txt ]; then rm "$outdir"/kofam_filtered_asterisk.txt; fi
+if [ -f "$outdir"/kofam_result_full.txt ]; then rm "$outdir"/kofam_result_full.txt; fi
+if [ -f "$outdir"/kegg_organisms.txt ]; then rm "$outdir"/kegg_organisms.txt; fi
+if [ -f "$outdir"/kegg_org_codes.txt ]; then rm "$outdir"/kegg_org_codes.txt; fi
+if [ -f "$outdir"/kegg_orgs_with_codes.txt ]; then rm "$outdir"/kegg_orgs_with_codes.txt; fi
+if [ -n "$(ls $outdir/*pathway_group_data_fb* 2>/dev/null)" ]; then rm $outdir/*pathway_group_data_fb*; fi
+if [ -n "$(ls $outdir/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_annotation_ID_fb*; fi
+if [ -n "$(ls $outdir/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $outdir/dmel-all-translation*.fasta*; fi
+if [ -n "$(ls $outdir/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_fbtr_fbpp_fb*; fi
+if [ -f "$outdir"/Fbgn_fbpp.tsv ]; then rm "$outdir"/Fbgn_fbpp.tsv; fi
+if [ -d "$outdir"/tmp ]; then rm -r "$outdir"/tmp; fi
+if [ -f "$outdir"/tmp.txt ]; then rm  "$outdir"/tmp.txt; fi
+if [ -d "$outdir"/orthofinder/ ]; then rm -r "$outdir"/orthofinder/; fi
+if [ -f "$outdir"/ncbiversion.tmp ]; then rm "$outdir"/ncbiversion.tmp; fi
+if [ -f "$outdir"/ncbiver.tsv ]; then rm "$outdir"/ncbiver.tsv; fi
+if [ -f "$outdir"/UniProt2Reactome_DME.txt ]; then rm "$outdir"/UniProt2Reactome_DME.txt; fi
+if [ -n "$(ls $outdir/gp_information.* 2>/dev/null)" ]; then rm "$outdir"/gp_information.*; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))
