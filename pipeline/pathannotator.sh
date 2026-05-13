@@ -1,9 +1,5 @@
 #! /bin/bash
-
-#CHECK FOR OUTDIR. IF IT DOESN'T EXIST CREATE IT
-if [ -z "$outdir" ]; then outdir=="."; fi
-if [ ! -d "$outdir" ]; then mkdir -p "$outdir"; fi
-
+set -e
 
 if [ -f "$outdir"/link_ko_pathway.tsv ]; then rm "$outdir"/link_ko_pathway.tsv; fi
 if [ -f "$outdir"/list_pathway.tsv ]; then rm "$outdir"/list_pathway.tsv; fi
@@ -25,7 +21,6 @@ if [ -n "$(ls $outdir/fbgn_annotation_ID_fb* 2>/dev/null)" ]; then rm $outdir/fb
 if [ -n "$(ls $outdir/dmel-all-translation*.fasta* 2>/dev/null)" ]; then rm $outdir/dmel-all-translation*.fasta*; fi
 if [ -n "$(ls $outdir/fbgn_fbtr_fbpp_fb* 2>/dev/null)" ]; then rm $outdir/fbgn_fbtr_fbpp_fb*; fi
 if [ -f "$outdir"/Fbgn_fbpp.tsv ]; then rm "$outdir"/Fbgn_fbpp.tsv; fi
-#if [ -d "$outdir"/tmp ]; then rm -r "$outdir"/tmp; fi
 if [ -f "$outdir"/tmp.txt ]; then rm  "$outdir"/tmp.txt; fi
 if [ -f "$outdir"/ncbiversion.tmp ]; then rm "$outdir"/ncbiversion.tmp; fi
 if [ -f "$outdir"/ncbiver.tsv ]; then rm "$outdir"/ncbiver.tsv; fi
@@ -38,7 +33,7 @@ starttime=$(date +%s)
 ############################################################################################################################
 #SETUP ARGS
 
-while getopts 'd:f:i:k:o:h' option
+while getopts 'd:f:i:k:o:c:h' option
 do
   case "${option}" in
     k) keggcode=${OPTARG};;
@@ -46,6 +41,7 @@ do
     d) outdir=${OPTARG};;
     f) flybase=${OPTARG};;
     o) outbase=${OPTARG};;
+    c) cpus=${OPTARG};;
     h) help=true;;
     \?) echo "No legal parameters were passed. Please run with -h parameter to see help"; exit 1;;
 esac
@@ -62,6 +58,7 @@ then
 	-i input file (protein FASTA without header lines)
 	-d (optional: default is '.') output directory
 	-f (optional: default is 'NA') Must be either: 'FB' for flybase and DME Reactome annotations or 'NA' for none
+	-c (optional: default is nproc -1)
 	-o outbase (file basename to use for output files)
 
 	KofamScan is used under an MIT License:
@@ -89,15 +86,22 @@ then
 	exit 0
 fi
 #######################################################################################################
+#CHECK FOR OUTDIR. IF IT DOESN'T EXIST CREATE IT
+if [ -z "$outdir" ]; then outdir="."; fi
+if [ ! -d "$outdir" ]; then mkdir -p "$outdir" && echo "made directory $outdir"; fi
+
+
 #SET DEFAULTS IF OPTIONS NOT PROVIDED
-if [ -z "${flybase}" ]; then $flybase == 'NA'; fi
-if [ -z "${keggcode}" ]; then $keggcode == 'NA'; fi
+if [ -z "${flybase}" ]; then flybase='NA'; fi
+if [ -z "${keggcode}" ]; then keggcode='NA'; fi
 
 
 #GETTING NUMBER OF AVAILABLE PROCESSORS FOR USE IN THREADING
 avail=$(getconf _NPROCESSORS_ONLN)
-cpus=$(( $avail - 1 ))
-
+if [ -z "$cpus" ]
+then
+	cpus=$(( $avail - 1 ))
+fi
 
 #TESTS WHETHER ACCESSIONS ARE NCBI PROTEIN IDS
 acc1=$(head -n1 $input | sed 's/>//g' | sed 's/\s.*$//')
@@ -115,7 +119,6 @@ wget https://rest.kegg.jp/list/genome -O $outdir/kegg_organisms.txt
 grep ';' $outdir/kegg_organisms.txt > $outdir/kegg_orgs_with_codes.txt
 cut -f 2 $outdir/kegg_orgs_with_codes.txt > $outdir/kegg_org_codes.txt
 sed -i 's/;.*$//g' $outdir/kegg_org_codes.txt
-
 
 if [ "$ncbi" == true ] ;
 then
