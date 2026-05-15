@@ -7,19 +7,19 @@ from sys import exit
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('species')
-parser.add_argument('kofam')
-parser.add_argument('indir')
-parser.add_argument('outdir')
-parser.add_argument('flybase')
-parser.add_argument('orthologs')
-parser.add_argument('outbase')
+parser.add_argument('--species')
+parser.add_argument('--kofam', choices=['yes', 'no'])
+parser.add_argument('--indir')
+parser.add_argument('--outdir')
+parser.add_argument('--flybase')
+parser.add_argument('--orthologs')
+parser.add_argument('--outbase')
 args = parser.parse_args()
 species = args.species # kegg speicies code, NA or related species if species not in KEGG
 kofam = args.kofam # yes or no
 indir = args.indir # directory with outputs from pull_data.sh
 outdir = args.outdir # (default is '.') directory where outputs from this will go
-flybase = args.flybase # (default if 'NA') FB for Flybase and DME Reactome annotations, NA for none
+flybase = args.flybase # (default is 'NA') FB for Flybase and DME Reactome annotations, NA for none
 orthologs = args.orthologs # $outdir/orthofinder/Orthologues_"$noext"-cluster/"$noext"-cluster__v__dromel-cluster.tsv from pathannotator.sh script
 outbase = args.outbase # file basename for output files suppliec to the pathannotator.sh wrapper script
 
@@ -27,7 +27,7 @@ pd.set_option('display.max_columns', None)
 
 #READ API TABLES INTO PANDAS DATAFRAMES
 if kofam == "no" and species != "NA":
-    if os.path.exists(f"{indir}/ko_ncbi.tsv") and os.path.getsize(f"{indir}/ko_ncbi.tsv") > 0:
+    if not os.path.exists(f"{indir}/ko_ncbi.tsv"):
         ncbi_ver = pd.read_table(f"{indir}/ncbiver.tsv", dtype=str)
         ncbi_spec = pd.read_table(f"{indir}/conv_ncbi-proteinid_{species}.tsv", dtype=str)
         spec_ko = pd.read_table(f"{indir}/link_{species}_ko.tsv", dtype=str)
@@ -45,12 +45,14 @@ if kofam == "no" and species != "NA":
         list_pathway_spec.columns = [f"KEGG_{species}_pathway", f"KEGG_{species}_pathway_name"]
 #MERGE DATAFRAMES INTO ONE FOR REFERENCE PATHWAYS
         ncbi_ver_spec = pd.merge(ncbi_ver, ncbi_spec, on='Input_protein_ID', how='inner')
+        print("NCBI_ver_spec:", ncbi_ver_spec)
         ncbi_ver_spec_ko = pd.merge(ncbi_ver_spec, spec_ko, on='KEGG_genes_ID', how='inner')
         ncbi_ver_spec_ko_pathway = pd.merge(ncbi_ver_spec_ko, ko_pathway, on='KEGG_KO', how='inner')
         ncbi_ver_spec_ko_pathway_pathname = pd.merge(ncbi_ver_spec_ko_pathway, pathway, on='KEGG_ref_pathway', how='left')
         ncbi_ver_spec_ko_pathway_pathname.drop(['Input_protein_ID', 'KEGG_genes_ID'], axis=1, inplace=True)
         ncbi_ver_spec_ko_pathway_pathname.rename(columns={'Input_protein_ID_version': 'Input_protein_ID'}, inplace=True)
         ncbi_ver_spec_ko_pathway_pathname = ncbi_ver_spec_ko_pathway_pathname.drop_duplicates()
+        print("ncbi_ver_spec_ko_pathway_pathname:", ncbi_ver_spec_ko_pathway_pathname)
         ncbi_ver_spec_ko_pathway_pathname.to_csv(f"{outdir}/{outbase}_KEGG_ref.tsv", sep='\t', index=False)
 #MERGE DATAFRAMES INTO ONE FOR { species } PATHWAYS
         ncbi_ver_spec_ko_specpath = pd.merge(ncbi_ver_spec_ko, spec_pathway, on='KEGG_genes_ID', how='inner')

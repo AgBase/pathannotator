@@ -1,5 +1,5 @@
 #! /bin/bash
-set -e
+set -eo pipefail
 
 if [ -f "$outdir"/link_ko_pathway.tsv ]; then rm "$outdir"/link_ko_pathway.tsv; fi
 if [ -f "$outdir"/list_pathway.tsv ]; then rm "$outdir"/list_pathway.tsv; fi
@@ -27,6 +27,7 @@ if [ -f "$outdir"/ncbiver.tsv ]; then rm "$outdir"/ncbiver.tsv; fi
 if [ -d "$outdir"/orthofinder ]; then rm -r "$outdir"/orthofinder; fi
 if [ -f "$outdir"/UniProt2Reactome_DME.txt ]; then rm "$outdir"/UniProt2Reactome_DME.txt; fi
 if [ -n "$(ls $outdir/gp_information.* 2>/dev/null)" ]; then rm "$outdir"/gp_information.*; fi
+if [ -f "$outdir"/"${outdir}/${outbase}_clean.tmp.faa" ]; then rm "$outdir"/"${outdir}/${outbase}_clean.tmp.faa"; fi
 
 starttime=$(date +%s)
 
@@ -155,6 +156,11 @@ then
 			#IF YES, MERGE FROM API DATA
 			echo "IDs are $keggcode species IDs"
 
+
+			#MERGE DATA HERE
+			echo "Creating annotations output."
+			python /usr/bin/merge_data.py --species $keggcode --kofam no --indir $outdir --outdir $outdir --flybase $flybase --outbase $outbase
+
 			#IF FB AND NOT 'DME' RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 			if [ "$keggcode" != "dme" ] && [ "$flybase" == "FB" ];
 			then
@@ -203,11 +209,11 @@ then
 				#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
 				mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
 
-			fi
+				#MERGE DATA HERE
+				echo "Creating annotations output."
+				python /usr/bin/merge_data.py --species $keggcode --kofam no --indir $outdir --outdir $outdir --flybase $flybase --orthologs $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv --outbase $outbase
 
-			#MERGE DATA HERE
-			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $keggcode no $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
+			fi
 
 			#CREATE GMT FILE
 			python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
@@ -235,6 +241,10 @@ then
 				else
 					echo "Filtered KofamScan results EMPTY. Moving on to FlyBase and Reactome annotation."
 				fi
+
+			#MERGE DATA HERE
+			echo "Creating annotations output."
+			python /usr/bin/merge_data.py --species $keggcode --kofam yes --indir $outdir --outdir $outdir --flybase $flybase --outbase $outbase
 
 			#IF FB AND NOT 'DME' RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 			if [ "$keggcode" != "dme" ] && [ "$flybase" == "FB" ];
@@ -284,11 +294,11 @@ then
 				#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
 				mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
 
-			fi
+				#MERGE DATA HERE
+				echo "Creating annotations output."
+				python /usr/bin/merge_data.py --species $keggcode --kofam yes --indir $outdir --outdir $outdir --flybase $flybase --orthologs $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv --outbase $outbase
 
-			#MERGE DATA HERE
-			echo "Creating annotations output."
-			python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
+			fi
 
 			#CREATE GMT FILE
 			python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
@@ -300,6 +310,7 @@ then
 		#PULL DATA
 		echo "Pulling KEGG API data."
 		cp /FB/* $outdir/
+		echo "/usr/bin/pull_data.sh $keggcode yes $outdir ncbi $flybase"
 		bash /usr/bin/pull_data.sh $keggcode yes $outdir ncbi $flybase
 
 		#CHECK IF PULLED DATA FILES ARE PRESENT AND HAVE CONTENT BEFORE CONINUING
@@ -326,6 +337,10 @@ then
 			else
 				echo "Filtered KofamScan results EMPTY. Moving on to FlyBase and Reactome annotation."
 			fi
+
+		#MERGE DATA
+		echo "Creating annotations output."
+		python /usr/bin/merge_data.py --species $keggcode --kofam yes --indir $outdir --outdir $outdir --flybase $flybase --outbase $outbase
 
 		#IF FB AND NOT 'DME' RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$keggcode" != "dme" ] && [ "$flybase" == "FB" ];
@@ -375,11 +390,12 @@ then
 
 			#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
 			mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
-		fi
 
-		#MERGE DATA
-		echo "Creating annotations output."
-		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
+			#MERGE DATA
+			echo "Creating annotations output."
+			python /usr/bin/merge_data.py --species $keggcode --kofam yes --indir $outdir --outdir $outdir --flybase $flybase --orthologs $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv --outbase $outbase
+
+		fi
 
 		#CREATE GMT FILE
 		python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
@@ -431,6 +447,11 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 				echo "Filtered KofamScan results EMPTY. Moving on to FlyBase and Reactome annotation."
 			fi
 
+		#MERGE DATA
+		echo "Creating annotation outputs."
+		python /usr/bin/merge_data.py --species $keggcode --kofam yes --indir $outdir --outdir $outdir --flybase $flybase --outbase $outbase
+
+
 		#IF FB RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$flybase" == FB ];
 		then
@@ -478,11 +499,14 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 			#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
 			mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
+
+
+			#MERGE DATA
+			echo "Creating annotation outputs."
+			python /usr/bin/merge_data.py --species $keggcode --kofam yes --indir $outdir --outdir $outdir --flybase $flybase --orthologs $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv --outbase $outbase
+
 		fi
 
-		#MERGE DATA
-		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
 
 		#CREATE GMT FILE
 		python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
@@ -519,6 +543,10 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 			else
 				echo "Filtered KofamScan results EMPTY. Moving on to FlyBase and Reactome annotation."
 			fi
+
+		#MERGE DATA
+		echo "Creating annotation outputs."
+		python /usr/bin/merge_data.py --species $keggcode --kofam yes --indir $outdir --outdir $outdir --flybase $flybase --outbase $outbase
 
 		#IF FB RUN ORTHOFINDER AND PROCEED TO MERGE (INCLUDING FLYBASE)
 		if [ "$flybase" == FB ];
@@ -567,11 +595,12 @@ else #ELSE MEANS THESE ARE NOT NCBI PROTEIN IDS.
 
 			#MOVE THE Orthologues_dromel_cluster DIR UP TO orthofinder
 			mv $outdir/orthofinder/ref_set/OrthoFinder/Results_*/Orthologues/Orthologues_"$noext"_cluster/ $outdir/orthofinder/
-		fi
 
-		#MERGE DATA
-		echo "Creating annotation outputs."
-		python /usr/bin/merge_data.py $keggcode yes $outdir $outdir $flybase $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv $outbase
+			#MERGE DATA
+			echo "Creating annotation outputs."
+			python /usr/bin/merge_data.py --species $keggcode --kofam yes --indir $outdir --outdir $outdir --flybase $flybase --orthologs $outdir/orthofinder/Orthologues_"$noext"_cluster/"$noext"_cluster__v__dromel_cluster.tsv --outbase $outbase
+
+		fi
 
 		#CREATE GMT FILE
 		python /usr/bin/pathannot_to_gmt.py $outdir/ $outdir/ $outbase
@@ -606,6 +635,7 @@ if [ -f "$outdir"/ncbiversion.tmp ]; then rm "$outdir"/ncbiversion.tmp; fi
 if [ -f "$outdir"/ncbiver.tsv ]; then rm "$outdir"/ncbiver.tsv; fi
 if [ -f "$outdir"/UniProt2Reactome_DME.txt ]; then rm "$outdir"/UniProt2Reactome_DME.txt; fi
 if [ -n "$(ls $outdir/gp_information.* 2>/dev/null)" ]; then rm "$outdir"/gp_information.*; fi
+if [ -f "$outdir"/"${outdir}/${outbase}_clean.tmp.faa" ]; then rm "$outdir"/"${outdir}/${outbase}_clean.tmp.faa"; fi
 
 endtime=$(date +%s)
 seconds=$(($endtime - $starttime))

@@ -1,4 +1,5 @@
 #! /bin/bash
+set -e
 
 #$1 is the KEGG species code (use NA or related species if species not in KEGG)
 #$2 whether kofamscan is necessary ('yes' or 'no')
@@ -6,7 +7,7 @@
 #$4 ncbi status of input FASTA accessions ('ncbi' or 'non-ncbi')
 #$5 FB for flybase annotations, NA for none
 
-kegg=$(grep $1 $3/kegg_org_codes.txt)
+kegg=$(grep $1 $3/kegg_org_codes.txt || true)
 
 if [ ! -z "${kegg}" ] && [ $4 == "ncbi" ];
 then
@@ -14,6 +15,8 @@ then
 	wget https://rest.kegg.jp/conv/ncbi-proteinid/"$1" -O $3/conv_ncbi-proteinid_"$1".tsv
 	sed -i 's/ncbi-proteinid\://g' $3/conv_ncbi-proteinid_"$1".tsv
 	sed -i "s/$1\://g" $3/conv_ncbi-proteinid_"$1".tsv
+else
+	echo "KEGG code is empty"
 fi
 
 if [ $2 == "yes" ];
@@ -52,23 +55,29 @@ fi
 
 
 #THESE HAVE TO BE PULLED FOR ALL SPECIES
+echo "Getting link_ko_pathway.tsv"
 wget https://rest.kegg.jp/link/ko/pathway -O $3/link_ko_pathway.tsv
 sed -i 's/ko\://g' $3/link_ko_pathway.tsv
 sed -i 's/path\://g' $3/link_ko_pathway.tsv
 grep -v ko $3/link_ko_pathway.tsv > $3/tmp.txt
 mv $3/tmp.txt $3/link_ko_pathway.tsv
 
+echo "Getting list_pathway.tsv"
 wget https://rest.kegg.jp/list/pathway -O $3/list_pathway.tsv
+
 
 if [ "$1" != "NA" ];
 then
 	#THESE CAN BE PULLED FOR A RELATED KEGG SPECIES IF DESIRED
+       	echo "Getting link_pathway_$1.tsv"
 	wget https://rest.kegg.jp/link/pathway/"$1" -O  $3/link_pathway_"$1".tsv
 	sed -i "s/$1\://g" $3/link_pathway_"$1".tsv
 	sed -i 's/path\://g' $3/link_pathway_"$1".tsv
 
+	echo "Getting list_pathway_$1.tsv"
 	wget https://rest.kegg.jp/list/pathway/"$1" -O $3/list_pathway_"$1".tsv
 
+	echo "Getting link_$1_ko.tsv"
 	wget https://rest.kegg.jp/link/"$1"/ko -O $3/link_"$1"_ko.tsv
 	sed -i 's/ko\://g' $3/link_"$1"_ko.tsv
 	sed -i "s/$1\://g" $3/link_"$1"_ko.tsv
@@ -138,6 +147,5 @@ then
 
 	#gunzip -f $3/fbgn_fbtr_fbpp_fb_"$year"_"$month".tsv.gz
 	#grep -v ^\# $3/fbgn_fbtr_fbpp_fb_"$year"_"$month".tsv | cut -f 1,3 > $3/Fbgn_fbpp.tsv
+
 fi
-
-
