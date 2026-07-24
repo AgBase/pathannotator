@@ -117,8 +117,8 @@ if kofam == "no" and species != "NA":
     #SPLIT ID COLUMN IN FBPP_ORTHO INTO ID AND NAME, KEEP ID
         fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #SPLIT AND EXPLODE TO EXPAND LISTS IN BOTH COLUMNS
-        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
-        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(", ")
+        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(r",\s*")
+        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(r",\s*")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
     #MERGE AND OUTPUT TO FILE
@@ -192,8 +192,8 @@ elif kofam == "yes" and species == "NA":
     #SPLIT ID COLUMN IN FBPP_ORTHO INTO ID AND NAME, KEEP NAME
         fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #SPLIT AND EXPLODE TO EXPAND LISTS IN BOTH COLUMNS
-        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
-        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(", ")
+        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(r",\s*")
+        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(r",\s*")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
     #MERGE AND OUTPUT TO FILE
@@ -322,8 +322,8 @@ elif kofam == "yes" and species != "NA":
     #SPLIT ID COLUMN IN FBPP_ORTHO INTO ID AND NAME, KEEP ID
         fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #SPLIT AND EXPLODE TO EXPAND LISTS IN BOTH COLUMNS
-        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(", ")
-        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(", ")
+        fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(r",\s*")
+        fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(r",\s*")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
     #MERGE AND OUTPUT TO FILE
