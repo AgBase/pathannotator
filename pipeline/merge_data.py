@@ -120,6 +120,8 @@ if kofam == "no" and species != "NA":
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(r",\s*")
         fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(r",\s*")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
+        fbpp_ortho = fbpp_ortho.dropna(subset=['Input_protein_ID'])
+        fbpp_ortho = fbpp_ortho[fbpp_ortho['Input_protein_ID'].str.strip() != ""]
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
     #MERGE AND OUTPUT TO FILE
         fbgn_fbpp_ortho = pd.merge(fbgn_fbpp, fbpp_ortho, on='Flybase_protein_ID', how='inner')
@@ -195,6 +197,8 @@ elif kofam == "yes" and species == "NA":
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(r",\s*")
         fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(r",\s*")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
+        fbpp_ortho = fbpp_ortho.dropna(subset=['Input_protein_ID'])
+        fbpp_ortho = fbpp_ortho[fbpp_ortho['Input_protein_ID'].str.strip() != ""]
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
     #MERGE AND OUTPUT TO FILE
         fbgn_fbpp_ortho = pd.merge(fbgn_fbpp, fbpp_ortho, on='Flybase_protein_ID', how='inner')
@@ -325,6 +329,8 @@ elif kofam == "yes" and species != "NA":
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(r",\s*")
         fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(r",\s*")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
+        fbpp_ortho = fbpp_ortho.dropna(subset=['Input_protein_ID'])
+        fbpp_ortho = fbpp_ortho[fbpp_ortho['Input_protein_ID'].str.strip() != ""]
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
     #MERGE AND OUTPUT TO FILE
         fbgn_fbpp_ortho = pd.merge(fbgn_fbpp, fbpp_ortho, on='Flybase_protein_ID', how='inner')
