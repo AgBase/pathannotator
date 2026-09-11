@@ -114,12 +114,11 @@ if kofam == "no" and species != "NA":
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
         fbpp_ortho.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
-    #SPLIT ID COLUMN IN FBPP_ORTHO INTO ID AND NAME, KEEP ID
-        fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #SPLIT AND EXPLODE TO EXPAND LISTS IN BOTH COLUMNS
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(r",\s*")
         fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(r",\s*")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
+        fbpp_ortho["Input_protein_ID"] = (fbpp_ortho["Input_protein_ID"].str.strip().str.split(' ', n=1).str[0])
         fbpp_ortho = fbpp_ortho.dropna(subset=['Input_protein_ID'])
         fbpp_ortho = fbpp_ortho[fbpp_ortho['Input_protein_ID'].str.strip() != ""]
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
@@ -191,12 +190,11 @@ elif kofam == "yes" and species == "NA":
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
         fbpp_ortho.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
-    #SPLIT ID COLUMN IN FBPP_ORTHO INTO ID AND NAME, KEEP NAME
-        fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #SPLIT AND EXPLODE TO EXPAND LISTS IN BOTH COLUMNS
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(r",\s*")
         fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(r",\s*")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
+        fbpp_ortho['Input_protein_ID'] = (fbpp_ortho['Input_protein_ID'].str.strip().str.split(' ', n=1).str[0])
         fbpp_ortho = fbpp_ortho.dropna(subset=['Input_protein_ID'])
         fbpp_ortho = fbpp_ortho[fbpp_ortho['Input_protein_ID'].str.strip() != ""]
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
@@ -323,12 +321,12 @@ elif kofam == "yes" and species != "NA":
         fbgn_CG.columns = ['Flybase_gene', 'KEGG_genes_ID']
         fbpp_ortho.columns = ['Input_protein_ID', 'Flybase_protein_ID']
         fbgn_fbpp.columns = ['Flybase_gene', 'Flybase_protein_ID']
-    #SPLIT ID COLUMN IN FBPP_ORTHO INTO ID AND NAME, KEEP ID
-        fbpp_ortho['Input_protein_ID'] = fbpp_ortho['Input_protein_ID'].str.split(' ', n=1).str[0]
     #SPLIT AND EXPLODE TO EXPAND LISTS IN BOTH COLUMNS
         fbpp_ortho["Flybase_protein_ID"] = fbpp_ortho["Flybase_protein_ID"].str.split(r",\s*")
         fbpp_ortho["Input_protein_ID"] = fbpp_ortho["Input_protein_ID"].str.split(r",\s*")
         fbpp_ortho = fbpp_ortho.explode('Flybase_protein_ID').explode('Input_protein_ID')
+    #REMOVE ANY WHITESPACE AND, IF PRESENT, PROTEIN NAME AFTER ID
+        fbpp_ortho['Input_protein_ID'] = (fbpp_ortho['Input_protein_ID'].str.strip().str.split(' ', n=1).str[0])
         fbpp_ortho = fbpp_ortho.dropna(subset=['Input_protein_ID'])
         fbpp_ortho = fbpp_ortho[fbpp_ortho['Input_protein_ID'].str.strip() != ""]
         fbpp_ortho = fbpp_ortho.sort_values(by=['Flybase_protein_ID', 'Input_protein_ID'])
